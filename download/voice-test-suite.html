@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SciMSPT Voice Functionality Test</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: linear-gradient(135deg, #0b1220 0%, #1a2332 100%);
+    color: #e5edff;
+    min-height: 100vh;
+    padding: 2rem;
+  }
+  .container { max-width: 900px; margin: 0 auto; }
+  h1 {
+    font-size: 2rem;
+    font-weight: 800;
+    margin-bottom: .5rem;
+    background: linear-gradient(135deg, #fff 0%, #60a5fa 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .subtitle { color: #9fb0cc; margin-bottom: 2rem; }
+  
+  .test-card {
+    background: rgba(255,255,255,.03);
+    border: 1px solid #1f2d44;
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+  .test-card h2 {
+    font-size: 1.1rem;
+    color: #60a5fa;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: .5rem;
+  }
+  
+  .voice-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+    margin-top: 1rem;
+  }
+  
+  .voice-btn {
+    background: rgba(59,130,246,.12);
+    border: 1px solid rgba(59,130,246,.3);
+    color: #e5edff;
+    padding: .75rem 1rem;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all .15s ease;
+    font-size: .9rem;
+  }
+  .voice-btn:hover {
+    background: rgba(59,130,246,.22);
+    border-color: #3b82f6;
+  }
+  .voice-btn.active {
+    background: #3b82f6;
+    border-color: #3b82f6;
+  }
+  
+  .status-bar {
+    background: #111c2e;
+    border: 1px solid #1f2d44;
+    border-radius: 8px;
+    padding: 1rem;
+    margin-top: 1rem;
+    font-family: 'Courier New', monospace;
+    font-size: .85rem;
+  }
+  .status-item {
+    display: flex;
+    justify-content: space-between;
+    padding: .25rem 0;
+    border-bottom: 1px solid #1f2d44;
+  }
+  .status-item:last-child { border-bottom: none; }
+  .status-label { color: #9fb0cc; }
+  .status-value { color: #34d399; }
+  .status-value.error { color: #f87171; }
+  
+  .test-text {
+    width: 100%;
+    background: #0b1220;
+    border: 1px solid #1f2d44;
+    border-radius: 8px;
+    color: #e5edff;
+    padding: 1rem;
+    font-size: .95rem;
+    resize: vertical;
+    min-height: 100px;
+    margin-bottom: 1rem;
+  }
+  
+  .action-row {
+    display: flex;
+    gap: .75rem;
+    flex-wrap: wrap;
+  }
+  .action-btn {
+    padding: .6rem 1.2rem;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    font-weight: 600;
+    transition: all .15s ease;
+  }
+  .btn-primary { background: #3b82f6; color: white; }
+  .btn-primary:hover { background: #2563eb; }
+  .btn-secondary { background: rgba(255,255,255,.08); color: #e5edff; border: 1px solid #1f2d44; }
+  .btn-secondary:hover { background: rgba(255,255,255,.14); }
+  
+  .log-area {
+    background: #070b14;
+    border: 1px solid #1f2d44;
+    border-radius: 8px;
+    padding: 1rem;
+    max-height: 200px;
+    overflow-y: auto;
+    font-family: 'Courier New', monospace;
+    font-size: .8rem;
+    margin-top: 1rem;
+  }
+  .log-entry { padding: .15rem 0; color: #9fb0cc; }
+  .log-entry.success { color: #34d399; }
+  .log-entry.error { color: #f87171; }
+  .log-entry.info { color: #60a5fa; }
+</style>
+</head>
+<body>
+<div class="container">
+  <h1>🎙️ SciMSPT Voice Test Suite</h1>
+  <p class="subtitle">Test Web Speech API UK/US native voice functionality</p>
+  
+  <!-- Browser Support Check -->
+  <div class="test-card">
+    <h2>🔍 Browser Support</h2>
+    <div class="status-bar" id="supportStatus">
+      <div class="status-item">
+        <span class="status-label">SpeechSynthesis API</span>
+        <span class="status-value" id="apiSupport">Checking...</span>
+      </div>
+      <div class="status-item">
+        <span class="status-label">Voices Available</span>
+        <span class="status-value" id="voicesCount">-</span>
+      </div>
+      <div class="status-item">
+        <span class="status-label">UK Voices (en-GB)</span>
+        <span class="status-value" id="ukCount">-</span>
+      </div>
+      <div class="status-item">
+        <span class="status-label">US Voices (en-US)</span>
+        <span class="status-value" id="usCount">-</span>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Voice Selection -->
+  <div class="test-card">
+    <h2>🌍 Voice Selection</h2>
+    <div class="voice-grid" id="voiceGrid">
+      <!-- Populated by JS -->
+    </div>
+  </div>
+  
+  <!-- Text-to-Speech Test -->
+  <div class="test-card">
+    <h2>🗣️ Text-to-Speech Test</h2>
+    <textarea class="test-text" id="testText">Welcome to the SciMSPT platform. This is a test of the native UK/US voice narration system for portfolio briefs and weekly research shorts.</textarea>
+    <div class="action-row">
+      <button class="action-btn btn-primary" onclick="speakTest()">▶ Speak</button>
+      <button class="action-btn btn-secondary" onclick="stopTest()">⏹ Stop</button>
+      <button class="action-btn btn-secondary" onclick="pauseTest()">⏸ Pause</button>
+      <button class="action-btn btn-secondary" onclick="resumeTest()">▶ Resume</button>
+    </div>
+    <div class="log-area" id="logArea">
+      <div class="log-entry info">Ready. Click "Speak" to test voice output.</div>
+    </div>
+  </div>
+  
+  <!-- Portfolio Shorts Test -->
+  <div class="test-card">
+    <h2>📁 Portfolio Shorts Narration Test</h2>
+    <p style="color:#9fb0cc;margin-bottom:1rem;font-size:.9rem;">Sample narrations from portfolio shorts:</p>
+    <div class="action-row" id="portfolioTests">
+      <button class="action-btn btn-secondary" onclick="speakPortfolio('P12')">P12: Helios Tandem</button>
+      <button class="action-btn btn-secondary" onclick="speakPortfolio('P3')">P3: Solid State Labs</button>
+      <button class="action-btn btn-secondary" onclick="speakPortfolio('P11')">P11: Carbon Sink</button>
+      <button class="action-btn btn-secondary" onclick="speakPortfolio('P5')">P5: Hydrogen Forge</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ===== Voice Testing System =====
+const synth = window.speechSynthesis;
+let selectedVoice = null;
+let chosenAccent = 'uk';
+
+// Sample portfolio narrations
+const PORTFOLIO_NARRATIONS = {
+  P12: "Helios Tandem: Perovskite-on-silicon tandem photovoltaics — first commercial thirty percent module efficiency at scaling cost parity with mono-Si. P twelve wins the SciMSPT scoring matrix as the largest TAM, thirty-two billion dollars, with structural demand from grid-storage build-out.",
+  P3: "Solid State Labs: Solid-state lithium-metal batteries with sulfide electrolyte — four hundred fifty watt-hours per kilogram cell-level, drop-in replacement for EV form factors. Pilot line operational by month eighteen; first OEM qualification by month twenty-four.",
+  P11: "Carbon Sink: Orbital AI data centres powered by space-based solar — liquid-cooled GPU pods in Low Earth Orbit, with optical downlink to ground stations. Eliminates one hundred percent of grid-side carbon from large-model training.",
+  P5: "Hydrogen Forge: High-temperature solid-oxide electrolysis cells at eighty-five percent system efficiency — turnkey green-hydrogen plants for industrial heat and ammonia. The lowest levelized cost of hydrogen plays in the mesh."
+};
+
+function log(msg, type = 'info') {
+  const logArea = document.getElementById('logArea');
+  const entry = document.createElement('div');
+  entry.className = `log-entry ${type}`;
+  entry.textContent = `[${new Date().toLocaleTimeString()}] ${msg}`;
+  logArea.appendChild(entry);
+  logArea.scrollTop = logArea.scrollHeight;
+}
+
+// Check browser support
+function checkSupport() {
+  const supported = !!(synth && typeof SpeechSynthesisUtterance !== 'undefined');
+  document.getElementById('apiSupport').textContent = supported ? '✅ Supported' : '❌ Not Supported';
+  document.getElementById('apiSupport').className = supported ? 'status-value' : 'status-value error';
+  
+  if (!supported) {
+    log('SpeechSynthesis not supported in this browser', 'error');
+    return;
+  }
+  
+  // Load voices
+  function updateVoices() {
+    const voices = synth.getVoices() || [];
+    document.getElementById('voicesCount').textContent = `${voices.length} total`;
+    
+    const ukVoices = voices.filter(v => v.lang.toLowerCase().startsWith('en-gb'));
+    const usVoices = voices.filter(v => v.lang.toLowerCase().startsWith('en-us'));
+    
+    document.getElementById('ukCount').textContent = `${ukVoices.length} found`;
+    document.getElementById('usCount').textContent = `${usVoices.length} found`;
+    
+    // Populate voice grid
+    const grid = document.getElementById('voiceGrid');
+    grid.innerHTML = '';
+    
+    // Add UK voices
+    ukVoices.slice(0, 4).forEach((v, i) => {
+      const btn = document.createElement('button');
+      btn.className = `voice-btn ${i === 0 ? 'active' : ''}`;
+      btn.textContent = `🇬🇧 ${v.name.split(' ').slice(0, 2).join(' ')}`;
+      btn.onclick = () => selectVoice(v, btn);
+      grid.appendChild(btn);
+    });
+    
+    // Add US voices
+    usVoices.slice(0, 4).forEach((v) => {
+      const btn = document.createElement('button');
+      btn.className = 'voice-btn';
+      btn.textContent = `🇺🇸 ${v.name.split(' ').slice(0, 2).join(' ')}`;
+      btn.onclick = () => selectVoice(v, btn);
+      grid.appendChild(btn);
+    });
+    
+    // Auto-select best UK voice
+    if (ukVoices.length > 0) {
+      selectedVoice = ukVoices.find(v => v.name.indexOf('Google') === -1) || ukVoices[0];
+      log(`Auto-selected UK voice: ${selectedVoice.name}`, 'success');
+    } else if (usVoices.length > 0) {
+      selectedVoice = usVoices.find(v => v.name.indexOf('Google') === -1) || usVoices[0];
+      log(`No UK voices, fell back to US: ${selectedVoice.name}`, 'info');
+    }
+  }
+  
+  updateVoices();
+  if (synth.onvoiceschanged !== undefined) {
+    synth.onvoiceschanged = updateVoices;
+  }
+}
+
+function selectVoice(voice, btn) {
+  selectedVoice = voice;
+  chosenAccent = voice.lang.toLowerCase().startsWith('en-gb') ? 'uk' : 'us';
+  document.querySelectorAll('.voice-btn').forEach(b => b.classList.remove('active'));
+  if (btn) btn.classList.add('active');
+  log(`Selected voice: ${voice.name} (${voice.lang})`, 'success');
+}
+
+function speakTest() {
+  const text = document.getElementById('testText').value.trim();
+  if (!text) return;
+  
+  if (synth.speaking) synth.cancel();
+  
+  const utterance = new SpeechSynthesisUtterance(text);
+  if (selectedVoice) {
+    utterance.voice = selectedVoice;
+    utterance.lang = selectedVoice.lang;
+  }
+  utterance.rate = 1.02;
+  utterance.pitch = 1.0;
+  
+  utterance.onstart = () => log(`Speaking: "${text.substring(0, 50)}..."`, 'info');
+  utterance.onend = () => log('Speech completed', 'success');
+  utterance.onerror = (e) => log(`Speech error: ${e.error}`, 'error');
+  
+  synth.speak(utterance);
+}
+
+function stopTest() {
+  synth.cancel();
+  log('Speech stopped', 'info');
+}
+
+function pauseTest() {
+  synth.pause();
+  log('Speech paused', 'info');
+}
+
+function resumeTest() {
+  synth.resume();
+  log('Speech resumed', 'info');
+}
+
+function speakPortfolio(id) {
+  const text = PORTFOLIO_NARRATIONS[id];
+  if (!text) return;
+  
+  if (synth.speaking) synth.cancel();
+  
+  const utterance = new SpeechSynthesisUtterance(text);
+  if (selectedVoice) {
+    utterance.voice = selectedVoice;
+    utterance.lang = selectedVoice.lang;
+  }
+  utterance.rate = 1.02;
+  
+  utterance.onstart = () => log(`[${id}] Starting narration...`, 'info');
+  utterance.onend = () => log(`[${id}] Narration complete`, 'success');
+  
+  synth.speak(utterance);
+}
+
+// Initialize
+checkSupport();
+log('Voice test suite initialized', 'success');
+</script>
+</body>
+</html>

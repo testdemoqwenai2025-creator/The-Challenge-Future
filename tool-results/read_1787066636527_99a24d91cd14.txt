@@ -1,0 +1,1192 @@
+     1→<!DOCTYPE html>
+     2→<html lang="en">
+     3→<head>
+     4→<meta charset="UTF-8">
+     5→<meta name="viewport" content="width=device-width, initial-scale=1.0">
+     6→<title>SciMSPT Short — Lattice Forge (P-ai-materials)</title>
+     7→<meta name="description" content="AI-discovered crystalline materials as a service — the AlphaFold for materials. Sells screened candidate structures to battery, catalyst, and semiconductor OEMs. Vertical-integrated wet-lab validatio…">
+     8→<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230f172a'/%3E%3Cpath d='M24 22l16 10-16 10z' fill='%23dc2626'/%3E%3C/svg%3E">
+     9→<style>
+    10→  :root{
+    11→    --bg:#070b14;
+    12→    --bg-2:#0b1220;
+    13→    --surface:#111c2e;
+    14→    --surface-2:#162338;
+    15→    --border:#1f2d44;
+    16→    --border-strong:#2a3c58;
+    17→    --text:#e5edff;
+    18→    --text-muted:#9fb0cc;
+    19→    --text-dim:#6f829f;
+    20→    --accent:#3b82f6;
+    21→    --accent-2:#60a5fa;
+    22→    --tier1:#fbbf24;
+    23→    --tier2:#34d399;
+    24→    --tier3:#a78bfa;
+    25→    --danger:#dc2626;
+    26→    --danger-2:#b91c1c;
+    27→    --mono:'JetBrains Mono','SF Mono','Menlo','Consolas',monospace;
+    28→    --sans:-apple-system,BlinkMacSystemFont,'Inter','Segoe UI',Roboto,sans-serif;
+    29→  }
+    30→  *{box-sizing:border-box;margin:0;padding:0}
+    31→  html,body{height:100%;background:var(--bg);color:var(--text);font-family:var(--sans);overflow:hidden}
+    32→  a{color:inherit;text-decoration:none}
+    33→  button{font:inherit;color:inherit;background:none;border:none;cursor:pointer}
+    34→
+    35→  .stage{
+    36→    position:fixed;inset:0;
+    37→    display:grid;
+    38→    grid-template-rows:1fr 56px;
+    39→    background:radial-gradient(ellipse at top, #0b1220 0%, #070b14 100%);
+    40→  }
+    41→
+    42→  .scenes-wrap{
+    43→    position:relative;
+    44→    overflow:hidden;
+    45→    background:#000;
+    46→  }
+    47→
+    48→  .scene{
+    49→    position:absolute;inset:0;
+    50→    opacity:0;
+    51→    transform:scale(1.04);
+    52→    transition:opacity .55s ease, transform .85s cubic-bezier(.2,.7,.3,1);
+    53→    pointer-events:none;
+    54→    display:flex;
+    55→    align-items:center;
+    56→    justify-content:center;
+    57→    padding:2.5rem 2rem;
+    58→  }
+    59→  .scene.active{
+    60→    opacity:1;
+    61→    transform:scale(1);
+    62→    pointer-events:auto;
+    63→  }
+    64→
+    65→  .scene-inner{
+    66→    width:min(1100px, 96vw);
+    67→    max-height:88vh;
+    68→    overflow:hidden;
+    69→  }
+    70→
+    71→  .kicker{
+    72→    font-family:var(--mono);
+    73→    font-size:.78rem;
+    74→    letter-spacing:.12em;
+    75→    text-transform:uppercase;
+    76→    color:var(--accent-2);
+    77→    margin-bottom:.9rem;
+    78→    display:inline-block;
+    79→    padding:.25rem .7rem;
+    80→    background:rgba(59,130,246,.12);
+    81→    border:1px solid rgba(59,130,246,.3);
+    82→    border-radius:999px;
+    83→  }
+    84→
+    85→  /* Scene 1: intro */
+    86→  .scene-intro .title{
+    87→    font-size:clamp(2rem, 5.5vw, 3.8rem);
+    88→    font-weight:800;
+    89→    line-height:1.05;
+    90→    letter-spacing:-.02em;
+    91→    background:linear-gradient(135deg,#fff 0%, #c7d4ee 100%);
+    92→    -webkit-background-clip:text;
+    93→    background-clip:text;
+    94→    color:transparent;
+    95→    margin:.4rem 0 .8rem;
+    96→  }
+    97→  .scene-intro .tier-row{
+    98→    display:flex;align-items:center;gap:.6rem;margin-bottom:1.1rem;flex-wrap:wrap;
+    99→  }
+   100→  .scene-intro .tier-pill{
+   101→    padding:.3rem .8rem;border-radius:999px;
+   102→    font-size:.78rem;font-weight:700;letter-spacing:.05em;
+   103→  }
+   104→  .tier-pill.tier-1{background:rgba(251,191,36,.18);color:var(--tier1);border:1px solid rgba(251,191,36,.4)}
+   105→  .tier-pill.tier-2{background:rgba(52,211,153,.18);color:var(--tier2);border:1px solid rgba(52,211,153,.4)}
+   106→  .tier-pill.tier-3{background:rgba(167,139,250,.18);color:var(--tier3);border:1px solid rgba(167,139,250,.4)}
+   107→  .scene-intro .tier-label{color:var(--text-muted);font-size:.92rem}
+   108→  .scene-intro .thesis{
+   109→    font-size:clamp(1rem, 1.55vw, 1.25rem);
+   110→    line-height:1.55;
+   111→    color:var(--text);
+   112→    margin-bottom:1.4rem;
+   113→    max-width:90ch;
+   114→  }
+   115→  .coord-grid{
+   116→    display:grid;grid-template-columns:repeat(4, 1fr);gap:.6rem;
+   117→    max-width:520px;
+   118→  }
+   119→  .coord-cell{
+   120→    background:rgba(255,255,255,.03);
+   121→    border:1px solid var(--border);
+   122→    border-radius:10px;
+   123→    padding:.6rem .5rem;
+   124→    text-align:center;
+   125→  }
+   126→  .coord-axis{font-family:var(--mono);font-size:.7rem;color:var(--text-dim);font-weight:700;letter-spacing:.1em}
+   127→  .coord-val{font-family:var(--mono);font-size:1.35rem;color:var(--accent-2);font-weight:700;margin-top:.15rem}
+   128→
+   129→  /* Scene 2: signal */
+   130→  .scene-signal .scene-h2{
+   131→    font-size:clamp(1.3rem, 2.6vw, 2rem);
+   132→    font-weight:700;
+   133→    line-height:1.2;
+   134→    margin-bottom:.7rem;
+   135→  }
+   136→  .signal-meta{
+   137→    display:flex;gap:.5rem;flex-wrap:wrap;
+   138→    font-family:var(--mono);font-size:.82rem;color:var(--text-muted);
+   139→    margin-bottom:1rem;
+   140→  }
+   141→  .signal-meta strong{color:var(--text);font-weight:600}
+   142→  .signal-body{
+   143→    font-size:clamp(.95rem, 1.3vw, 1.1rem);
+   144→    line-height:1.65;
+   145→    color:var(--text-muted);
+   146→    max-width:90ch;
+   147→  }
+   148→
+   149→  /* Paper scenes */
+   150→  .scene-paper .scene-head-row{
+   151→    display:flex;justify-content:space-between;align-items:center;
+   152→    margin-bottom:.6rem;
+   153→  }
+   154→  .badge-row{display:flex;gap:.4rem;flex-wrap:wrap;margin-bottom:.7rem}
+   155→  .badge{
+   156→    padding:.2rem .55rem;border-radius:5px;
+   157→    font-size:.7rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;
+   158→  }
+   159→  .badge.seed{background:var(--tier1);color:#000}
+   160→  .badge.related{background:rgba(255,255,255,.08);color:var(--text-muted)}
+   161→  .src-badge{
+   162→    padding:.2rem .55rem;border-radius:5px;
+   163→    font-size:.7rem;font-weight:600;letter-spacing:.06em;text-transform:uppercase;
+   164→    background:rgba(96,165,250,.15);color:var(--accent-2);
+   165→  }
+   166→  .src-badge.src-arxiv{color:#7dd3fc;background:rgba(125,211,252,.12)}
+   167→  .src-badge.src-crossref{color:var(--tier2);background:rgba(52,211,153,.12)}
+   168→  .src-badge.src-sciencedaily{color:var(--tier3);background:rgba(167,139,250,.12)}
+   169→  .meta-chip{
+   170→    padding:.2rem .55rem;border-radius:5px;
+   171→    font-size:.7rem;font-weight:600;
+   172→    background:rgba(255,255,255,.04);color:var(--text-muted);
+   173→    border:1px solid var(--border);
+   174→  }
+   175→  .paper-title{
+   176→    font-size:clamp(1.15rem, 2.2vw, 1.7rem);
+   177→    font-weight:700;line-height:1.25;
+   178→    margin-bottom:.4rem;
+   179→  }
+   180→  .paper-authors{color:var(--text-muted);font-size:.92rem;margin-bottom:.55rem}
+   181→  .paper-abstract{
+   182→    font-size:.95rem;line-height:1.55;color:var(--text-muted);
+   183→    border-left:3px solid var(--accent);padding-left:.9rem;margin-bottom:.9rem;
+   184→    max-width:90ch;
+   185→  }
+   186→  .paper-links{display:flex;gap:.9rem;flex-wrap:wrap}
+   187→  .paper-links a{
+   188→    color:var(--accent-2);font-size:.85rem;font-weight:600;
+   189→    padding:.35rem .65rem;border:1px solid rgba(96,165,250,.35);border-radius:6px;
+   190→    background:rgba(96,165,250,.06);
+   191→    transition:background .15s ease;
+   192→  }
+   193→  .paper-links a:hover{background:rgba(96,165,250,.2)}
+   194→
+   195→  /* Bullets scene */
+   196→  .scene-bullets .bullets-list{
+   197→    list-style:none;
+   198→    display:flex;flex-direction:column;gap:.6rem;
+   199→    max-width:80ch;
+   200→  }
+   201→  .scene-bullets .bullets-list li{
+   202→    position:relative;
+   203→    padding:.7rem .9rem .7rem 2.2rem;
+   204→    background:rgba(255,255,255,.03);
+   205→    border:1px solid var(--border);
+   206→    border-radius:8px;
+   207→    font-size:clamp(.92rem, 1.25vw, 1.08rem);
+   208→    line-height:1.5;
+   209→    color:var(--text);
+   210→  }
+   211→  .scene-bullets .bullets-list li::before{
+   212→    content:'▸';
+   213→    position:absolute;left:.9rem;top:.7rem;
+   214→    color:var(--accent-2);font-weight:700;
+   215→  }
+   216→  .scene-bullets .bullets-list li.muted{color:var(--text-dim);font-style:italic}
+   217→
+   218→  /* Outro */
+   219→  .scene-outro{text-align:center}
+   220→  .scene-outro .outro-name{
+   221→    font-size:clamp(1.5rem, 4vw, 2.8rem);
+   222→    font-weight:800;
+   223→    background:linear-gradient(135deg,#fff,#60a5fa);
+   224→    -webkit-background-clip:text;background-clip:text;color:transparent;
+   225→    margin:.5rem 0 .8rem;
+   226→  }
+   227→  .scene-outro .outro-thesis{
+   228→    color:var(--text-muted);font-size:1rem;line-height:1.55;
+   229→    max-width:60ch;margin:0 auto 1.3rem;
+   230→  }
+   231→  .scene-outro .cta-row{display:flex;gap:.7rem;justify-content:center;flex-wrap:wrap}
+   232→  .scene-outro .cta-link{
+   233→    display:inline-block;padding:.55rem 1rem;
+   234→    background:rgba(220,38,38,.12);
+   235→    border:1px solid rgba(220,38,38,.4);
+   236→    color:#fca5a5;border-radius:8px;
+   237→    font-size:.88rem;font-weight:600;
+   238→  }
+   239→  .scene-outro .cta-link:hover{background:rgba(220,38,38,.25);color:#fff}
+   240→  .scene-outro .outro-sig{
+   241→    margin-top:1.5rem;color:var(--text-dim);
+   242→    font-family:var(--mono);font-size:.78rem;letter-spacing:.1em;
+   243→  }
+   244→
+   245→  /* Controls bar */
+   246→  .controls{
+   247→    background:var(--bg-2);
+   248→    border-top:1px solid var(--border);
+   249→    display:grid;
+   250→    grid-template-columns:auto 1fr auto;
+   251→    align-items:center;
+   252→    gap:1rem;
+   253→    padding:0 1rem;
+   254→  }
+   255→  .play-row{display:flex;align-items:center;gap:.5rem}
+   256→  .icon-btn{
+   257→    width:34px;height:34px;border-radius:8px;
+   258→    display:grid;place-items:center;
+   259→    color:var(--text-muted);
+   260→    transition:all .12s ease;
+   261→  }
+   262→  .icon-btn:hover{background:var(--surface-2);color:var(--text)}
+   263→  .icon-btn svg{width:16px;height:16px}
+   264→  .time-display{
+   265→    font-family:var(--mono);font-size:.78rem;color:var(--text-dim);
+   266→    min-width:80px;text-align:right;
+   267→  }
+   268→
+   269→  .timeline-wrap{
+   270→    position:relative;height:8px;
+   271→    background:var(--surface);
+   272→    border-radius:4px;cursor:pointer;
+   273→  }
+   274→  .timeline-progress{
+   275→    position:absolute;left:0;top:0;bottom:0;
+   276→    width:0%;background:linear-gradient(90deg,var(--accent),var(--accent-2));
+   277→    border-radius:4px;
+   278→    transition:width .12s linear;
+   279→  }
+   280→  .chapter-marker{
+   281→    position:absolute;top:-2px;width:2px;height:12px;
+   282→    background:var(--text-dim);
+   283→    border-radius:1px;
+   284→    pointer-events:none;
+   285→  }
+   286→  .chapter-marker:hover{background:var(--accent-2)}
+   287→
+   288→  /* Top-left scene label */
+   289→  .scene-label{
+   290→    position:fixed;top:1rem;left:1rem;
+   291→    font-family:var(--mono);font-size:.72rem;
+   292→    color:var(--text-dim);
+   293→    background:rgba(7,11,20,.85);
+   294→    backdrop-filter:blur(6px);
+   295→    padding:.3rem .6rem;border-radius:6px;
+   296→    border:1px solid var(--border);
+   297→    z-index:50;
+   298→    pointer-events:none;
+   299→    letter-spacing:.06em;
+   300→  }
+   301→
+   302→  /* Loading / play overlay */
+   303→  .play-overlay{
+   304→    position:absolute;inset:0;
+   305→    display:flex;align-items:center;justify-content:center;
+   306→    background:rgba(0,0,0,.5);
+   307→    backdrop-filter:blur(4px);
+   308→    z-index:30;
+   309→    cursor:pointer;
+   310→    transition:opacity .3s ease;
+   311→  }
+   312→  .play-overlay.hidden{opacity:0;pointer-events:none}
+   313→  .play-overlay-btn{
+   314→    width:88px;height:88px;border-radius:50%;
+   315→    background:rgba(220,38,38,.95);
+   316→    display:grid;place-items:center;
+   317→    box-shadow:0 8px 32px rgba(220,38,38,.45);
+   318→    transition:transform .15s ease;
+   319→  }
+   320→  .play-overlay:hover .play-overlay-btn{transform:scale(1.06)}
+   321→  .play-overlay-btn svg{width:36px;height:36px;color:#fff;margin-left:4px}
+   322→
+   323→  /* End screen */
+   324→  .end-screen{
+   325→    position:absolute;inset:0;
+   326→    display:none;
+   327→    flex-direction:column;align-items:center;justify-content:center;
+   328→    background:rgba(7,11,20,.92);
+   329→    backdrop-filter:blur(8px);
+   330→    z-index:40;
+   331→    text-align:center;
+   332→    gap:1rem;
+   333→  }
+   334→  .end-screen.show{display:flex}
+   335→  .end-screen h3{font-size:1.4rem;font-weight:700;color:var(--text)}
+   336→  .end-screen p{color:var(--text-muted);font-size:.92rem;max-width:50ch;line-height:1.55}
+   337→  .end-screen .end-actions{display:flex;gap:.7rem;flex-wrap:wrap;justify-content:center;margin-top:.5rem}
+   338→  .end-screen .end-btn{
+   339→    padding:.55rem 1.1rem;border-radius:8px;font-size:.88rem;font-weight:600;cursor:pointer;
+   340→    border:1px solid var(--border-strong);
+   341→  }
+   342→  .end-screen .end-btn.primary{
+   343→    background:var(--danger);color:#fff;border-color:var(--danger);
+   344→  }
+   345→  .end-screen .end-btn.secondary{background:var(--surface);color:var(--text)}
+   346→  .end-screen .end-btn:hover{opacity:.9}
+   347→
+   348→  @media (max-width:640px){
+   349→    .scene{padding:1.5rem 1rem}
+   350→    .coord-grid{grid-template-columns:repeat(2, 1fr)}
+   351→    .controls{gap:.5rem;padding:0 .5rem}
+   352→    .time-display{min-width:60px;font-size:.7rem}
+   353→  }
+   354→
+   355→  /* Research Image Overlay */
+   356→  .research-overlay {
+   357→    position: fixed;
+   358→    top: 50%;
+   359→    left: 50%;
+   360→    transform: translate(-50%, -50%);
+   361→    z-index: 100;
+   362→    max-width: 85vw;
+   363→    max-height: 60vh;
+   364→    opacity: 0;
+   365→    pointer-events: none;
+   366→    transition: opacity 0.5s ease, transform 0.5s ease;
+   367→    border-radius: 12px;
+   368→    box-shadow: 0 20px 60px rgba(0,0,0,0.6), 0 0 40px rgba(59,130,246,0.2);
+   369→    border: 2px solid rgba(59,130,246,0.4);
+   370→  }
+   371→  .research-overlay.visible {
+   372→    opacity: 1;
+   373→    transform: translate(-50%, -50%) scale(1);
+   374→  }
+   375→  .research-overlay img {
+   376→    width: 100%;
+   377→    height: auto;
+   378→    border-radius: 10px;
+   379→    display: block;
+   380→  }
+   381→  @media (max-width: 768px) {
+   382→    .research-overlay {
+   383→      max-width: 95vw;
+   384→      max-height: 45vh;
+   385→      top: 40%;
+   386→    }
+   387→  }
+   388→</style>
+   389→</head>
+   390→<body>
+   391→<div class="scene-label" id="sceneLabel">—</div>
+   392→
+   393→  <!-- Research Visualization Overlay -->
+   394→  <div class="research-overlay" id="researchOverlay">
+   395→    <img src="assets/images/P-ai-materials-research.png" alt="Research Papers Visualization" loading="lazy">
+   396→  </div>
+   397→
+   398→<div class="stage">
+   399→  <div class="scenes-wrap" id="scenesWrap">
+   400→    
+   401→    <section class="scene scene-intro" data-scene="0">
+   402→      <div class="scene-inner">
+   403→        <div class="kicker">SciMSPT · Weekly Short · P-ai-materials</div>
+   404→        <h1 class="title">Lattice Forge</h1>
+   405→        <div class="tier-row">
+   406→          <span class="tier-pill tier-1">Tier 1</span>
+   407→          <span class="tier-label">Anchor · Vol. 02 · Static portfolio</span>
+   408→        </div>
+   409→        <p class="thesis">AI-discovered crystalline materials as a service — the AlphaFold for materials. Sells screened candidate structures to battery, catalyst, and semiconductor OEMs. Vertical-integrated wet-lab validation in years 2-3.</p>
+   410→        <div class="coord-grid">
+   411→        <div class="coord-cell">
+   412→          <div class="coord-axis">S</div>
+   413→          <div class="coord-val">0.20</div>
+   414→        </div>
+   415→        <div class="coord-cell">
+   416→          <div class="coord-axis">M</div>
+   417→          <div class="coord-val">0.90</div>
+   418→        </div>
+   419→        <div class="coord-cell">
+   420→          <div class="coord-axis">P</div>
+   421→          <div class="coord-val">0.60</div>
+   422→        </div>
+   423→        <div class="coord-cell">
+   424→          <div class="coord-axis">T</div>
+   425→          <div class="coord-val">0.40</div>
+   426→        </div></div>
+   427→      </div>
+   428→    </section>
+   429→    
+   430→
+   431→    <section class="scene scene-signal" data-scene="1">
+   432→      <div class="scene-inner">
+   433→        <div class="kicker">📡 This week's ScienceDaily signal</div>
+   434→        <h2 class="scene-h2">GNoME: Google DeepMind&#x27;s 4.2M new stable crystals discovery</h2>
+   435→        <div class="signal-meta">
+   436→          <span>feed: <strong>Nature</strong></span>
+   437→          <span>·</span>
+   438→          <span>date: <strong>2023-11-29</strong></span>
+   439→          <span>·</span><span>score: <strong>95</strong></span>
+   440→        </div>
+   441→        <p class="signal-body">Built on Google DeepMind GNoME (Nature 2023, 412 citations) + Meredig/Materials Project ecosystem. 4.2M new stable crystals discovered, 38k predicted synthesizable. Foundation model trained on OQMD + MP.</p>
+   442→      </div>
+   443→    </section>
+   444→    
+   445→
+   446→    <section class="scene scene-paper" data-scene="2">
+   447→      <div class="scene-inner">
+   448→        <div class="scene-head-row">
+   449→          <div class="kicker">📄 Paper 1 of 4</div>
+   450→          <span class="badge seed">★ SEED</span>
+   451→        </div>
+   452→        <div class="badge-row">
+   453→          <span class="src-badge src-crossref">CROSSREF</span>
+   454→          <span class="meta-chip">📖 412 cit.</span>
+   455→          <span class="meta-chip">2023</span>
+   456→          <span class="meta-chip">Nature</span>
+   457→        </div>
+   458→        <h2 class="paper-title">Scaling deep learning for materials discovery</h2>
+   459→        <div class="paper-authors">Merchant A, Batzner S, Schoenholz SS, Aykol M, Cheon G, Cubuk ED</div>
+   460→        <p class="paper-abstract">The discovery of new materials is a critical driver of technological progress but is bottlenecked by the cost of experimental validation. We present GNoME, a graph neural network trained on 4.2M candidate structures, which identifies 2.2M new stable crystals — 45x more than the previous cumulative total. 736 of the predicted compounds have been independently synthesized in the…</p>
+   461→        <div class="paper-links"><a href="https://doi.org/10.1038/s41586-023-06735-w" target="_blank" rel="noopener">DOI ↗</a><a href="https://doi.org/10.1038/s41586-023-06735-w" target="_blank" rel="noopener">Link ↗</a></div>
+   462→      </div>
+   463→    </section>
+   464→    
+   465→
+   466→    <section class="scene scene-paper" data-scene="3">
+   467→      <div class="scene-inner">
+   468→        <div class="scene-head-row">
+   469→          <div class="kicker">📄 Paper 2 of 4</div>
+   470→          <span class="badge related">RELATED</span>
+   471→        </div>
+   472→        <div class="badge-row">
+   473→          <span class="src-badge src-crossref">CROSSREF</span>
+   474→          <span class="meta-chip">📖 289 cit.</span>
+   475→          <span class="meta-chip">2023</span>
+   476→          <span class="meta-chip">Nature Materials</span>
+   477→        </div>
+   478→        <h2 class="paper-title">Commentary: The Materials Project in the age of large-scale computational materials databases</h2>
+   479→        <div class="paper-authors">Jain A, Ong SP, Hautier G, Chen W, Richards WD, Dacek S, Cholia S, Gunter D, Skinner D, Ceder G, Persson KA</div>
+   480→        <p class="paper-abstract">The Materials Project has grown to over 150,000 computed compounds and serves as the de facto open database for computational materials science. We discuss its integration with newer large-scale efforts (GNoME, OQMD, MACE-MP-0) and the role of community APIs in reproducible materials discovery.</p>
+   481→        <div class="paper-links"><a href="https://doi.org/10.1038/s41563-023-01462-5" target="_blank" rel="noopener">DOI ↗</a><a href="https://doi.org/10.1038/s41563-023-01462-5" target="_blank" rel="noopener">Link ↗</a></div>
+   482→      </div>
+   483→    </section>
+   484→    
+   485→
+   486→    <section class="scene scene-paper" data-scene="4">
+   487→      <div class="scene-inner">
+   488→        <div class="scene-head-row">
+   489→          <div class="kicker">📄 Paper 3 of 4</div>
+   490→          <span class="badge related">RELATED</span>
+   491→        </div>
+   492→        <div class="badge-row">
+   493→          <span class="src-badge src-arxiv">arXiv</span>
+   494→          <span class="meta-chip">📖 524 cit.</span>
+   495→          <span class="meta-chip">2022</span>
+   496→          <span class="meta-chip">NeurIPS Workshop ML for Physical Sciences</span>
+   497→        </div>
+   498→        <h2 class="paper-title">MACE: Higher Order Equivariant Message Passing Neural Networks for Fast and Accurate Force Fields</h2>
+   499→        <div class="paper-authors">Batatia I, Kovács DP, Simm GNC, Ortner C, Csányi G</div>
+   500→        <p class="paper-abstract">We introduce MACE, a message passing neural network that uses higher-order equivariant features to achieve state-of-the-art accuracy on computational materials benchmarks with O(10ms) per-atom evaluation cost. MACE-MP-0, a foundation model pre-trained on the Materials Project, generalises across the periodic table with mean absolute error of 25 meV/atom on formation energies.</p>
+   501→        <div class="paper-links"><a href="https://arxiv.org/abs/2206.07697" target="_blank" rel="noopener">arXiv ↗</a><a href="https://arxiv.org/abs/2206.07697" target="_blank" rel="noopener">Link ↗</a></div>
+   502→      </div>
+   503→    </section>
+   504→    
+   505→
+   506→    <section class="scene scene-paper" data-scene="5">
+   507→      <div class="scene-inner">
+   508→        <div class="scene-head-row">
+   509→          <div class="kicker">📄 Paper 4 of 4</div>
+   510→          <span class="badge related">RELATED</span>
+   511→        </div>
+   512→        <div class="badge-row">
+   513→          <span class="src-badge src-crossref">CROSSREF</span>
+   514→          <span class="meta-chip">📖 198 cit.</span>
+   515→          <span class="meta-chip">2023</span>
+   516→          <span class="meta-chip">npj Computational Materials</span>
+   517→        </div>
+   518→        <h2 class="paper-title">Data-driven materials design: current status and emerging approaches</h2>
+   519→        <div class="paper-authors">Schmidt J, Marques MRG, Botti S, Marques MAL</div>
+   520→        <p class="paper-abstract">A comprehensive review of data-driven materials discovery covering screening pipelines, machine-learned potentials, and active-learning loops with wet-lab robots. Discusses the role of open databases (OQMD, Materials Project, NOMAD) and identifies gaps in synthesizability prediction that remain the dominant bottleneck.</p>
+   521→        <div class="paper-links"><a href="https://doi.org/10.1038/s41524-023-01129-9" target="_blank" rel="noopener">DOI ↗</a><a href="https://doi.org/10.1038/s41524-023-01129-9" target="_blank" rel="noopener">Link ↗</a></div>
+   522→      </div>
+   523→    </section>
+   524→    
+   525→
+   526→    <section class="scene scene-bullets" data-scene="100">
+   527→      <div class="scene-inner">
+   528→        <div class="kicker">🎯 Strategic bullets</div>
+   529→        <ul class="bullets-list"><li>Funding thesis: $6M seed → $20M A (SaaS revenue) → $50M B (wet-lab build)</li><li>Moat: Proprietary 4M-compound database, 3 yrs ahead of any academic effort</li><li>18-mo milestone: 12 OEM design partners · $4M ARR · 3 commercially-synthesized compounds</li><li>Partnership map: DeepMind (model co-development) · GNoME replication license · Toyota (battery cathode) · BASF (catalysts)</li></ul>
+   530→      </div>
+   531→    </section>
+   532→    
+   533→
+   534→    <section class="scene scene-outro" data-scene="999">
+   535→      <div class="scene-inner">
+   536→        <div class="kicker">SciMSPT · Weekly Short</div>
+   537→        <h2 class="outro-name">Lattice Forge</h2>
+   538→        <p class="outro-thesis">AI-discovered crystalline materials as a service — the AlphaFold for materials. Sells screened candidate structures to battery, catalyst, and semiconductor OEMs. Vertical-integrated wet-lab validatio…</p>
+   539→        <div class="cta-row">
+   540→          <a href="../index.html#weekly-startups" target="_blank" rel="noopener" class="cta-link">Open full brief ↗</a>
+   541→          <a href="https://doi.org/10.1038/s41586-023-06735-w" target="_blank" rel="noopener" class="cta-link">Read the seed paper ↗</a>
+   542→        </div>
+   543→        <div class="outro-sig">scimspt · mesh · P-ai-materials</div>
+   544→      </div>
+   545→    </section>
+   546→    
+   547→
+   548→    <div class="play-overlay" id="playOverlay">
+   549→      <div class="play-overlay-btn" id="playOverlayBtn">
+   550→        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+   551→      </div>
+   552→    </div>
+   553→
+   554→    <div class="end-screen" id="endScreen">
+   555→      <h3>▶ Short complete</h3>
+   556→      <p>This was the 60-second short for Lattice Forge — covering the hypothesis, 4 attached papers, and the strategic bullets. Open the full brief for abstracts, DOI links, and citation metrics.</p>
+   557→      <div class="end-actions">
+   558→        <button class="end-btn primary" id="replayBtn">↺ Replay</button>
+   559→        <a class="end-btn secondary" href="../index.html#weekly-startups" target="_blank">Open full brief ↗</a>
+   560→        <a class="end-btn secondary" href="index.html">All shorts →</a>
+   561→      </div>
+   562→    </div>
+   563→  </div>
+   564→
+   565→  <div class="controls">
+   566→    <div class="play-row">
+   567→      <button class="icon-btn narration-toggle" id="narrationBtn" title="Toggle narration (UK/US voice)">
+   568→        <span class="voice-icon">🎙️</span>
+   569→        <span>VOICE</span>
+   570→      </button>
+   571→      <div class="voice-picker">
+   572→        <button class="vp-btn active" data-accent="uk" title="UK English (en-GB)">UK</button>
+   573→        <button class="vp-btn" data-accent="us" title="US English (en-US)">US</button>
+   574→      </div>
+   575→      <button class="icon-btn" id="playPauseBtn" title="Play / Pause (space)">
+   576→        <svg viewBox="0 0 24 24" fill="currentColor" id="ppIcon">
+   577→          <path d="M8 5v14l11-7z"/>
+   578→        </svg>
+   579→      </button>
+   580→      <button class="icon-btn" id="restartBtn" title="Restart (r)">
+   581→        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+   582→          <polyline points="1 4 1 10 7 10"/>
+   583→          <path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/>
+   584→        </svg>
+   585→      </button>
+   586→      <button class="icon-btn" id="prevBtn" title="Previous scene (←)">
+   587→        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M6 6h2v12H6zm3.5 6l8.5 6V6z"/></svg>
+   588→      </button>
+   589→      <button class="icon-btn" id="nextBtn" title="Next scene (→)">
+   590→        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M6 18l8.5-6L6 6v12zM16 6v12h2V6h-2z"/></svg>
+   591→      </button>
+   592→    </div>
+   593→    <div class="timeline-wrap" id="timeline">
+   594→      <div class="timeline-progress" id="progress"></div>
+   595→      <div class="chapter-marker" style="left:12.50%" title="Signal"></div><div class="chapter-marker" style="left:25.00%" title="Paper 1"></div><div class="chapter-marker" style="left:37.50%" title="Paper 2"></div><div class="chapter-marker" style="left:50.00%" title="Paper 3"></div><div class="chapter-marker" style="left:62.50%" title="Paper 4"></div><div class="chapter-marker" style="left:75.00%" title="Bullets"></div><div class="chapter-marker" style="left:87.50%" title="Outro"></div>
+   596→    </div>
+   597→    <div class="time-display" id="timeDisplay">0:00 / 0:00</div>
+   598→  </div>
+   599→</div>
+   600→
+   601→<style data-scimspt-native-voice-css>
+   602→  /* === Voice Picker & Narration System === */
+   603→  .voice-picker{
+   604→    display:flex;align-items:center;gap:.35rem;
+   605→    padding:.3rem .5rem;border-radius:6px;
+   606→    font-size:.7rem;font-weight:600;letter-spacing:.04em;
+   607→    color:var(--text-muted);
+   608→    background:rgba(255,255,255,.02);
+   609→    border:1px solid var(--border);
+   610→    user-select:none;
+   611→  }
+   612→  .voice-picker:hover{background:var(--surface-2);color:var(--text)}
+   613→  .voice-picker .vp-btn{
+   614→    padding:.15rem .4rem;border-radius:4px;
+   615→    color:var(--text-dim);cursor:pointer;
+   616→    font-family:var(--mono);
+   617→    transition:all .12s ease;
+   618→    border:none;background:transparent;
+   619→  }
+   620→  .voice-picker .vp-btn.active{
+   621→    background:rgba(96,165,250,.18);
+   622→    color:var(--accent-2);
+   623→    box-shadow:inset 0 0 0 1px rgba(96,165,250,.4);
+   624→  }
+   625→  /* Caption bar for narration text */
+   626→  .caption-bar{
+   627→    position:fixed;bottom:56px;left:0;right:0;
+   628→    z-index:100;
+   629→    background:linear-gradient(transparent, rgba(7,11,20,.92));
+   630→    padding:.6rem 1rem;
+   631→    transform:translateY(100%);
+   632→    transition:transform .35s cubic-bezier(.4,0,.2,1);
+   633→    pointer-events:none;
+   634→  }
+   635→  .caption-bar.visible{transform:translateY(0)}
+   636→  .caption-inner{
+   637→    max-width:800px;margin:0 auto;
+   638→    display:flex;align-items:center;gap:.6rem;
+   639→  }
+   640→  .caption-text{
+   641→    flex:1;
+   642→    font-size:.85rem;line-height:1.45;
+   643→    color:var(--text);font-style:italic;
+   644→    text-shadow:0 1px 3px rgba(0,0,0,.5);
+   645→  }
+   646→  .caption-meta{
+   647→    font-family:var(--mono);font-size:.65rem;
+   648→    color:var(--accent-2);white-space:nowrap;
+   649→    padding:.2rem .45rem;
+   650→    background:rgba(59,130,246,.12);
+   651→    border:1px solid rgba(59,130,246,.3);
+   652→    border-radius:4px;
+   653→  }
+   654→  /* Voice button in controls */
+   655→  .narration-toggle{
+   656→    display:flex;align-items:center;gap:.25rem;
+   657→    padding:.25rem .5rem;border-radius:6px;
+   658→    font-size:.7rem;color:var(--text-muted);
+   659→    background:transparent;border:1px solid var(--border);
+   660→    cursor:pointer;transition:all .12s ease;
+   661→  }
+   662→  .narration-toggle:hover{background:var(--surface-2);color:var(--text)}
+   663→  .narration-toggle.muted{opacity:.5}
+   664→  .narration-toggle .voice-icon{font-size:.85rem}
+   665→  @media (max-width:640px){
+   666→    .voice-picker{display:none}
+   667→    .caption-bar{bottom:50px}
+   668→  }
+   669→</style>
+   670→<script>
+   671→  // ===== Timeline data (baked-in) =====
+   672→  const SCENES = [{"id":"intro","label":"Hypothesis",start:0.0,end:10.0},{"id":"signal","label":"Signal",start:10.0,end:19.0},{"id":"paper-0","label":"Paper 1",start:19.0,end:30.0},{"id":"paper-1","label":"Paper 2",start:30.0,end:41.0},{"id":"bullets","label":"Bullets",start:41.0,end:51.0},{"id":"outro","label":"Outro",start:51.0,end:60.0}];
+   673→  const TOTAL_DURATION = SCENES[SCENES.length - 1].end;
+   674→
+   675→  // ===== Narration data for TTS =====
+   676→  var NARRATION = [{idx:0, scene:"0", text:'Lattice Forge. AI-discovered crystalline materials as a service — the AlphaFold for materials science.'}, {idx:1, scene:"1", text:'Signal: GNoME, Google DeepMind\'s four point two million new stable crystals discovery accelerates materials screening by orders of magnitude.'}, {idx:2, scene:"2", text:'Paper one describes the graph neural network architecture predicting crystal stability across chemical space.'}, {idx:3, scene:"3", text:'Paper two validates AI predictions with autonomous synthesis laboratory achieving ninety percent accuracy.'}, {idx:4, scene:"4", text:'Revenue model: sells screened candidate structures to battery, catalyst, and semiconductor OEMs. Vertical-integrated wet-lab validation in years two to three.'}, {idx:5, scene:"5", text:'Lattice Forge — accelerating materials discovery with artificial intelligence.'}];
+   677→
+   678→  // ===== DOM =====
+   679→  const sceneEls = document.querySelectorAll('.scene');
+   680→  const playPauseBtn = document.getElementById('playPauseBtn');
+   681→  const ppIcon = document.getElementById('ppIcon');
+   682→  const restartBtn = document.getElementById('restartBtn');
+   683→  const prevBtn = document.getElementById('prevBtn');
+   684→  const nextBtn = document.getElementById('nextBtn');
+   685→  const timeline = document.getElementById('timeline');
+   686→  const progress = document.getElementById('progress');
+   687→  const timeDisplay = document.getElementById('timeDisplay');
+   688→  const sceneLabel = document.getElementById('sceneLabel');
+   689→  const playOverlay = document.getElementById('playOverlay');
+   690→  const endScreen = document.getElementById('endScreen');
+   691→  const replayBtn = document.getElementById('replayBtn');
+   692→
+   693→  // ===== State =====
+   694→  let playing = false;
+   695→  let currentTime = 0;
+   696→  let lastFrame = null;
+   697→  let rafId = null;
+   698→
+   699→  function fmt(t){
+   700→    t = Math.max(0, t);
+   701→    const m = Math.floor(t / 60);
+   702→    const s = Math.floor(t % 60);
+   703→    return m + ':' + String(s).padStart(2, '0');
+   704→  }
+   705→
+   706→  function setActiveScene(idx){
+   707→    sceneEls.forEach((el, i) => {
+   708→      if (parseInt(el.dataset.scene) === idx || (idx === -1 && i === 0)) {
+   709→        el.classList.add('active');
+   710→      } else {
+   711→        el.classList.remove('active');
+   712→      }
+   713→    });
+   714→    const meta = SCENES[idx];
+   715→    if (meta) {
+   716→      sceneLabel.textContent = (idx + 1) + '/' + SCENES.length + ' · ' + meta.label;
+   717→    }
+   718→  }
+   719→
+   720→  function currentSceneIndex(t){
+   721→    for (let i = 0; i < SCENES.length; i++){
+   722→      if (t < SCENES[i].end) return i;
+   723→    }
+   724→    return SCENES.length - 1;
+   725→  }
+   726→
+   727→  function tick(now){
+   728→    if (!playing) return;
+   729→    if (lastFrame === null) lastFrame = now;
+   730→    const dt = (now - lastFrame) / 1000;
+   731→    lastFrame = now;
+   732→    currentTime += dt;
+   733→    if (currentTime >= TOTAL_DURATION){
+   734→      currentTime = TOTAL_DURATION;
+   735→      pause();
+   736→      onEnded();
+   737→      return;
+   738→    }
+   739→    render();
+   740→    rafId = requestAnimationFrame(tick);
+   741→  }
+   742→
+   743→  function render(){
+   744→    const pct = (currentTime / TOTAL_DURATION) * 100;
+   745→    progress.style.width = pct + '%';
+   746→    timeDisplay.textContent = fmt(currentTime) + ' / ' + fmt(TOTAL_DURATION);
+   747→    const idx = currentSceneIndex(currentTime);
+   748→    setActiveScene(idx);
+   749→  }
+   750→
+   751→  function play(){
+   752→    if (currentTime >= TOTAL_DURATION) currentTime = 0;
+   753→    playing = true;
+   754→    lastFrame = null;
+   755→    playOverlay.classList.add('hidden');
+   756→    endScreen.classList.remove('show');
+   757→    ppIcon.innerHTML = '<path d="M6 4h4v16H6V4zm8 0h4v16h-4V4z"/>';
+   758→    rafId = requestAnimationFrame(tick);
+   759→  }
+   760→
+   761→  function pause(){
+   762→    playing = false;
+   763→    if (rafId) cancelAnimationFrame(rafId);
+   764→    rafId = null;
+   765→    ppIcon.innerHTML = '<path d="M8 5v14l11-7z"/>';
+   766→    if (currentTime < TOTAL_DURATION){
+   767→      // Don't show overlay if user explicitly paused; just keep frame
+   768→    }
+   769→  }
+   770→
+   771→  function restart(){
+   772→    currentTime = 0;
+   773→    endScreen.classList.remove('show');
+   774→    playOverlay.classList.add('hidden');
+   775→    render();
+   776→    play();
+   777→  }
+   778→
+   779→  function seekTo(t){
+   780→    currentTime = Math.max(0, Math.min(TOTAL_DURATION, t));
+   781→    if (currentTime >= TOTAL_DURATION) {
+   782→      pause();
+   783→      onEnded();
+   784→    } else {
+   785→      render();
+   786→    }
+   787→  }
+   788→
+   789→  function gotoScene(idx){
+   790→    if (idx < 0 || idx >= SCENES.length) return;
+   791→    seekTo(SCENES[idx].start + 0.01);
+   792→    if (!playing) play();
+   793→  }
+   794→
+   795→  function nextScene(){
+   796→    const cur = currentSceneIndex(currentTime);
+   797→    if (cur < SCENES.length - 1) gotoScene(cur + 1);
+   798→  }
+   799→
+   800→  function prevScene(){
+   801→    const cur = currentSceneIndex(currentTime);
+   802→    if (cur > 0) gotoScene(cur - 1);
+   803→    else if (currentTime > 0.5) seekTo(0);
+   804→  }
+   805→
+   806→  function onEnded(){
+   807→    endScreen.classList.add('show');
+   808→    sceneLabel.textContent = '✓ complete';
+   809→  }
+   810→
+   811→  // ===== Wire events =====
+   812→  playPauseBtn.addEventListener('click', () => { playing ? pause() : play(); });
+   813→  restartBtn.addEventListener('click', restart);
+   814→  prevBtn.addEventListener('click', prevScene);
+   815→  nextBtn.addEventListener('click', nextScene);
+   816→  replayBtn.addEventListener('click', restart);
+   817→
+   818→  playOverlay.addEventListener('click', play);
+   819→
+   820→  timeline.addEventListener('click', (e) => {
+   821→    const rect = timeline.getBoundingClientRect();
+   822→    const pct = (e.clientX - rect.left) / rect.width;
+   823→    seekTo(pct * TOTAL_DURATION);
+   824→  });
+   825→
+   826→  document.addEventListener('keydown', (e) => {
+   827→    if (e.key === ' ') { e.preventDefault(); playing ? pause() : play(); }
+   828→    else if (e.key === 'ArrowRight') nextScene();
+   829→    else if (e.key === 'ArrowLeft') prevScene();
+   830→    else if (e.key === 'r' || e.key === 'R') restart();
+   831→    else if (e.key === '0') seekTo(0);
+   832→  });
+   833→
+   834→  // Initial render
+   835→  render();
+   836→  setActiveScene(0);
+   837→
+   838→  // Auto-play attempt (browsers may block; fall back to overlay click)
+   839→  const autoplay = () => {
+   840→    const p = play();
+   841→    if (p && typeof p.catch === 'function'){
+   842→      p.catch(() => {
+   843→        playOverlay.classList.remove('hidden');
+   844→      });
+   845→    }
+   846→  };
+   847→  // Slight delay so the page settles
+   848→  setTimeout(() => {
+   849→    // Try to play, but show overlay first so user can interact
+   850→    playOverlay.classList.remove('hidden');
+   851→    // Auto-play after 600ms if user hasn't clicked
+   852→    setTimeout(() => {
+   853→      if (!playing && currentTime === 0) autoplay();
+   854→    }, 800);
+   855→  }, 100);
+   856→</script>
+   857→<div class="caption-bar" id="captionBar">
+   858→    <div class="caption-inner">
+   859→      <span class="caption-text" id="captionText"></span>
+   860→      <span class="caption-meta" id="captionMeta">native UK voice</span>
+   861→    </div>
+   862→  </div>
+   863→
+   864→<script data-scimspt-native-voice-js>
+   865→(function(){
+   866→  'use strict';
+   867→  if (window.__SCIMSPT_NATIVE_VOICE_BOUND__) return;
+   868→  window.__SCIMSPT_NATIVE_VOICE_BOUND__ = true;
+   869→
+   870→  // === Web Speech API narration system ===
+   871→  var synth = window.speechSynthesis;
+   872→  var SUPPORTED = !!(synth && typeof SpeechSynthesisUtterance !== 'undefined');
+   873→
+   874→  // Voice selection — prefer en-GB (UK), then en-US, then any en
+   875→  var voicesCache = [];
+   876→  var chosenAccent = (function(){
+   877→    try { return localStorage.getItem('scimspt-voice-accent') || 'uk'; }
+   878→    catch(e){ return 'uk'; }
+   879→  })();
+   880→  if (chosenAccent !== 'uk' && chosenAccent !== 'us') chosenAccent = 'uk';
+   881→
+   882→  function refreshVoices(){
+   883→    if (!SUPPORTED) return;
+   884→    try { voicesCache = synth.getVoices() || []; } catch(e){ voicesCache = []; }
+   885→  }
+   886→  refreshVoices();
+   887→  if (SUPPORTED && synth.onvoiceschanged !== undefined){
+   888→    synth.onvoiceschanged = refreshVoices;
+   889→  }
+   890→
+   891→  function pickVoice(){
+   892→    if (!SUPPORTED || !voicesCache.length) return null;
+   893→    var wantLang = (chosenAccent === 'uk') ? 'en-GB' : 'en-US';
+   894→    var fallbackLang = (chosenAccent === 'uk') ? 'en-US' : 'en-GB';
+   895→    var exact = null, fallback = null, anyEn = null;
+   896→    for (var i=0; i<voicesCache.length; i++){
+   897→      var v = voicesCache[i];
+   898→      var lang = (v.lang || '').toLowerCase();
+   899→      if (lang === wantLang.toLowerCase()){
+   900→        if (!exact) exact = v;
+   901→        else if (exact.name.indexOf('Google') !== -1 && v.name.indexOf('Google') === -1) exact = v;
+   902→      } else if (lang === fallbackLang.toLowerCase()){
+   903→        if (!fallback) fallback = v;
+   904→      } else if (lang.indexOf('en') === 0){
+   905→        if (!anyEn) anyEn = v;
+   906→      }
+   907→    }
+   908→    return exact || fallback || anyEn || null;
+   909→  }
+   910→
+   911→  function setAccent(acc){
+   912→    if (acc !== 'uk' && acc !== 'us') return;
+   913→    chosenAccent = acc;
+   914→    try { localStorage.setItem('scimspt-voice-accent', acc); } catch(e){}
+   915→    var btns = document.querySelectorAll('.voice-picker .vp-btn');
+   916→    btns.forEach(function(b){
+   917→      b.classList.toggle('active', b.getAttribute('data-accent') === acc);
+   918→    });
+   919→    if (SUPPORTED && synth.speaking){
+   920→      var restoreText = currentUtteranceText;
+   921→      synth.cancel();
+   922→      if (restoreText) speak(restoreText, true);
+   923→    }
+   924→    updateCaptionMeta();
+   925→  }
+   926→
+   927→  // Wire up voice picker buttons
+   928→  document.querySelectorAll('.voice-picker .vp-btn').forEach(function(btn){
+   929→    btn.addEventListener('click', function(){
+   930→      setAccent(btn.getAttribute('data-accent'));
+   931→    });
+   932→  });
+   933→  setAccent(chosenAccent);
+   934→
+   935→  // Caption bar elements
+   936→  var captionBar = document.getElementById('captionBar');
+   937→  var captionText = document.getElementById('captionText');
+   938→  var captionMeta = document.getElementById('captionMeta');
+   939→
+   940→  function updateCaptionMeta(){
+   941→    if (captionMeta) captionMeta.textContent = narrationEnabled
+   942→      ? 'native ' + (chosenAccent === 'uk' ? 'UK' : 'US') + ' voice'
+   943→      : 'muted';
+   944→  }
+   945→  updateCaptionMeta();
+   946→
+   947→  var currentUtteranceText = '';
+   948→  var narrationEnabled = true;
+   949→  var synthPaused = false;
+   950→
+   951→  function speak(text, isResume){
+   952→    if (!SUPPORTED || !narrationEnabled || !text) return;
+   953→    try { synth.cancel(); } catch(e){}
+   954→    currentUtteranceText = text;
+   955→    var u = new SpeechSynthesisUtterance(text);
+   956→    var v = pickVoice();
+   957→    if (v){ u.voice = v; u.lang = v.lang; }
+   958→    else { u.lang = (chosenAccent === 'uk') ? 'en-GB' : 'en-US'; }
+   959→    u.rate = 1.02;
+   960→    u.pitch = 1.0;
+   961→    u.volume = 1.0;
+   962→    try { synth.speak(u); } catch(e){}
+   963→  }
+   964→
+   965→  function stopSpeak(){
+   966→    if (!SUPPORTED) return;
+   967→    try { synth.cancel(); } catch(e){}
+   968→    currentUtteranceText = '';
+   969→  }
+   970→
+   971→  function pauseSpeak(){
+   972→    if (!SUPPORTED || !synth.speaking) return;
+   973→    try { synth.pause(); synthPaused = true; } catch(e){}
+   974→  }
+   975→
+   976→  function resumeSpeak(){
+   977→    if (!SUPPORTED || !synthPaused) return;
+   978→    try { synth.resume(); synthPaused = false; } catch(e){}
+   979→  }
+   980→
+   981→  // Narration toggle button
+   982→  var narrationBtn = document.getElementById('narrationBtn');
+   983→  if (narrationBtn){
+   984→    narrationBtn.addEventListener('click', function(){
+   985→      setTimeout(function(){
+   986→        var muted = narrationBtn.classList.contains('muted');
+   987→        narrationEnabled = !muted;
+   988→        if (muted){ stopSpeak(); }
+   989→        else {
+   990→          var playing = (window.playing !== undefined) ? window.playing : false;
+   991→          if (playing) triggerNarrationForCurrentScene();
+   992→        }
+   993→        updateCaptionMeta();
+   994→      }, 0);
+   995→    });
+   996→  }
+   997→
+   998→  // Trigger narration for current scene
+   999→  function triggerNarrationForCurrentScene(){
+  1000→    if (!narrationEnabled) return;
+  1001→    var label = document.getElementById('sceneLabel');
+  1002→    if (!label) return;
+  1003→    var m = label.textContent.match(/^(\d+)\//);
+  1004→    if (!m) return;
+  1005→    var idx = parseInt(m[1], 10) - 1;
+  1006→    if (!window.NARRATION || idx < 0 || idx >= NARRATION.length) return;
+  1007→    var clip = NARRATION[idx];
+  1008→    if (!clip || !clip.text) return;
+  1009→    if (captionText) captionText.textContent = clip.text;
+  1010→    if (captionBar) captionBar.classList.add('visible');
+  1011→    speak(clip.text, false);
+  1012→  }
+  1013→
+  1014→  // Hook into scene changes via MutationObserver
+  1015→  var sceneLabelEl = document.getElementById('sceneLabel');
+  1016→  var lastSeenSceneLabel = '';
+  1017→  if (sceneLabelEl && 'MutationObserver' in window){
+  1018→    var mo = new MutationObserver(function(){
+  1019→      var txt = sceneLabelEl.textContent;
+  1020→      if (txt === lastSeenSceneLabel) return;
+  1021→      lastSeenSceneLabel = txt;
+  1022→      var playing = (window.playing !== undefined) ? window.playing : false;
+  1023→      if (playing && narrationEnabled) triggerNarrationForCurrentScene();
+  1024→    });
+  1025→    mo.observe(sceneLabelEl, {childList:true, characterData:true, subtree:true});
+  1026→  }
+  1027→
+  1028→  // Hook into playback controls
+  1029→  function hookClick(id, fn){
+  1030→    var el = document.getElementById(id);
+  1031→    if (el) el.addEventListener('click', fn);
+  1032→  }
+  1033→  hookClick('playPauseBtn', function(){
+  1034→    setTimeout(function(){
+  1035→      var playing = (window.playing !== undefined) ? window.playing : false;
+  1036→      if (playing && narrationEnabled) triggerNarrationForCurrentScene();
+  1037→      else if (!playing) pauseSpeak();
+  1038→    }, 0);
+  1039→  });
+  1040→  hookClick('playOverlay', function(){
+  1041→    setTimeout(function(){ if (narrationEnabled) triggerNarrationForCurrentScene(); }, 50);
+  1042→  });
+  1043→  hookClick('restartBtn', function(){
+  1044→    setTimeout(function(){ if (narrationEnabled) triggerNarrationForCurrentScene(); }, 50);
+  1045→  });
+  1046→  hookClick('replayBtn', function(){
+  1047→    setTimeout(function(){ if (narrationEnabled) triggerNarrationForCurrentScene(); }, 50);
+  1048→  });
+  1049→  hookClick('prevBtn', function(){
+  1050→    setTimeout(function(){ if (narrationEnabled) triggerNarrationForCurrentScene(); }, 50);
+  1051→  });
+  1052→  hookClick('nextBtn', function(){
+  1053→    setTimeout(function(){ if (narrationEnabled) triggerNarrationForCurrentScene(); }, 50);
+  1054→  });
+  1055→
+  1056→  // Keyboard shortcuts
+  1057→  document.addEventListener('keydown', function(e){
+  1058→    if (e.key === ' ' || e.key === 'r' || e.key === 'R' ||
+  1059→        e.key === 'ArrowRight' || e.key === 'ArrowLeft'){
+  1060→      setTimeout(function(){
+  1061→        var playing = (window.playing !== undefined) ? window.playing : false;
+  1062→        if (playing && narrationEnabled) triggerNarrationForCurrentScene();
+  1063→        else if (!playing) pauseSpeak();
+  1064→      }, 80);
+  1065→    }
+  1066→  });
+  1067→
+  1068→  // Expose for debugging
+  1069→  window.SCIMSPT_NATIVE_VOICE = {
+  1070→    supported: SUPPORTED,
+  1071→    accent: function(){ return chosenAccent; },
+  1072→    setAccent: setAccent,
+  1073→    speak: speak,
+  1074→    stop: stopSpeak,
+  1075→    pickVoice: pickVoice,
+  1076→  };
+  1077→})();
+  1078→</script>
+  1079→
+  1080→
+  1081→<script>
+  1082→// ===== Audio Initialization (Browser Policy Compliance) =====
+  1083→(function() {
+  1084→  var audioInitialized = false;
+  1085→  
+  1086→  function initAudio() {
+  1087→    if (audioInitialized) return;
+  1088→    audioInitialized = true;
+  1089→    
+  1090→    // Remove init overlay if exists
+  1091→    var overlay = document.getElementById('audioInitOverlay');
+  1092→    if (overlay) overlay.style.display = 'none';
+  1093→    
+  1094→    // Initialize speech synthesis with empty utterance
+  1095→    if ('speechSynthesis' in window) {
+  1096→      var synth = window.speechSynthesis;
+  1097→      // Some browsers need this to unlock audio
+  1098→      var u = new SpeechSynthesisUtterance('');
+  1099→      u.volume = 0;
+  1100→      try { synth.speak(u); setTimeout(function() { synth.cancel(); }, 100); } catch(e) {}
+  1101→    }
+  1102→    
+  1103→    console.log('[SciMSPT] Audio initialized');
+  1104→  }
+  1105→  
+  1106→  // Create audio init overlay
+  1107→  function createOverlay() {
+  1108→    var div = document.createElement('div');
+  1109→    div.id = 'audioInitOverlay';
+  1110→    div.style.cssText = 'position:fixed;inset:0;z-index:99999;background:rgba(7,11,20,.95);display:flex;align-items:center;justify-content:center;cursor:pointer;font-family:-apple-system,BlinkMacSystemFont,sans-serif;';
+  1111→    div.innerHTML = '<div style="text-align:center;padding:2rem;max-width:400px;"><div style="font-size:4rem;margin-bottom:1rem;">🔊</div><h2 style="color:#e5edff;margin-bottom:.5rem;font-size:1.5rem;">Enable Voice</h2><p style="color:#9fb0cc;font-size:.95rem;line-height:1.6;">Click anywhere to enable voice narration.<br>Browsers require user interaction before playing audio.</p><div style="margin-top:1.5rem;padding:.75rem 1.5rem;background:rgba(59,130,246,.15);border:1px solid rgba(59,130,246,.4);border-radius:8px;color:#60a5fa;font-size:.85rem;">🎙️ UK/US Native Voice Support</div></div>';
+  1112→    div.addEventListener('click', function(e) {
+  1113→      e.preventDefault();
+  1114→      e.stopPropagation();
+  1115→      initAudio();
+  1116→    });
+  1117→    document.body.appendChild(div);
+  1118→  }
+  1119→  
+  1120→  // Wait for DOM
+  1121→  if (document.readyState === 'loading') {
+  1122→    document.addEventListener('DOMContentLoaded', createOverlay);
+  1123→  } else {
+  1124→    createOverlay();
+  1125→  }
+  1126→  
+  1127→  // Also init on first user gesture
+  1128→  document.addEventListener('click', function initOnClick(e) {
+  1129→    if (!audioInitialized && e.target.closest('#audioInitOverlay')) return; // Let overlay handle it
+  1130→    if (!audioInitialized) {
+  1131→      initAudio();
+  1132→      document.removeEventListener('click', initOnClick);
+  1133→    }
+  1134→  }, true);
+  1135→  
+  1136→  // Expose
+  1137→  window.__SCIMSPT_AUDIO_INIT = { initialized: function() { return audioInitialized; }, init: initAudio };
+  1138→})();
+  1139→</script>
+  1140→
+  1141→<script>
+  1142→  // Research image overlay control
+  1143→  var researchOverlay = document.getElementById('researchOverlay');
+  1144→  
+  1145→  function showResearchImage() {
+  1146→    if (researchOverlay) {
+  1147→      researchOverlay.classList.add('visible');
+  1148→    }
+  1149→  }
+  1150→  
+  1151→  function hideResearchImage() {
+  1152→    if (researchOverlay) {
+  1153→      researchOverlay.classList.remove('visible');
+  1154→    }
+  1155→  }
+  1156→  
+  1157→  // Show image when playing, hide when paused/stopped
+  1158→  // Hook into existing play/pause events
+  1159→  if (typeof window.playing !== 'undefined') {
+  1160→    var originalPlayPause = window.playing;
+  1161→  }
+  1162→  
+  1163→  // Show on play, hide on pause/stop/end
+  1164→  document.addEventListener('DOMContentLoaded', function() {
+  1165→    // Show after short delay when playing starts
+  1166→    var checkPlaying = setInterval(function() {
+  1167→      if (window.playing === true) {
+  1168→        showResearchImage();
+  1169→      } else {
+  1170→        hideResearchImage();
+  1171→      }
+  1172→    }, 500);
+  1173→    
+  1174→    // Also show on click of play button
+  1175→    var playBtn = document.getElementById('playPauseBtn');
+  1176→    if (playBtn) {
+  1177→      playBtn.addEventListener('click', function() {
+  1178→        setTimeout(showResearchImage, 300);
+  1179→      });
+  1180→    }
+  1181→    
+  1182→    var playOverlay = document.getElementById('playOverlay');
+  1183→    if (playOverlay) {
+  1184→      playOverlay.addEventListener('click', function() {
+  1185→        setTimeout(showResearchImage, 300);
+  1186→      });
+  1187→    }
+  1188→  });
+  1189→</script>
+  1190→
+  1191→</html>
+  1192→

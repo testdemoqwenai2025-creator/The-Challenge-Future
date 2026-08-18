@@ -1,0 +1,252 @@
+/home/z/my-project/scimspt-platform/docs/shorts/index.html:    --accent:#3b82f6;
+/home/z/my-project/scimspt-platform/docs/shorts/index.html:    --accent-2:#60a5fa;
+/home/z/my-project/scimspt-platform/docs/shorts/index.html:  .header{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem;margin-bottom:2rem}
+/home/z/my-project/scimspt-platform/docs/shorts/index.html:    padding:.5rem .85rem;border-radius:8px;
+/home/z/my-project/scimspt-platform/docs/shorts/index.html:  .header .meta strong{color:var(--accent-2);font-weight:700}
+/home/z/my-project/scimspt-platform/docs/shorts/index.html:    padding:.45rem .75rem;border:1px solid var(--border);border-radius:8px;
+/home/z/my-project/scimspt-platform/docs/shorts/index.html:  .back-link:hover{color:var(--text);border-color:var(--accent)}
+/home/z/my-project/scimspt-platform/docs/shorts/index.html:    background:var(--surface);border:1px solid var(--border);border-radius:14px;
+/home/z/my-project/scimspt-platform/docs/shorts/index.html:    width:64px;height:64px;border-radius:50%;
+/home/z/my-project/scimspt-platform/docs/shorts/index.html:    padding:.25rem .55rem;border-radius:5px;
+/home/z/my-project/scimspt-platform/docs/shorts/index.html:    font-family:var(--mono);font-size:.7rem;color:var(--accent-2);
+/home/z/my-project/scimspt-platform/docs/shorts/index.html:    padding:.25rem .55rem;border-radius:5px;
+/home/z/my-project/scimspt-platform/docs/shorts/index.html:    padding:.2rem .5rem;border-radius:5px;
+/home/z/my-project/scimspt-platform/docs/shorts/index.html:    background:var(--surface);border:1px dashed var(--border-strong);border-radius:14px;
+/home/z/my-project/scimspt-platform/docs/shorts/index.html:        <p class="thesis">Anvil Stack translates this week&#x27;s ScienceDaily signal — A major breakthrough in quantum technology has turned magnons, tiny magnetic waves once considered too short-lived for practical use, into pro…</p>
+/home/z/my-project/scimspt-platform/docs/shorts/index.html:        <p class="thesis">Vector Wave translates this week&#x27;s ScienceDaily signal — K2-18b is one of the most promising worlds for the search for extraterrestrial life, so astronomers conducted an unusually powerful radio surv…</p>
+/home/z/my-project/scimspt-platform/docs/shorts/SD-T-06.html:    --accent:#3b82f6;
+/home/z/my-project/scimspt-platform/docs/shorts/SD-T-06.html:    --accent-2:#60a5fa;
+/home/z/my-project/scimspt-platform/docs/shorts/SD-T-06.html:    justify-content:center;
+/home/z/my-project/scimspt-platform/docs/shorts/SD-T-06.html:    color:var(--accent-2);
+/home/z/my-project/scimspt-platform/docs/shorts/SD-T-06.html:    border-radius:999px;
+/home/z/my-project/scimspt-platform/docs/shorts/SD-T-06.html:    padding:.3rem .8rem;border-radius:999px;
+/home/z/my-project/scimspt-platform/docs/shorts/SD-T-06.html:    border-radius:10px;
+/home/z/my-project/scimspt-platform/docs/shorts/SD-T-06.html:  .coord-val{font-family:var(--mono);font-size:1.35rem;color:var(--accent-2);font-weight:700;margin-top:.15rem}
+/home/z/my-project/scimspt-platform/docs/shorts/SD-T-06.html:    display:flex;justify-content:space-between;align-items:center;
+/home/z/my-project/scimspt-platform/docs/shorts/SD-T-06.html:    padding:.2rem .55rem;border-radius:5px;
+/home/z/my-project/scimspt-platform/docs/shorts/SD-T-06.html:    padding:.2rem .55rem;border-radius:5px;
+/home/z/my-project/scimspt-platform/docs/shorts/SD-T-06.html:    background:rgba(96,165,250,.15);color:var(--accent-2);
+/home/z/my-project/scimspt-platform/docs/shorts/SD-T-06.html:    padding:.2rem .55rem;border-radius:5px;
+/home/z/my-project/scimspt-platform/docs/shorts/SD-T-06.html:    border-left:3px solid var(--accent);padding-left:.9rem;margin-bottom:.9rem;
+/home/z/my-project/scimspt-platform/docs/shorts/SD-T-06.html:    color:var(--accent-2);font-size:.85rem;font-weight:600;
+/home/z/my-project/scimspt-platform/docs/shorts/SD-T-06.html:    padding:.35rem .65rem;border:1px solid rgba(96,165,250,.35);border-radius:6px;
+/home/z/my-project/scimspt-platform/docs/shorts/SD-T-06.html:    border-radius:8px;
+/home/z/my-project/scimspt-platform/docs/shorts/SD-T-06.html:    color:var(--accent-2);font-weight:700;
+/home/z/my-project/scimspt-platform/docs/shorts/SD-T-06.html:  .scene-outro .cta-row{display:flex;gap:.7rem;justify-content:center;flex-wrap:wrap}
+/home/z/my-project/scimspt-platform/docs/shorts/SD-T-06.html:    color:#fca5a5;border-radius:8px;
+/home/z/my-project/scimspt-platform/docs/shorts/SD-T-06.html:    width:34px;height:34px;border-radius:8px;
+/home/z/my-project/scimspt-platform/docs/shorts/SD-T-06.html:  .icon-btn.active{background:var(--surface-2);color:var(--accent-2)}
+/home/z/my-project/scimspt-platform/docs/shorts/SD-T-06.html:  /* Audio controls cluster */
+/home/z/my-project/scimspt-platform/docs/shorts/SD-T-06.html:  .audio-controls{
+/home/z/my-project/scimspt-platform/docs/shorts/SD-T-06.html:  .audio-btn{
+/home/z/my-project/scimspt-platform/docs/shorts/SD-T-06.html:    border-radius:6px;
+/home/z/my-project/scimspt-platform/docs/shorts/SD-T-06.html:    user-select:none;
+/home/z/my-project/scimspt-platform/docs/shorts/SD-T-06.html:  .audio-btn:hover{background:var(--surface-2);color:var(--text)}
+/home/z/my-project/scimspt-platform/docs/shorts/SD-T-06.html:  .audio-btn.muted{color:var(--text-dim);opacity:.6}
+/home/z/my-project/scimspt-platform/docs/shorts/SD-T-06.html:  .audio-btn svg{width:14px;height:14px}
+/home/z/my-project/scimspt-platform/docs/shorts/SD-T-06.html:    width:54px;height:4px;border-radius:2px;
+/home/z/my-project/scimspt-platform/docs/shorts/SD-T-06.html:    width:11px;height:11px;border-radius:50%;
+/home/z/my-project/scimspt-platform/docs/shorts/SD-T-06.html:    background:var(--accent-2);cursor:pointer;
+/home/z/my-project/scimspt-platform/docs/shorts/SD-T-06.html:    width:11px;height:11px;border-radius:50%;
+/home/z/my-project/scimspt-platform/docs/shorts/SD-T-06.html:    background:var(--accent-2);cursor:pointer;
+/home/z/my-project/scimspt-platform/docs/shorts/SD-T-06.html:    border-radius:4px;cursor:pointer;
+/home/z/my-project/scimspt-platform/docs/shorts/SD-T-06.html:    width:0%;background:linear-gradient(90deg,var(--accent),var(--accent-2));
+/home/z/my-project/scimspt-platform/docs/shorts/SD-T-06.html:    border-radius:4px;
+/home/z/my-project/scimspt-platform/docs/shorts/SD-T-06.html:    border-radius:1px;
+/home/z/my-project/scimspt-platform/docs/shorts/SD-T-06.html:  .chapter-marker:hover{background:var(--accent-2)}
+/home/z/my-project/scimspt-platform/docs/shorts/SD-T-06.html:    padding:.3rem .6rem;border-radius:6px;
+/home/z/my-project/scimspt-platform/docs/shorts/SD-T-06.html:    display:flex;align-items:center;justify-content:center;
+/home/z/my-project/scimspt-platform/docs/shorts/SD-T-06.html:    width:88px;height:88px;border-radius:50%;
+/home/z/my-project/scimspt-platform/docs/shorts/SD-T-06.html:    flex-direction:column;align-items:center;justify-content:center;
+/home/z/my-project/scimspt-platform/docs/shorts/SD-T-06.html:  .end-screen .end-actions{display:flex;gap:.7rem;flex-wrap:wrap;justify-content:center;margin-top:.5rem}
+/home/z/my-project/scimspt-platform/docs/shorts/SD-T-06.html:    padding:.55rem 1.1rem;border-radius:8px;font-size:.88rem;font-weight:600;cursor:pointer;
+/home/z/my-project/scimspt-platform/docs/shorts/SD-T-06.html:    .audio-controls{display:none}
+/home/z/my-project/scimspt-platform/docs/shorts/SD-T-06.html:    justify-content:center;
+/home/z/my-project/scimspt-platform/docs/shorts/SD-T-06.html:    border-radius:18px;
+/home/z/my-project/scimspt-platform/docs/shorts/SD-T-06.html:    display:flex;align-items:center;justify-content:space-between;
+/home/z/my-project/scimspt-platform/docs/shorts/SD-T-06.html:    border-radius:5px;
+/home/z/my-project/scimspt-platform/docs/shorts/SD-T-06.html:    color:var(--accent-2);
+/home/z/my-project/scimspt-platform/docs/shorts/SD-T-06.html:    border-radius:999px;
+/home/z/my-project/scimspt-platform/docs/shorts/SD-T-06.html:    width:7px;height:7px;border-radius:50%;
+/home/z/my-project/scimspt-platform/docs/shorts/SD-T-06.html:    border-radius:10px;
+/home/z/my-project/scimspt-platform/docs/shorts/SD-T-06.html:    color:var(--accent-2);
+/home/z/my-project/scimspt-platform/docs/shorts/SD-T-06.html:    color:var(--accent-2);font-size:.95rem;margin-left:.2rem;
+/home/z/my-project/scimspt-platform/docs/shorts/SD-T-06.html:    border-radius:4px;font-family:var(--mono);font-size:.65rem;
+/home/z/my-project/scimspt-platform/docs/shorts/SD-T-06.html:    display:flex;align-items:baseline;justify-content:space-between;
+/home/z/my-project/scimspt-platform/docs/shorts/SD-T-06.html:    padding:.25rem .6rem;border-radius:999px;
+/home/z/my-project/scimspt-platform/docs/shorts/SD-T-06.html:    color:var(--accent-2);
+/home/z/my-project/scimspt-platform/docs/shorts/SD-T-06.html:    border-radius:10px;
+/home/z/my-project/scimspt-platform/docs/shorts/SD-T-06.html:    width:38px;height:38px;border-radius:50%;
+/home/z/my-project/scimspt-platform/docs/shorts/SD-T-06.html:    background:linear-gradient(135deg, var(--accent), var(--accent-2));
+/home/z/my-project/scimspt-platform/docs/shorts/SD-T-06.html:    color:var(--accent-2);letter-spacing:.06em;
+/home/z/my-project/scimspt-platform/docs/shorts/SD-T-06.html:    padding:.1rem .45rem;border-radius:4px;
+/home/z/my-project/scimspt-platform/docs/shorts/SD-T-06.html:  .scene-comments .comment.is-user{
+/home/z/my-project/scimspt-platform/docs/shorts/SD-T-06.html:  .scene-comments .comment.is-user .avatar{
+/home/z/my-project/scimspt-platform/docs/shorts/SD-T-06.html:    border-radius:10px;
+/home/z/my-project/scimspt-platform/docs/shorts/SD-T-06.html:    padding:.55rem 1rem;border-radius:8px;
+/home/z/my-project/scimspt-platform/docs/shorts/SD-T-06.html:    border-radius:10px;
+/home/z/my-project/scimspt-platform/docs/shorts/SD-T-06.html:    border-radius:8px;
+/home/z/my-project/scimspt-platform/docs/shorts/SD-T-06.html:  .scene-comments .compose-block textarea:focus{
+/home/z/my-project/scimspt-platform/docs/shorts/SD-T-06.html:    outline:none;border-color:var(--accent);
+/home/z/my-project/scimspt-platform/docs/shorts/SD-T-06.html:    display:flex;justify-content:space-between;align-items:center;
+/home/z/my-project/scimspt-platform/docs/shorts/SD-T-06.html:  .scene-comments .compose-row .user-chip{
+/home/z/my-project/scimspt-platform/docs/shorts/SD-T-06.html:  .scene-comments .compose-row .user-chip strong{color:var(--text);}
+/home/z/my-project/scimspt-platform/docs/shorts/SD-T-06.html:    background:var(--accent);color:#fff;
+/home/z/my-project/scimspt-platform/docs/shorts/SD-T-06.html:    border:none;border-radius:7px;
+/home/z/my-project/scimspt-platform/docs/shorts/SD-T-06.html:    border-radius:8px;
+/home/z/my-project/scimspt-platform/docs/shorts/SD-T-06.html:<body data-scimspt-native-voice="1" data-snapshot-date="2026-08-17" data-short-id="SD-T-06" data-scimspt-theme-injected="1">
+/home/z/my-project/scimspt-platform/docs/shorts/SD-T-06.html:        <strong>Snapshot taken 17 August 2026 · ISO week 2026-W34.</strong>
+/home/z/my-project/scimspt-platform/docs/shorts/SD-T-06.html:      <div class="mandala-col" aria-label="Signal Mandala for SD-T-06"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 1200" width="1200" height="1200" role="img" aria-label="Signal Mandala"><defs><radialGradient id="bgGrad" cx="50%" cy="50%" r="50%"><stop offset="0.00" stop-color="#0b1220" stop-opacity="1.00"/><stop offset="0.55" stop-color="#070b14" stop-opacity="1.00"/><stop offset="1.00" stop-color="#03060d" stop-opacity="1.00"/></radialGradient><radialGradient id="seedGrad" cx="50%" cy="50%" r="50%"><stop offset="0.00" stop-color="#ffffff" stop-opacity="0.95"/><stop offset="0.30" stop-color="#34d399" stop-opacity="0.75"/><stop offset="0.70" stop-color="#34d399" stop-opacity="0.35"/><stop offset="1.00" stop-color="#070b14" stop-opacity="0.00"/></radialGradient><radialGradient id="haloGrad" cx="50%" cy="50%" r="50%"><stop offset="0.00" stop-color="#34d399" stop-opacity="0.35"/><stop offset="0.55" stop-color="#34d399" stop-opacity="0.10"/><stop offset="1.00" stop-color="#34d399" stop-opacity="0.00"/></radialGradient><filter id="nodeGlow" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="4.5" result="b"/><feComponentTransfer in="b" result="bb"><feFuncA type="linear" slope="1.10"/></feComponentTransfer><feMerge><feMergeNode in="bb"/><feMergeNode in="SourceGraphic"/></feMerge></filter><filter id="seedGlow" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="14.0" result="b"/><feComponentTransfer in="b" result="bb"><feFuncA type="linear" slope="1.40"/></feComponentTransfer><feMerge><feMergeNode in="bb"/><feMergeNode in="SourceGraphic"/></feMerge></filter><filter id="ringGlow" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="2.5" result="b"/><feComponentTransfer in="b" result="bb"><feFuncA type="linear" slope="0.70"/></feComponentTransfer><feMerge><feMergeNode in="bb"/><feMergeNode in="SourceGraphic"/></feMerge></filter><pattern id="gridDots" x="0" y="0" width="60" height="60" patternUnits="userSpaceOnUse"><circle cx="30" cy="30" r="1.0" fill="#60a5fa" fill-opacity="0.10"/></pattern><radialGradient id="gridMask" cx="50%" cy="50%" r="50%"><stop offset="0.00" stop-color="#fff" stop-opacity="0"/><stop offset="0.30" stop-color="#fff" stop-opacity="0.30"/><stop offset="0.70" stop-color="#fff" stop-opacity="0.55"/><stop offset="1.00" stop-color="#fff" stop-opacity="0"/></radialGradient><mask id="gridFade"><rect width="1200" height="1200" fill="url(#gridMask)"/></mask></defs><rect width="1200" height="1200" fill="url(#bgGrad)"/><g mask="url(#gridFade)"><rect width="1200" height="1200" fill="url(#gridDots)"/></g><circle cx="600" cy="600" r="540" fill="url(#haloGrad)"/><circle cx="600" cy="600" r="525" fill="none" stroke="#34d399" stroke-opacity="0.45" stroke-width="2" stroke-dasharray="2 7" filter="url(#ringGlow)"/><circle cx="600" cy="600" r="510" fill="none" stroke="#34d399" stroke-opacity="0.20" stroke-width="1"/><circle cx="600" cy="600" r="175" fill="none" stroke="#34d399" stroke-opacity="0.65" stroke-width="1.2" /><circle cx="600" cy="600" r="235" fill="none" stroke="#34d399" stroke-opacity="0.23" stroke-width="1.2" /><circle cx="600" cy="600" r="300" fill="none" stroke="#34d399" stroke-opacity="0.10" stroke-width="1.2" stroke-dasharray="1 6" /><circle cx="600" cy="600" r="365" fill="none" stroke="#34d399" stroke-opacity="0.10" stroke-width="1.2" stroke-dasharray="1 6" /><circle cx="600" cy="600" r="425" fill="none" stroke="#34d399" stroke-opacity="0.10" stroke-width="1.2" stroke-dasharray="1 6" /><g opacity="0.8"><line x1="600.0" y1="454.0" x2="600.0" y2="458.0" stroke="#34d399" stroke-opacity="0.08" stroke-width="1"/><line x1="600.0" y1="421.0" x2="600.0" y2="425.0" stroke="#34d399" stroke-opacity="0.08" stroke-width="1"/><line x1="600.0" y1="394.6" x2="600.0" y2="398.6" stroke="#34d399" stroke-opacity="0.08" stroke-width="1"/><line x1="600.0" y1="370.1" x2="600.0" y2="374.1" stroke="#34d399" stroke-opacity="0.08" stroke-width="1"/><line x1="600.0" y1="346.9" x2="600.0" y2="350.9" stroke="#34d399" stroke-opacity="0.08" stroke-width="1"/><line x1="600.0" y1="324.5" x2="600.0" y2="328.5" stroke="#34d399" stroke-opacity="0.08" stroke-width="1"/><line x1="600.0" y1="302.8" x2="600.0" y2="306.8" stroke="#34d399" stroke-opacity="0.08" stroke-width="1"/><line x1="600.0" y1="281.7" x2="600.0" y2="285.7" stroke="#34d399" stroke-opacity="0.08" stroke-width="1"/><line x1="600.0" y1="261.0" x2="600.0" y2="265.0" stroke="#34d399" stroke-opacity="0.08" stroke-width="1"/><line x1="600.0" y1="240.6" x2="600.0" y2="244.6" stroke="#34d399" stroke-opacity="0.08" stroke-width="1"/><line x1="600.0" y1="220.7" x2="600.0" y2="224.7" stroke="#34d399" stroke-opacity="0.08" stroke-width="1"/><line x1="600.0" y1="201.0" x2="600.0" y2="205.0" stroke="#34d399" stroke-opacity="0.08" stroke-width="1"/><line x1="600.0" y1="181.5" x2="600.0" y2="185.5" stroke="#34d399" stroke-opacity="0.08" stroke-width="1"/><line x1="600.0" y1="162.4" x2="600.0" y2="166.4" stroke="#34d399" stroke-opacity="0.08" stroke-width="1"/><line x1="600.0" y1="143.4" x2="600.0" y2="147.4" stroke="#34d399" stroke-opacity="0.08" stroke-width="1"/></g><line x1="600.0" y1="470.0" x2="600.0" y2="120.0" stroke="#34d399" stroke-opacity="0.18" stroke-width="1" stroke-dasharray="3 5"/><line x1="712.6" y1="665.0" x2="1015.7" y2="840.0" stroke="#34d399" stroke-opacity="0.18" stroke-width="1" stroke-dasharray="3 5"/><line x1="487.4" y1="665.0" x2="184.3" y2="840.0" stroke="#34d399" stroke-opacity="0.18" stroke-width="1" stroke-dasharray="3 5"/><g><line x1="600.0" y1="600.0" x2="941.0" y2="474.4" stroke="#34d399" stroke-opacity="0.18" stroke-width="1"/><circle cx="941.0" cy="474.4" r="9.0" fill="#34d399" fill-opacity="0.18" filter="url(#nodeGlow)"/><circle cx="941.0" cy="474.4" r="5.0" fill="#34d399" fill-opacity="0.95" stroke="#ffffff" stroke-opacity="0.55" stroke-width="0.6"/><text x="953.2" y="469.9" fill="#9fb0cc" fill-opacity="0.55" font-family="JetBrains Mono, SF Mono, Menlo, Consolas, monospace" font-size="11" text-anchor="middle">2016</text><line x1="600.0" y1="600.0" x2="993.1" y2="591.3" stroke="#34d399" stroke-opacity="0.18" stroke-width="1"/><circle cx="993.1" cy="591.3" r="9.0" fill="#34d399" fill-opacity="0.18" filter="url(#nodeGlow)"/><circle cx="993.1" cy="591.3" r="5.0" fill="#34d399" fill-opacity="0.95" stroke="#ffffff" stroke-opacity="0.55" stroke-width="0.6"/><text x="1006.1" y="591.0" fill="#9fb0cc" fill-opacity="0.55" font-family="JetBrains Mono, SF Mono, Menlo, Consolas, monospace" font-size="11" text-anchor="middle">2019</text><line x1="600.0" y1="600.0" x2="984.6" y2="749.9" stroke="#34d399" stroke-opacity="0.18" stroke-width="1"/><circle cx="984.6" cy="749.9" r="9.0" fill="#34d399" fill-opacity="0.18" filter="url(#nodeGlow)"/><circle cx="984.6" cy="749.9" r="5.0" fill="#34d399" fill-opacity="0.95" stroke="#ffffff" stroke-opacity="0.55" stroke-width="0.6"/><text x="996.7" y="754.7" fill="#9fb0cc" fill-opacity="0.55" font-family="JetBrains Mono, SF Mono, Menlo, Consolas, monospace" font-size="11" text-anchor="middle">2021</text><line x1="600.0" y1="600.0" x2="931.6" y2="877.0" stroke="#34d399" stroke-opacity="0.18" stroke-width="1"/><circle cx="931.6" cy="877.0" r="9.0" fill="#34d399" fill-opacity="0.18" filter="url(#nodeGlow)"/><circle cx="931.6" cy="877.0" r="5.0" fill="#34d399" fill-opacity="0.95" stroke="#ffffff" stroke-opacity="0.55" stroke-width="0.6"/><text x="941.6" y="885.3" fill="#9fb0cc" fill-opacity="0.55" font-family="JetBrains Mono, SF Mono, Menlo, Consolas, monospace" font-size="11" text-anchor="middle">2023</text><line x1="600.0" y1="600.0" x2="795.6" y2="1006.5" stroke="#34d399" stroke-opacity="0.18" stroke-width="1"/><circle cx="795.6" cy="1006.5" r="9.0" fill="#34d399" fill-opacity="0.18" filter="url(#nodeGlow)"/><circle cx="795.6" cy="1006.5" r="5.0" fill="#34d399" fill-opacity="0.95" stroke="#ffffff" stroke-opacity="0.55" stroke-width="0.6"/><text x="801.3" y="1018.2" fill="#9fb0cc" fill-opacity="0.55" font-family="JetBrains Mono, SF Mono, Menlo, Consolas, monospace" font-size="11" text-anchor="middle">2025</text><line x1="600.0" y1="600.0" x2="719.7" y2="1044.8" stroke="#34d399" stroke-opacity="0.18" stroke-width="1"/><circle cx="719.7" cy="1044.8" r="9.0" fill="#34d399" fill-opacity="0.18" filter="url(#nodeGlow)"/><circle cx="719.7" cy="1044.8" r="5.0" fill="#34d399" fill-opacity="0.95" stroke="#ffffff" stroke-opacity="0.55" stroke-width="0.6"/><text x="723.1" y="1057.3" fill="#9fb0cc" fill-opacity="0.55" font-family="JetBrains Mono, SF Mono, Menlo, Consolas, monospace" font-size="11" text-anchor="middle">2026</text></g><text x="1034.7" y="851.0" fill="#34d399" fill-opacity="0.75" font-family="JetBrains Mono, SF Mono, Menlo, Consolas, monospace" font-size="13" font-weight="600" letter-spacing="1.5" text-anchor="middle" transform="rotate(300.0 1034.7 851.0)">arXiv</text><circle cx="600" cy="600" r="120" fill="url(#seedGrad)" filter="url(#seedGlow)"/><circle cx="600" cy="600" r="60" fill="#0b1220" stroke="#34d399" stroke-width="2.2"/><circle cx="600" cy="600" r="46" fill="none" stroke="#34d399" stroke-opacity="0.45" stroke-width="1" stroke-dasharray="1 3"/><g><line x1="600.0" y1="528.0" x2="600.0" y2="525.0" stroke="#34d399" stroke-width="0.8" stroke-opacity="0.30"/><line x1="614.0" y1="529.4" x2="614.6" y2="526.4" stroke="#34d399" stroke-width="0.8" stroke-opacity="0.30"/><line x1="626.8" y1="535.3" x2="629.8" y2="527.9" stroke="#34d399" stroke-width="2.2" stroke-opacity="0.85"/><line x1="640.0" y1="540.1" x2="641.7" y2="537.6" stroke="#34d399" stroke-width="0.8" stroke-opacity="0.30"/><line x1="650.9" y1="549.1" x2="653.0" y2="547.0" stroke="#34d399" stroke-width="0.8" stroke-opacity="0.30"/><line x1="658.2" y1="561.1" x2="664.9" y2="556.7" stroke="#34d399" stroke-width="2.2" stroke-opacity="0.85"/><line x1="666.5" y1="572.4" x2="669.3" y2="571.3" stroke="#34d399" stroke-width="0.8" stroke-opacity="0.30"/><line x1="670.6" y1="586.0" x2="673.6" y2="585.4" stroke="#34d399" stroke-width="0.8" stroke-opacity="0.30"/><line x1="672.0" y1="600.0" x2="675.0" y2="600.0" stroke="#34d399" stroke-width="0.8" stroke-opacity="0.30"/><line x1="670.6" y1="614.0" x2="673.6" y2="614.6" stroke="#34d399" stroke-width="0.8" stroke-opacity="0.30"/><line x1="664.7" y1="626.8" x2="672.1" y2="629.8" stroke="#34d399" stroke-width="2.2" stroke-opacity="0.85"/><line x1="658.2" y1="638.9" x2="664.9" y2="643.3" stroke="#34d399" stroke-width="2.2" stroke-opacity="0.85"/><line x1="650.9" y1="650.9" x2="653.0" y2="653.0" stroke="#34d399" stroke-width="0.8" stroke-opacity="0.30"/><line x1="640.0" y1="659.9" x2="641.7" y2="662.4" stroke="#34d399" stroke-width="0.8" stroke-opacity="0.30"/><line x1="626.8" y1="664.7" x2="629.8" y2="672.1" stroke="#34d399" stroke-width="2.2" stroke-opacity="0.85"/><line x1="613.7" y1="668.7" x2="615.2" y2="676.5" stroke="#34d399" stroke-width="2.2" stroke-opacity="0.85"/><line x1="600.0" y1="672.0" x2="600.0" y2="675.0" stroke="#34d399" stroke-width="0.8" stroke-opacity="0.30"/><line x1="586.3" y1="668.7" x2="584.8" y2="676.5" stroke="#34d399" stroke-width="2.2" stroke-opacity="0.85"/><line x1="572.4" y1="666.5" x2="571.3" y2="669.3" stroke="#34d399" stroke-width="0.8" stroke-opacity="0.30"/><line x1="561.1" y1="658.2" x2="556.7" y2="664.9" stroke="#34d399" stroke-width="2.2" stroke-opacity="0.85"/><line x1="550.5" y1="649.5" x2="544.8" y2="655.2" stroke="#34d399" stroke-width="2.2" stroke-opacity="0.85"/><line x1="541.8" y1="638.9" x2="535.1" y2="643.3" stroke="#34d399" stroke-width="2.2" stroke-opacity="0.85"/><line x1="535.3" y1="626.8" x2="527.9" y2="629.8" stroke="#34d399" stroke-width="2.2" stroke-opacity="0.85"/><line x1="531.3" y1="613.7" x2="523.5" y2="615.2" stroke="#34d399" stroke-width="2.2" stroke-opacity="0.85"/><line x1="528.0" y1="600.0" x2="525.0" y2="600.0" stroke="#34d399" stroke-width="0.8" stroke-opacity="0.30"/><line x1="529.4" y1="586.0" x2="526.4" y2="585.4" stroke="#34d399" stroke-width="0.8" stroke-opacity="0.30"/><line x1="535.3" y1="573.2" x2="527.9" y2="570.2" stroke="#34d399" stroke-width="2.2" stroke-opacity="0.85"/><line x1="540.1" y1="560.0" x2="537.6" y2="558.3" stroke="#34d399" stroke-width="0.8" stroke-opacity="0.30"/><line x1="550.5" y1="550.5" x2="544.8" y2="544.8" stroke="#34d399" stroke-width="2.2" stroke-opacity="0.85"/><line x1="560.0" y1="540.1" x2="558.3" y2="537.6" stroke="#34d399" stroke-width="0.8" stroke-opacity="0.30"/><line x1="572.4" y1="533.5" x2="571.3" y2="530.7" stroke="#34d399" stroke-width="0.8" stroke-opacity="0.30"/><line x1="586.0" y1="529.4" x2="585.4" y2="526.4" stroke="#34d399" stroke-width="0.8" stroke-opacity="0.30"/></g><text x="600" y="592" text-anchor="middle" fill="#ffffff" fill-opacity="0.95" font-family="JetBrains Mono, SF Mono, Menlo, Consolas, monospace" font-size="15" font-weight="700" letter-spacing="2">06B9CF92</text><text x="600" y="614" text-anchor="middle" fill="#34d399" fill-opacity="0.95" font-family="JetBrains Mono, SF Mono, Menlo, Consolas, monospace" font-size="9" font-weight="600" letter-spacing="3">SEED</text><text x="600.0" y="68" text-anchor="middle" fill="#9fb0cc" fill-opacity="0.7" font-family="JetBrains Mono, SF Mono, Menlo, Consolas, monospace" font-size="14" font-weight="600" letter-spacing="4">SD-T-06</text><text x="600.0" y="120" text-anchor="middle" fill="#e5edff" font-family="-apple-system, BlinkMacSystemFont, Inter, Segoe UI, Roboto, sans-serif" font-size="46" font-weight="800" letter-spacing="-1">Atomic Mesh</text><rect x="1025" y="36" width="155" height="40" rx="20" fill="#34d399" fill-opacity="0.18" stroke="#34d399" stroke-opacity="0.55" stroke-width="1"/><circle cx="1047" cy="56" r="6" fill="#34d399"/><text x="1063" y="62" fill="#34d399" font-family="JetBrains Mono, SF Mono, Menlo, Consolas, monospace" font-size="13" font-weight="700" letter-spacing="2">TIER 2 · EMERALD</text><text x="80" y="1138" fill="#6f829f" font-family="JetBrains Mono, SF Mono, Menlo, Consolas, monospace" font-size="9" font-weight="600" letter-spacing="2">CITATION DEPTH</text><circle cx="86" cy="1158" r="4" fill="none" stroke="#34d399" stroke-opacity="0.6" stroke-width="1"/><text x="96" y="1162" fill="#9fb0cc" fill-opacity="0.7" font-family="JetBrains Mono, SF Mono, Menlo, Consolas, monospace" font-size="9">0 cit.</text><circle cx="162" cy="1158" r="4" fill="none" stroke="#34d399" stroke-opacity="0.6" stroke-width="1"/><text x="172" y="1162" fill="#9fb0cc" fill-opacity="0.7" font-family="JetBrains Mono, SF Mono, Menlo, Consolas, monospace" font-size="9">1–2 cit.</text><circle cx="238" cy="1158" r="4" fill="none" stroke="#34d399" stroke-opacity="0.6" stroke-width="1"/><text x="248" y="1162" fill="#9fb0cc" fill-opacity="0.7" font-family="JetBrains Mono, SF Mono, Menlo, Consolas, monospace" font-size="9">3–8 cit.</text><circle cx="314" cy="1158" r="4" fill="none" stroke="#34d399" stroke-opacity="0.6" stroke-width="1"/><text x="324" y="1162" fill="#9fb0cc" fill-opacity="0.7" font-family="JetBrains Mono, SF Mono, Menlo, Consolas, monospace" font-size="9">9–30 cit.</text><circle cx="390" cy="1158" r="4" fill="none" stroke="#34d399" stroke-opacity="0.6" stroke-width="1"/><text x="400" y="1162" fill="#9fb0cc" fill-opacity="0.7" font-family="JetBrains Mono, SF Mono, Menlo, Consolas, monospace" font-size="9">30+ cit.</text><text x="1120" y="1154" text-anchor="end" fill="#9fb0cc" fill-opacity="0.75" font-family="JetBrains Mono, SF Mono, Menlo, Consolas, monospace" font-size="11" font-weight="600" letter-spacing="1.5">7 PAPERS</text><text x="1120" y="1172" text-anchor="end" fill="#6f829f" font-family="JetBrains Mono, SF Mono, Menlo, Consolas, monospace" font-size="9">SciMSPT · Signal Mandala</text></svg></div>
+/home/z/my-project/scimspt-platform/docs/shorts/SD-T-06.html:        <p class="signal-body">Source: ScienceDaily (2026-06-05). Scientists have uncovered unexpected quantum complexity inside cobalt, a metal long thought to be fully understood. Advanced measurements revealed a dense network of topological electronic states that remain robust at room temperature. These states enable extremely fast electron behavior and can be switched or controlled using magnetism. The…</p>
+/home/z/my-project/scimspt-platform/docs/shorts/SD-T-06.html:        <p class="paper-abstract">Abstract Magnetic nodal line semimetals, defined by twofold degenerate gapless crossings along extended momentum paths, offer significant potential for spintronics and future information technologies. Despite their potential, these systems are rare in nature, with only few examples known to date. Here, using spin- and angle-resolved photoemission spectroscopy and density funct…</p>
+/home/z/my-project/scimspt-platform/docs/shorts/SD-T-06.html:        <h2 class="paper-title">Frobenius manifold for the nodal quiver</h2>
+/home/z/my-project/scimspt-platform/docs/shorts/SD-T-06.html:        <div class="paper-authors">Atsuki Nakago, Yuuki Shiraishi, Atsushi Takahashi</div>
+/home/z/my-project/scimspt-platform/docs/shorts/SD-T-06.html:        <p class="paper-abstract">Starting from the Weierstrass elliptic function, we study the associated Frobenius structure, incorporating the perspective of derived categories, particularly that of homological mirror symmetry. Given a deformation of the Weierstrass elliptic function, we construct a primitive form normalized to be compatible with the period map for integral cycles, and obtain a Frobenius st…</p>
+/home/z/my-project/scimspt-platform/docs/shorts/SD-T-06.html:        <div class="paper-authors">Irene Silvestre-Roselló, Vukašin Stojisavljević</div>
+/home/z/my-project/scimspt-platform/docs/shorts/SD-T-06.html:        <p class="paper-abstract">Realizing topological semimetal states with novel emergent fermions in magnetic materials is a focus of current research. Based on first-principle calculations and symmetry analysis, we reveal interesting magnetic emergent fermions in an existing material MnB2. In the temperature range from 157 K to 760 K, MnB2 is a collinear antiferromagnet. We find the coexistence of eightfo…</p>
+/home/z/my-project/scimspt-platform/docs/shorts/SD-T-06.html:        <p style="color:var(--text-muted);font-size:.92rem;line-height:1.55;max-width:80ch">A per-startup watchlist derived from its own paper set. Each item is a place where this snapshot might age — either because the underlying evidence is still being replicated, or because follow-up work is expected to refine the result.</p>
+/home/z/my-project/scimspt-platform/docs/shorts/SD-T-06.html:            <span class="user-chip" id="compose-user">—</span>
+/home/z/my-project/scimspt-platform/docs/shorts/SD-T-06.html:      <p>This was the 1-minute narrated short for Atomic Mesh — covering the hypothesis, 6 attached papers, and the strategic bullets, with native UK voiceover and softer ambient background music. Open the full brief for abstracts, DOI links, and citation metrics.</p>
+/home/z/my-project/scimspt-platform/docs/shorts/SD-T-06.html:      <button class="icon-btn" id="playPauseBtn" title="Play / Pause (space)">
+/home/z/my-project/scimspt-platform/docs/shorts/SD-T-06.html:      <button class="icon-btn" id="prevBtn" title="Previous scene (←)">
+/home/z/my-project/scimspt-platform/docs/shorts/SD-T-06.html:    <div class="audio-controls">
+/home/z/my-project/scimspt-platform/docs/shorts/SD-T-06.html:      <button class="audio-btn" id="narrationBtn" title="Toggle UK narration">
+/home/z/my-project/scimspt-platform/docs/shorts/SD-T-06.html:        <span>VOICE</span>
+/home/z/my-project/scimspt-platform/docs/shorts/SD-T-06.html:      <button class="audio-btn" id="musicBtn" title="Toggle gentle music">
+/home/z/my-project/scimspt-platform/docs/shorts/SD-T-06.html:        <span>MUSIC</span>
+/home/z/my-project/scimspt-platform/docs/shorts/SD-T-06.html:<div class="voice-picker" id="voicePicker" data-scimspt-native-voice-ui="1" title="Narration voice accent"><span style="font-family:var(--mono);font-size:.62rem;color:var(--text-dim);letter-spacing:.08em">VOICE</span><button class="vp-btn active" data-accent="uk" type="button">UK</button><button class="vp-btn" data-accent="us" type="button">US</button></div>
+/home/z/my-project/scimspt-platform/docs/shorts/SD-T-06.html:<!-- Hidden audio element for narration -->
+/home/z/my-project/scimspt-platform/docs/shorts/SD-T-06.html:<audio id="narrationAudio" preload="auto" src="assets/audio/SD-T-06/scene-01.wav"></audio>
+/home/z/my-project/scimspt-platform/docs/shorts/SD-T-06.html:  <span class="caption-meta" id="captionMeta">narrated · UK accent</span>
+/home/z/my-project/scimspt-platform/docs/shorts/SD-T-06.html:  // ===== Timeline data (baked-in) — extended to 12s/scene = 120s total so UK-accent narration has natural room =====
+/home/z/my-project/scimspt-platform/docs/shorts/SD-T-06.html:  // ===== Narration script (per-scene captions + audio sources) =====
+/home/z/my-project/scimspt-platform/docs/shorts/SD-T-06.html:    {src: 'assets/audio/SD-T-06/scene-01.wav', text: "Atomic Mesh. A Tier 2 enabler, turning this week's cobalt quantum signal into a fundable venture."},
+/home/z/my-project/scimspt-platform/docs/shorts/SD-T-06.html:    {src: 'assets/audio/SD-T-06/scene-02.wav', text: "ScienceDaily reports unexpected quantum complexity inside cobalt — topological states robust at room temperature."},
+/home/z/my-project/scimspt-platform/docs/shorts/SD-T-06.html:    {src: 'assets/audio/SD-T-06/scene-03.wav', text: "The seed paper. Manifold of magnetic nodal lines, in an elemental ferromagnet."},
+/home/z/my-project/scimspt-platform/docs/shorts/SD-T-06.html:    {src: 'assets/audio/SD-T-06/scene-04.wav', text: "Paper two. Frobenius manifold for the nodal quiver."},
+/home/z/my-project/scimspt-platform/docs/shorts/SD-T-06.html:    {src: 'assets/audio/SD-T-06/scene-05.wav', text: "Paper three. Symmetry-protected nodal points and nodal lines, in magnetic materials."},
+/home/z/my-project/scimspt-platform/docs/shorts/SD-T-06.html:    {src: 'assets/audio/SD-T-06/scene-06.wav', text: "Paper four. Distribution of nodal sets of eigenfunctions, on analytic manifolds."},
+/home/z/my-project/scimspt-platform/docs/shorts/SD-T-06.html:    {src: 'assets/audio/SD-T-06/scene-07.wav', text: "Paper five. Coarse nodal counts, on sub-Riemannian manifolds."},
+/home/z/my-project/scimspt-platform/docs/shorts/SD-T-06.html:    {src: 'assets/audio/SD-T-06/scene-08.wav', text: "Paper six. Magnetic eight-fold nodal-point and nodal-network fermions, in MnB2."},
+/home/z/my-project/scimspt-platform/docs/shorts/SD-T-06.html:    {src: 'assets/audio/SD-T-06/scene-09.wav', text: "Strategic read: six million seed, twenty million A, forty-six million B. Thirty-six months to pilot."},
+/home/z/my-project/scimspt-platform/docs/shorts/SD-T-06.html:    {src: 'assets/audio/SD-T-06/scene-10.wav', text: "Atomic Mesh. Cobalt's hidden quantum world, made investable. Open the full brief for the complete picture."}
+/home/z/my-project/scimspt-platform/docs/shorts/SD-T-06.html:  const playPauseBtn = document.getElementById('playPauseBtn');
+/home/z/my-project/scimspt-platform/docs/shorts/SD-T-06.html:  const narrationAudio = document.getElementById('narrationAudio');
+/home/z/my-project/scimspt-platform/docs/shorts/SD-T-06.html:  const musicBtn = document.getElementById('musicBtn');
+/home/z/my-project/scimspt-platform/docs/shorts/SD-T-06.html:  let musicEnabled = true;
+/home/z/my-project/scimspt-platform/docs/shorts/SD-T-06.html:  let audioUnlocked = false;  // set true after first user gesture (autoplay policy)
+/home/z/my-project/scimspt-platform/docs/shorts/SD-T-06.html:    // Swap narration audio when scene changes
+/home/z/my-project/scimspt-platform/docs/shorts/SD-T-06.html:      if (narrationAudio.src.indexOf(clip.src) === -1){
+/home/z/my-project/scimspt-platform/docs/shorts/SD-T-06.html:        narrationAudio.src = clip.src;
+/home/z/my-project/scimspt-platform/docs/shorts/SD-T-06.html:      if (audioUnlocked && narrationEnabled && playing){
+/home/z/my-project/scimspt-platform/docs/shorts/SD-T-06.html:        narrationAudio.currentTime = 0;
+/home/z/my-project/scimspt-platform/docs/shorts/SD-T-06.html:        const p = narrationAudio.play();
+/home/z/my-project/scimspt-platform/docs/shorts/SD-T-06.html:      pause();
+/home/z/my-project/scimspt-platform/docs/shorts/SD-T-06.html:    // Unlock audio context on first play (browser autoplay policy)
+/home/z/my-project/scimspt-platform/docs/shorts/SD-T-06.html:    if (!audioUnlocked){
+/home/z/my-project/scimspt-platform/docs/shorts/SD-T-06.html:      audioUnlocked = true;
+/home/z/my-project/scimspt-platform/docs/shorts/SD-T-06.html:      try { if (musicCtx && musicCtx.state === 'suspended') musicCtx.resume(); } catch(e){}
+/home/z/my-project/scimspt-platform/docs/shorts/SD-T-06.html:      if (narrationAudio.src.indexOf(desiredSrc) === -1){
+/home/z/my-project/scimspt-platform/docs/shorts/SD-T-06.html:        narrationAudio.src = desiredSrc;
+/home/z/my-project/scimspt-platform/docs/shorts/SD-T-06.html:      narrationAudio.currentTime = 0;
+/home/z/my-project/scimspt-platform/docs/shorts/SD-T-06.html:      const p = narrationAudio.play();
+/home/z/my-project/scimspt-platform/docs/shorts/SD-T-06.html:    // Start music
+/home/z/my-project/scimspt-platform/docs/shorts/SD-T-06.html:    if (musicEnabled) startMusic();
+/home/z/my-project/scimspt-platform/docs/shorts/SD-T-06.html:  function pause(){
+/home/z/my-project/scimspt-platform/docs/shorts/SD-T-06.html:    try { narrationAudio.pause(); } catch(e){}
+/home/z/my-project/scimspt-platform/docs/shorts/SD-T-06.html:    pauseMusic();
+/home/z/my-project/scimspt-platform/docs/shorts/SD-T-06.html:      // Don't show overlay if user explicitly paused; just keep frame
+/home/z/my-project/scimspt-platform/docs/shorts/SD-T-06.html:      pause();
+/home/z/my-project/scimspt-platform/docs/shorts/SD-T-06.html:    try { narrationAudio.pause(); } catch(e){}
+/home/z/my-project/scimspt-platform/docs/shorts/SD-T-06.html:    pauseMusic();
+/home/z/my-project/scimspt-platform/docs/shorts/SD-T-06.html:  playPauseBtn.addEventListener('click', () => { playing ? pause() : play(); });
+/home/z/my-project/scimspt-platform/docs/shorts/SD-T-06.html:      try { narrationAudio.pause(); } catch(e){}
+/home/z/my-project/scimspt-platform/docs/shorts/SD-T-06.html:          if (narrationAudio.src.indexOf(desiredSrc) === -1){
+/home/z/my-project/scimspt-platform/docs/shorts/SD-T-06.html:            narrationAudio.src = desiredSrc;
+/home/z/my-project/scimspt-platform/docs/shorts/SD-T-06.html:          narrationAudio.currentTime = 0;
+/home/z/my-project/scimspt-platform/docs/shorts/SD-T-06.html:          const p = narrationAudio.play();
+/home/z/my-project/scimspt-platform/docs/shorts/SD-T-06.html:  // Music toggle
+/home/z/my-project/scimspt-platform/docs/shorts/SD-T-06.html:  musicBtn.addEventListener('click', () => {
+/home/z/my-project/scimspt-platform/docs/shorts/SD-T-06.html:    musicEnabled = !musicEnabled;
+/home/z/my-project/scimspt-platform/docs/shorts/SD-T-06.html:    musicBtn.classList.toggle('muted', !musicEnabled);
+/home/z/my-project/scimspt-platform/docs/shorts/SD-T-06.html:    if (!musicEnabled) pauseMusic();
+/home/z/my-project/scimspt-platform/docs/shorts/SD-T-06.html:    else if (playing) startMusic();
+/home/z/my-project/scimspt-platform/docs/shorts/SD-T-06.html:  narrationAudio.addEventListener('ended', () => {});
+/home/z/my-project/scimspt-platform/docs/shorts/SD-T-06.html:    if (e.key === ' ') { e.preventDefault(); playing ? pause() : play(); }
+/home/z/my-project/scimspt-platform/docs/shorts/SD-T-06.html:  // ===== Gentle background music (Web Audio API) =====
+/home/z/my-project/scimspt-platform/docs/shorts/SD-T-06.html:  let musicCtx = null;
+/home/z/my-project/scimspt-platform/docs/shorts/SD-T-06.html:  let musicMaster = null;
+/home/z/my-project/scimspt-platform/docs/shorts/SD-T-06.html:  let musicTimer = null;
+/home/z/my-project/scimspt-platform/docs/shorts/SD-T-06.html:  let musicStep = 0;
+/home/z/my-project/scimspt-platform/docs/shorts/SD-T-06.html:  function initMusic(){
+/home/z/my-project/scimspt-platform/docs/shorts/SD-T-06.html:    if (musicCtx) return;
+/home/z/my-project/scimspt-platform/docs/shorts/SD-T-06.html:      musicCtx = new (window.AudioContext || window.webkitAudioContext)();
+/home/z/my-project/scimspt-platform/docs/shorts/SD-T-06.html:      musicMaster = musicCtx.createGain();
+/home/z/my-project/scimspt-platform/docs/shorts/SD-T-06.html:      musicMaster.gain.value = 0.07;  // softer — calibrated for ambient bed under narration
+/home/z/my-project/scimspt-platform/docs/shorts/SD-T-06.html:      musicMaster.connect(musicCtx.destination);
+/home/z/my-project/scimspt-platform/docs/shorts/SD-T-06.html:    // === Softer music: low-pass filter for warmth + subtle feedback delay ===
+/home/z/my-project/scimspt-platform/docs/shorts/SD-T-06.html:      var _lpf = musicCtx.createBiquadFilter();
+/home/z/my-project/scimspt-platform/docs/shorts/SD-T-06.html:      var _delay = musicCtx.createDelay(2.0); _delay.delayTime.value = 0.45;
+/home/z/my-project/scimspt-platform/docs/shorts/SD-T-06.html:      var _fb = musicCtx.createGain(); _fb.gain.value = 0.30;
+/home/z/my-project/scimspt-platform/docs/shorts/SD-T-06.html:      var _wet = musicCtx.createGain(); _wet.gain.value = 0.26;
+/home/z/my-project/scimspt-platform/docs/shorts/SD-T-06.html:      musicMaster.disconnect();
+/home/z/my-project/scimspt-platform/docs/shorts/SD-T-06.html:      musicMaster.connect(_lpf);
+/home/z/my-project/scimspt-platform/docs/shorts/SD-T-06.html:      _lpf.connect(musicCtx.destination);
+/home/z/my-project/scimspt-platform/docs/shorts/SD-T-06.html:      _delay.connect(_wet); _wet.connect(musicCtx.destination);
+/home/z/my-project/scimspt-platform/docs/shorts/SD-T-06.html:    } catch(e){ console.warn("soft-music filter setup failed", e); }
+/home/z/my-project/scimspt-platform/docs/shorts/SD-T-06.html:    } catch(e){ console.warn('Web Audio API not available', e); }
+/home/z/my-project/scimspt-platform/docs/shorts/SD-T-06.html:    if (!musicCtx) return;
+/home/z/my-project/scimspt-platform/docs/shorts/SD-T-06.html:    const osc = musicCtx.createOscillator();
+/home/z/my-project/scimspt-platform/docs/shorts/SD-T-06.html:    const g = musicCtx.createGain();
+/home/z/my-project/scimspt-platform/docs/shorts/SD-T-06.html:    g.connect(musicMaster);
+/home/z/my-project/scimspt-platform/docs/shorts/SD-T-06.html:  function scheduleMusicStep(){
+/home/z/my-project/scimspt-platform/docs/shorts/SD-T-06.html:    if (!musicCtx || !musicEnabled || !playing) return;
+/home/z/my-project/scimspt-platform/docs/shorts/SD-T-06.html:    const now = musicCtx.currentTime;
+/home/z/my-project/scimspt-platform/docs/shorts/SD-T-06.html:    const idx = MELODY[musicStep % MELODY.length];
+/home/z/my-project/scimspt-platform/docs/shorts/SD-T-06.html:    if (musicStep % 2 === 0){
+/home/z/my-project/scimspt-platform/docs/shorts/SD-T-06.html:    if (musicStep % 4 === 0){
+/home/z/my-project/scimspt-platform/docs/shorts/SD-T-06.html:      const bassIdx = Math.floor(musicStep / 4) % BASS.length;
+/home/z/my-project/scimspt-platform/docs/shorts/SD-T-06.html:    musicStep++;
+/home/z/my-project/scimspt-platform/docs/shorts/SD-T-06.html:    musicTimer = setTimeout(scheduleMusicStep, stepDur * 1000);
+/home/z/my-project/scimspt-platform/docs/shorts/SD-T-06.html:  function startMusic(){
+/home/z/my-project/scimspt-platform/docs/shorts/SD-T-06.html:    if (!musicCtx) initMusic();
+/home/z/my-project/scimspt-platform/docs/shorts/SD-T-06.html:    if (!musicCtx) return;
+/home/z/my-project/scimspt-platform/docs/shorts/SD-T-06.html:    if (musicCtx.state === 'suspended'){
+/home/z/my-project/scimspt-platform/docs/shorts/SD-T-06.html:      musicCtx.resume().catch(()=>{});
+/home/z/my-project/scimspt-platform/docs/shorts/SD-T-06.html:    if (musicTimer) clearTimeout(musicTimer);
+/home/z/my-project/scimspt-platform/docs/shorts/SD-T-06.html:    scheduleMusicStep();
+/home/z/my-project/scimspt-platform/docs/shorts/SD-T-06.html:  function pauseMusic(){
+/home/z/my-project/scimspt-platform/docs/shorts/SD-T-06.html:    if (musicTimer){ clearTimeout(musicTimer); musicTimer = null; }
+/home/z/my-project/scimspt-platform/docs/shorts/SD-T-06.html:    if (musicMaster && musicCtx){
+/home/z/my-project/scimspt-platform/docs/shorts/SD-T-06.html:      const t = musicCtx.currentTime;
+/home/z/my-project/scimspt-platform/docs/shorts/SD-T-06.html:        musicMaster.gain.cancelScheduledValues(t);
+/home/z/my-project/scimspt-platform/docs/shorts/SD-T-06.html:        musicMaster.gain.setValueAtTime(musicMaster.gain.value, t);
+/home/z/my-project/scimspt-platform/docs/shorts/SD-T-06.html:        musicMaster.gain.exponentialRampToValueAtTime(0.0001, t + 0.15);
+/home/z/my-project/scimspt-platform/docs/shorts/SD-T-06.html:        setTimeout(() => { if (musicMaster) musicMaster.gain.value = 0.07; }, 200);
+/home/z/my-project/scimspt-platform/docs/shorts/SD-T-06.html:  // Modern browsers block audio playback until a user gesture.
+/home/z/my-project/scimspt-platform/docs/shorts/SD-T-06.html:  // Since narration + music are central to this short, we DON'T attempt
+/home/z/my-project/scimspt-platform/docs/shorts/SD-T-06.html:  // silent autoplay — the user must click the play overlay (which unlocks
+/home/z/my-project/scimspt-platform/docs/shorts/SD-T-06.html:  // both the <audio> element and the Web Audio API context).
+/home/z/my-project/scimspt-platform/docs/shorts/SD-T-06.html:      user: null,           // {login, name, avatar_url}
+/home/z/my-project/scimspt-platform/docs/shorts/SD-T-06.html:      const saved = sessionStorage.getItem('scimspt_user');
+/home/z/my-project/scimspt-platform/docs/shorts/SD-T-06.html:      if (saved) state.user = JSON.parse(saved);
+/home/z/my-project/scimspt-platform/docs/shorts/SD-T-06.html:      if (authBlock) authBlock.style.display = (state.user || isFull) ? 'none' : 'block';
+/home/z/my-project/scimspt-platform/docs/shorts/SD-T-06.html:      if (compose) compose.style.display = (state.user && !isFull) ? 'block' : 'none';
+/home/z/my-project/scimspt-platform/docs/shorts/SD-T-06.html:      const isUser = c.is_user ? ' is-user' : '';
+/home/z/my-project/scimspt-platform/docs/shorts/SD-T-06.html:        '<div class="comment' + isUser + '">' +
+/home/z/my-project/scimspt-platform/docs/shorts/SD-T-06.html:              '<span class="author">' + escapeHtml(c.author || 'Anonymous') + '</span>' +
+/home/z/my-project/scimspt-platform/docs/shorts/SD-T-06.html:      scope: 'public_repo read:user',
+/home/z/my-project/scimspt-platform/docs/shorts/SD-T-06.html:        // Fetch user profile
+/home/z/my-project/scimspt-platform/docs/shorts/SD-T-06.html:        fetch('https://api.github.com/user', {
+/home/z/my-project/scimspt-platform/docs/shorts/SD-T-06.html:              state.user = {
+/home/z/my-project/scimspt-platform/docs/shorts/SD-T-06.html:              sessionStorage.setItem('scimspt_user', JSON.stringify(state.user));
+/home/z/my-project/scimspt-platform/docs/shorts/SD-T-06.html:    const userChip = document.getElementById('compose-user');
+/home/z/my-project/scimspt-platform/docs/shorts/SD-T-06.html:    if (userChip && state.user) {
+/home/z/my-project/scimspt-platform/docs/shorts/SD-T-06.html:      userChip.innerHTML = 'Signed in as <strong>@' + escapeHtml(state.user.login) + '</strong>';
+/home/z/my-project/scimspt-platform/docs/shorts/SD-T-06.html:        if (!state.user || !composeArea) return;
+/home/z/my-project/scimspt-platform/docs/shorts/SD-T-06.html:          author: state.user.name,
+/home/z/my-project/scimspt-platform/docs/shorts/SD-T-06.html:          author_login: state.user.login,
+/home/z/my-project/scimspt-platform/docs/shorts/SD-T-06.html:            state.pending.push({
+/home/z/my-project/scimspt-platform/docs/shorts/SD-T-06.html:              author: state.user.name,
+
+[Showing results with pagination = limit: 250]

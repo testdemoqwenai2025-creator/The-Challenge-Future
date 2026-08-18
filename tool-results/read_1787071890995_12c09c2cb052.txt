@@ -1,0 +1,1985 @@
+     1→<!DOCTYPE html>
+     2→<html lang="en">
+     3→<head>
+     4→<meta charset="UTF-8">
+     5→<meta name="viewport" content="width=device-width, initial-scale=1.0">
+     6→<title>SciMSPT Short — Solid State Labs (P3)</title>
+     7→<meta name="description" content="Solid-state lithium-metal batteries with sulfide electrolyte — 450 Wh/kg cell-level, drop-in replacement for EV form factors. Pilot line operational by month 18; first OEM qualification by month 24.">
+     8→<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230f172a'/%3E%3Cpath d='M24 22l16 10-16 10z' fill='%23dc2626'/%3E%3C/svg%3E">
+     9→<style>
+    10→  :root{
+    11→    --bg:#070b14;
+    12→    --bg-2:#0b1220;
+    13→    --surface:#111c2e;
+    14→    --surface-2:#162338;
+    15→    --border:#1f2d44;
+    16→    --border-strong:#2a3c58;
+    17→    --text:#e5edff;
+    18→    --text-muted:#9fb0cc;
+    19→    --text-dim:#6f829f;
+    20→    --accent:#3b82f6;
+    21→    --accent-2:#60a5fa;
+    22→    --tier1:#fbbf24;
+    23→    --tier2:#34d399;
+    24→    --tier3:#a78bfa;
+    25→    --danger:#dc2626;
+    26→    --danger-2:#b91c1c;
+    27→    --mono:'JetBrains Mono','SF Mono','Menlo','Consolas',monospace;
+    28→    --sans:-apple-system,BlinkMacSystemFont,'Inter','Segoe UI',Roboto,sans-serif;
+    29→  }
+    30→  *{box-sizing:border-box;margin:0;padding:0}
+    31→  html,body{height:100%;background:var(--bg);color:var(--text);font-family:var(--sans);overflow:hidden}
+    32→  a{color:inherit;text-decoration:none}
+    33→  button{font:inherit;color:inherit;background:none;border:none;cursor:pointer}
+    34→
+    35→  .stage{
+    36→    position:fixed;inset:0;
+    37→    display:grid;
+    38→    grid-template-rows:1fr 56px;
+    39→    background:radial-gradient(ellipse at top, #0b1220 0%, #070b14 100%);
+    40→  }
+    41→
+    42→  .scenes-wrap{
+    43→    position:relative;
+    44→    overflow:hidden;
+    45→    background:#000;
+    46→  }
+    47→
+    48→  .scene{
+    49→    position:absolute;inset:0;
+    50→    opacity:0;
+    51→    transform:scale(1.04);
+    52→    transition:opacity .55s ease, transform .85s cubic-bezier(.2,.7,.3,1);
+    53→    pointer-events:none;
+    54→    display:flex;
+    55→    align-items:center;
+    56→    justify-content:center;
+    57→    padding:2.5rem 2rem;
+    58→  }
+    59→  .scene.active{
+    60→    opacity:1;
+    61→    transform:scale(1);
+    62→    pointer-events:auto;
+    63→  }
+    64→
+    65→  .scene-inner{
+    66→    width:min(1100px, 96vw);
+    67→    max-height:88vh;
+    68→    overflow:hidden;
+    69→  }
+    70→
+    71→  .kicker{
+    72→    font-family:var(--mono);
+    73→    font-size:.78rem;
+    74→    letter-spacing:.12em;
+    75→    text-transform:uppercase;
+    76→    color:var(--accent-2);
+    77→    margin-bottom:.9rem;
+    78→    display:inline-block;
+    79→    padding:.25rem .7rem;
+    80→    background:rgba(59,130,246,.12);
+    81→    border:1px solid rgba(59,130,246,.3);
+    82→    border-radius:999px;
+    83→  }
+    84→
+    85→  /* Scene 1: intro */
+    86→  .scene-intro .title{
+    87→    font-size:clamp(2rem, 5.5vw, 3.8rem);
+    88→    font-weight:800;
+    89→    line-height:1.05;
+    90→    letter-spacing:-.02em;
+    91→    background:linear-gradient(135deg,#fff 0%, #c7d4ee 100%);
+    92→    -webkit-background-clip:text;
+    93→    background-clip:text;
+    94→    color:transparent;
+    95→    margin:.4rem 0 .8rem;
+    96→  }
+    97→  .scene-intro .tier-row{
+    98→    display:flex;align-items:center;gap:.6rem;margin-bottom:1.1rem;flex-wrap:wrap;
+    99→  }
+   100→  .scene-intro .tier-pill{
+   101→    padding:.3rem .8rem;border-radius:999px;
+   102→    font-size:.78rem;font-weight:700;letter-spacing:.05em;
+   103→  }
+   104→  .tier-pill.tier-1{background:rgba(251,191,36,.18);color:var(--tier1);border:1px solid rgba(251,191,36,.4)}
+   105→  .tier-pill.tier-2{background:rgba(52,211,153,.18);color:var(--tier2);border:1px solid rgba(52,211,153,.4)}
+   106→  .tier-pill.tier-3{background:rgba(167,139,250,.18);color:var(--tier3);border:1px solid rgba(167,139,250,.4)}
+   107→  .scene-intro .tier-label{color:var(--text-muted);font-size:.92rem}
+   108→  .scene-intro .thesis{
+   109→    font-size:clamp(1rem, 1.55vw, 1.25rem);
+   110→    line-height:1.55;
+   111→    color:var(--text);
+   112→    margin-bottom:1.4rem;
+   113→    max-width:90ch;
+   114→  }
+   115→  .coord-grid{
+   116→    display:grid;grid-template-columns:repeat(4, 1fr);gap:.6rem;
+   117→    max-width:520px;
+   118→  }
+   119→  .coord-cell{
+   120→    background:rgba(255,255,255,.03);
+   121→    border:1px solid var(--border);
+   122→    border-radius:10px;
+   123→    padding:.6rem .5rem;
+   124→    text-align:center;
+   125→  }
+   126→  .coord-axis{font-family:var(--mono);font-size:.7rem;color:var(--text-dim);font-weight:700;letter-spacing:.1em}
+   127→  .coord-val{font-family:var(--mono);font-size:1.35rem;color:var(--accent-2);font-weight:700;margin-top:.15rem}
+   128→
+   129→  /* Scene 2: signal */
+   130→  .scene-signal .scene-h2{
+   131→    font-size:clamp(1.3rem, 2.6vw, 2rem);
+   132→    font-weight:700;
+   133→    line-height:1.2;
+   134→    margin-bottom:.7rem;
+   135→  }
+   136→  .signal-meta{
+   137→    display:flex;gap:.5rem;flex-wrap:wrap;
+   138→    font-family:var(--mono);font-size:.82rem;color:var(--text-muted);
+   139→    margin-bottom:1rem;
+   140→  }
+   141→  .signal-meta strong{color:var(--text);font-weight:600}
+   142→  .signal-body{
+   143→    font-size:clamp(.95rem, 1.3vw, 1.1rem);
+   144→    line-height:1.65;
+   145→    color:var(--text-muted);
+   146→    max-width:90ch;
+   147→  }
+   148→
+   149→  /* Paper scenes */
+   150→  .scene-paper .scene-head-row{
+   151→    display:flex;justify-content:space-between;align-items:center;
+   152→    margin-bottom:.6rem;
+   153→  }
+   154→  .badge-row{display:flex;gap:.4rem;flex-wrap:wrap;margin-bottom:.7rem}
+   155→  .badge{
+   156→    padding:.2rem .55rem;border-radius:5px;
+   157→    font-size:.7rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;
+   158→  }
+   159→  .badge.seed{background:var(--tier1);color:#000}
+   160→  .badge.related{background:rgba(255,255,255,.08);color:var(--text-muted)}
+   161→  .src-badge{
+   162→    padding:.2rem .55rem;border-radius:5px;
+   163→    font-size:.7rem;font-weight:600;letter-spacing:.06em;text-transform:uppercase;
+   164→    background:rgba(96,165,250,.15);color:var(--accent-2);
+   165→  }
+   166→  .src-badge.src-arxiv{color:#7dd3fc;background:rgba(125,211,252,.12)}
+   167→  .src-badge.src-crossref{color:var(--tier2);background:rgba(52,211,153,.12)}
+   168→  .src-badge.src-sciencedaily{color:var(--tier3);background:rgba(167,139,250,.12)}
+   169→  .meta-chip{
+   170→    padding:.2rem .55rem;border-radius:5px;
+   171→    font-size:.7rem;font-weight:600;
+   172→    background:rgba(255,255,255,.04);color:var(--text-muted);
+   173→    border:1px solid var(--border);
+   174→  }
+   175→  .paper-title{
+   176→    font-size:clamp(1.15rem, 2.2vw, 1.7rem);
+   177→    font-weight:700;line-height:1.25;
+   178→    margin-bottom:.4rem;
+   179→  }
+   180→  .paper-authors{color:var(--text-muted);font-size:.92rem;margin-bottom:.55rem}
+   181→  .paper-abstract{
+   182→    font-size:.95rem;line-height:1.55;color:var(--text-muted);
+   183→    border-left:3px solid var(--accent);padding-left:.9rem;margin-bottom:.9rem;
+   184→    max-width:90ch;
+   185→  }
+   186→  .paper-links{display:flex;gap:.9rem;flex-wrap:wrap}
+   187→  .paper-links a{
+   188→    color:var(--accent-2);font-size:.85rem;font-weight:600;
+   189→    padding:.35rem .65rem;border:1px solid rgba(96,165,250,.35);border-radius:6px;
+   190→    background:rgba(96,165,250,.06);
+   191→    transition:background .15s ease;
+   192→  }
+   193→  .paper-links a:hover{background:rgba(96,165,250,.2)}
+   194→
+   195→  /* Bullets scene */
+   196→  .scene-bullets .bullets-list{
+   197→    list-style:none;
+   198→    display:flex;flex-direction:column;gap:.6rem;
+   199→    max-width:80ch;
+   200→  }
+   201→  .scene-bullets .bullets-list li{
+   202→    position:relative;
+   203→    padding:.7rem .9rem .7rem 2.2rem;
+   204→    background:rgba(255,255,255,.03);
+   205→    border:1px solid var(--border);
+   206→    border-radius:8px;
+   207→    font-size:clamp(.92rem, 1.25vw, 1.08rem);
+   208→    line-height:1.5;
+   209→    color:var(--text);
+   210→  }
+   211→  .scene-bullets .bullets-list li::before{
+   212→    content:'▸';
+   213→    position:absolute;left:.9rem;top:.7rem;
+   214→    color:var(--accent-2);font-weight:700;
+   215→  }
+   216→  .scene-bullets .bullets-list li.muted{color:var(--text-dim);font-style:italic}
+   217→
+   218→  /* Outro */
+   219→  .scene-outro{text-align:center}
+   220→  .scene-outro .outro-name{
+   221→    font-size:clamp(1.5rem, 4vw, 2.8rem);
+   222→    font-weight:800;
+   223→    background:linear-gradient(135deg,#fff,#60a5fa);
+   224→    -webkit-background-clip:text;background-clip:text;color:transparent;
+   225→    margin:.5rem 0 .8rem;
+   226→  }
+   227→  .scene-outro .outro-thesis{
+   228→    color:var(--text-muted);font-size:1rem;line-height:1.55;
+   229→    max-width:60ch;margin:0 auto 1.3rem;
+   230→  }
+   231→  .scene-outro .cta-row{display:flex;gap:.7rem;justify-content:center;flex-wrap:wrap}
+   232→  .scene-outro .cta-link{
+   233→    display:inline-block;padding:.55rem 1rem;
+   234→    background:rgba(220,38,38,.12);
+   235→    border:1px solid rgba(220,38,38,.4);
+   236→    color:#fca5a5;border-radius:8px;
+   237→    font-size:.88rem;font-weight:600;
+   238→  }
+   239→  .scene-outro .cta-link:hover{background:rgba(220,38,38,.25);color:#fff}
+   240→  .scene-outro .outro-sig{
+   241→    margin-top:1.5rem;color:var(--text-dim);
+   242→    font-family:var(--mono);font-size:.78rem;letter-spacing:.1em;
+   243→  }
+   244→
+   245→  /* Controls bar */
+   246→  .controls{
+   247→    background:var(--bg-2);
+   248→    border-top:1px solid var(--border);
+   249→    display:grid;
+   250→    grid-template-columns:auto 1fr auto;
+   251→    align-items:center;
+   252→    gap:1rem;
+   253→    padding:0 1rem;
+   254→  }
+   255→  .play-row{display:flex;align-items:center;gap:.5rem}
+   256→  .icon-btn{
+   257→    width:34px;height:34px;border-radius:8px;
+   258→    display:grid;place-items:center;
+   259→    color:var(--text-muted);
+   260→    transition:all .12s ease;
+   261→  }
+   262→  .icon-btn:hover{background:var(--surface-2);color:var(--text)}
+   263→  .icon-btn svg{width:16px;height:16px}
+   264→  .time-display{
+   265→    font-family:var(--mono);font-size:.78rem;color:var(--text-dim);
+   266→    min-width:80px;text-align:right;
+   267→  }
+   268→
+   269→  .timeline-wrap{
+   270→    position:relative;height:8px;
+   271→    background:var(--surface);
+   272→    border-radius:4px;cursor:pointer;
+   273→  }
+   274→  .timeline-progress{
+   275→    position:absolute;left:0;top:0;bottom:0;
+   276→    width:0%;background:linear-gradient(90deg,var(--accent),var(--accent-2));
+   277→    border-radius:4px;
+   278→    transition:width .12s linear;
+   279→  }
+   280→  .chapter-marker{
+   281→    position:absolute;top:-2px;width:2px;height:12px;
+   282→    background:var(--text-dim);
+   283→    border-radius:1px;
+   284→    pointer-events:none;
+   285→  }
+   286→  .chapter-marker:hover{background:var(--accent-2)}
+   287→
+   288→  /* Top-left scene label */
+   289→  .scene-label{
+   290→    position:fixed;top:1rem;left:1rem;
+   291→    font-family:var(--mono);font-size:.72rem;
+   292→    color:var(--text-dim);
+   293→    background:rgba(7,11,20,.85);
+   294→    backdrop-filter:blur(6px);
+   295→    padding:.3rem .6rem;border-radius:6px;
+   296→    border:1px solid var(--border);
+   297→    z-index:50;
+   298→    pointer-events:none;
+   299→    letter-spacing:.06em;
+   300→  }
+   301→
+   302→  /* Loading / play overlay */
+   303→  .play-overlay{
+   304→    position:absolute;inset:0;
+   305→    display:flex;align-items:center;justify-content:center;
+   306→    background:rgba(0,0,0,.5);
+   307→    backdrop-filter:blur(4px);
+   308→    z-index:30;
+   309→    cursor:pointer;
+   310→    transition:opacity .3s ease;
+   311→  }
+   312→  .play-overlay.hidden{opacity:0;pointer-events:none}
+   313→  .play-overlay-btn{
+   314→    width:88px;height:88px;border-radius:50%;
+   315→    background:rgba(220,38,38,.95);
+   316→    display:grid;place-items:center;
+   317→    box-shadow:0 8px 32px rgba(220,38,38,.45);
+   318→    transition:transform .15s ease;
+   319→  }
+   320→  .play-overlay:hover .play-overlay-btn{transform:scale(1.06)}
+   321→  .play-overlay-btn svg{width:36px;height:36px;color:#fff;margin-left:4px}
+   322→
+   323→  /* End screen */
+   324→  .end-screen{
+   325→    position:absolute;inset:0;
+   326→    display:none;
+   327→    flex-direction:column;align-items:center;justify-content:center;
+   328→    background:rgba(7,11,20,.92);
+   329→    backdrop-filter:blur(8px);
+   330→    z-index:40;
+   331→    text-align:center;
+   332→    gap:1rem;
+   333→  }
+   334→  .end-screen.show{display:flex}
+   335→  .end-screen h3{font-size:1.4rem;font-weight:700;color:var(--text)}
+   336→  .end-screen p{color:var(--text-muted);font-size:.92rem;max-width:50ch;line-height:1.55}
+   337→  .end-screen .end-actions{display:flex;gap:.7rem;flex-wrap:wrap;justify-content:center;margin-top:.5rem}
+   338→  .end-screen .end-btn{
+   339→    padding:.55rem 1.1rem;border-radius:8px;font-size:.88rem;font-weight:600;cursor:pointer;
+   340→    border:1px solid var(--border-strong);
+   341→  }
+   342→  .end-screen .end-btn.primary{
+   343→    background:var(--danger);color:#fff;border-color:var(--danger);
+   344→  }
+   345→  .end-screen .end-btn.secondary{background:var(--surface);color:var(--text)}
+   346→  .end-screen .end-btn:hover{opacity:.9}
+   347→
+   348→  @media (max-width:640px){
+   349→    .scene{padding:1.5rem 1rem}
+   350→    .coord-grid{grid-template-columns:repeat(2, 1fr)}
+   351→    .controls{gap:.5rem;padding:0 .5rem}
+   352→    .time-display{min-width:60px;font-size:.7rem}
+   353→  }
+   354→
+   355→  
+   356→  
+   357→
+   358→  /* Navigation Buttons */
+   359→  .nav-buttons {
+   360→    position: fixed;
+   361→    top: 1rem;
+   362→    right: 1rem;
+   363→    z-index: 50;
+   364→    display: flex;
+   365→    gap: .5rem;
+   366→  }
+   367→  .home-nav-btn, .back-nav-btn {
+   368→    display: flex;
+   369→    align-items: center;
+   370→    gap: .4rem;
+   371→    padding: .45rem .85rem;
+   372→    background: rgba(17, 28, 46, 0.92);
+   373→    backdrop-filter: blur(10px);
+   374→    border: 1px solid rgba(59, 130, 246, 0.4);
+   375→    border-radius: 8px;
+   376→    color: #e5edff;
+   377→    font-family: -apple-system, BlinkMacSystemFont, 'Inter', sans-serif;
+   378→    font-size: .82rem;
+   379→    font-weight: 600;
+   380→    text-decoration: none;
+   381→    transition: all 0.25s ease;
+   382→    cursor: pointer;
+   383→  }
+   384→  .home-nav-btn:hover {
+   385→    background: rgba(220, 38, 38, 0.2);
+   386→    border-color: rgba(220, 38, 38, 0.6);
+   387→    color: #fca5a5;
+   388→    transform: translateY(-1px);
+   389→    box-shadow: 0 4px 20px rgba(220, 38, 38, 0.25);
+   390→  }
+   391→  .back-nav-btn:hover {
+   392→    background: rgba(59, 130, 246, 0.2);
+   393→    border-color: rgba(59, 130, 246, 0.7);
+   394→    color: #93c5fd;
+   395→    transform: translateY(-1px);
+   396→    box-shadow: 0 4px 20px rgba(59, 130, 246, 0.25);
+   397→  }
+   398→  .home-nav-btn svg, .back-nav-btn svg {
+   399→    flex-shrink: 0;
+   400→  }
+   401→
+   402→  @media (max-width: 640px) {
+   403→    .nav-buttons {
+   404→      top: auto;
+   405→      bottom: 70px;
+   406→      right: 1rem;
+   407→      flex-direction: column;
+   408→      gap: .35rem;
+   409→    }
+   410→    .home-nav-btn, .back-nav-btn {
+   411→      padding: .4rem .7rem;
+   412→      font-size: .75rem;
+   413→    }
+   414→    .home-nav-btn span, .back-nav-btn span {
+   415→      display: none;
+   416→    }
+   417→  }
+   418→
+   419→  /* Image Labels Overlay */
+   420→  .image-labels {
+   421→    position: absolute;
+   422→    bottom: 0;
+   423→    left: 0;
+   424→    right: 0;
+   425→    padding: 1.2rem 1.5rem;
+   426→    background: linear-gradient(to top, rgba(7,11,20,0.95) 0%, rgba(7,11,20,0.8) 70%, transparent 100%);
+   427→    border-radius: 0 0 12px 12px;
+   428→    pointer-events: none;
+   429→  }
+   430→  .img-title {
+   431→    font-size: 1.1rem;
+   432→    font-weight: 700;
+   433→    color: #fff;
+   434→    margin-bottom: .3rem;
+   435→    letter-spacing: -0.01em;
+   436→  }
+   437→  .img-subtitle {
+   438→    font-size: .85rem;
+   439→    color: #93c5fd;
+   440→    margin-bottom: .6rem;
+   441→    font-weight: 500;
+   442→  }
+   443→  .img-metrics {
+   444→    display: flex;
+   445→    gap: .6rem;
+   446→    flex-wrap: wrap;
+   447→  }
+   448→  .img-metric {
+   449→    padding: .25rem .65rem;
+   450→    background: rgba(59, 130, 246, 0.2);
+   451→    border: 1px solid rgba(59, 130, 246, 0.4);
+   452→    border-radius: 6px;
+   453→    font-size: .72rem;
+   454→    font-weight: 600;
+   455→    color: #bfdbfe;
+   456→    font-family: 'JetBrains Mono', monospace;
+   457→  }
+   458→
+   459→  /* ===== DYNAMIC RESEARCH VISUALIZATION ===== */
+   460→  .research-visual {
+   461→    position: fixed;
+   462→    top: 50%;
+   463→    left: 50%;
+   464→    transform: translate(-50%, -50%) scale(0.9);
+   465→    z-index: 100;
+   466→    width: 70vw;
+   467→    max-width: 700px;
+   468→    aspect-ratio: 16/10;
+   469→    opacity: 0;
+   470→    pointer-events: none;
+   471→    transition: opacity 0.6s ease, transform 0.6s cubic-bezier(0.2, 0.8, 0.3, 1);
+   472→    border-radius: 20px;
+   473→    overflow: hidden;
+   474→  }
+   475→  
+   476→  .research-visual.visible {
+   477→    opacity: 1;
+   478→    transform: translate(-50%, -50%) scale(1);
+   479→    pointer-events: auto;
+   480→  }
+   481→  
+   482→  .visual-container {
+   483→    position: relative;
+   484→    width: 100%;
+   485→    height: 100%;
+   486→    background: linear-gradient(135deg, #0a1628 0%, #0d1f3c 30%, #0a1628 70%, #071021 100%);
+   487→    border-radius: 20px;
+   488→    border: 2px solid rgba(59, 130, 246, 0.4);
+   489→    box-shadow: 
+   490→      0 25px 80px rgba(0, 0, 0, 0.7),
+   491→      0 0 60px rgba(59, 130, 246, 0.15),
+   492→      inset 0 0 100px rgba(59, 130, 246, 0.05);
+   493→    overflow: hidden;
+   494→  }
+   495→  
+   496→  /* Animated grid background */
+   497→  .grid-bg {
+   498→    position: absolute;
+   499→    inset: 0;
+   500→    background-image: 
+   501→      linear-gradient(rgba(59, 130, 246, 0.08) 1px, transparent 1px),
+   502→      linear-gradient(90deg, rgba(59, 130, 246, 0.08) 1px, transparent 1px);
+   503→    background-size: 40px 40px;
+   504→    animation: gridMove 20s linear infinite;
+   505→  }
+   506→  
+   507→  @keyframes gridMove {
+   508→    0% { transform: translate(0, 0); }
+   509→    100% { transform: translate(40px, 40px); }
+   510→  }
+   511→  
+   512→  /* Particles */
+   513→  .particles { position: absolute; inset: 0; }
+   514→  
+   515→  .particle {
+   516→    position: absolute;
+   517→    width: 4px;
+   518→    height: 4px;
+   519→    background: #60a5fa;
+   520→    border-radius: 50%;
+   521→    box-shadow: 0 0 10px #60a5fa, 0 0 20px rgba(96, 165, 250, 0.5);
+   522→    animation: particleFloat 8s ease-in-out infinite;
+   523→  }
+   524→  
+   525→  .p1 { top: 15%; left: 20%; animation-delay: 0s; }
+   526→  .p2 { top: 25%; left: 75%; animation-delay: 1s; }
+   527→  .p3 { top: 65%; left: 15%; animation-delay: 2s; }
+   528→  .p4 { top: 75%; left: 80%; animation-delay: 3s; }
+   529→  .p5 { top: 45%; left: 10%; animation-delay: 4s; }
+   530→  .p6 { top: 35%; left: 85%; animation-delay: 5s; }
+   531→  
+   532→  @keyframes particleFloat {
+   533→    0%, 100% { transform: translateY(0) scale(1); opacity: 0.8; }
+   534→    50% { transform: translateY(-20px) scale(1.5); opacity: 1; }
+   535→  }
+   536→  
+   537→  /* Rotating core */
+   538→  .rotating-core {
+   539→    position: absolute;
+   540→    top: 50%;
+   541→    left: 50%;
+   542→    transform: translate(-50%, -50%);
+   543→    width: 150px;
+   544→    height: 150px;
+   545→  }
+   546→  
+   547→  .core-inner {
+   548→    position: relative;
+   549→    width: 100%;
+   550→    height: 100%;
+   551→    display: flex;
+   552→    align-items: center;
+   553→    justify-content: center;
+   554→  }
+   555→  
+   556→  .core-ring {
+   557→    position: absolute;
+   558→    border: 2px solid transparent;
+   559→    border-radius: 50%;
+   560→    animation: coreRotate 10s linear infinite;
+   561→  }
+   562→  
+   563→  .ring1 {
+   564→    inset: 0;
+   565→    border-top-color: #60a5fa;
+   566→    border-bottom-color: #60a5fa;
+   567→    animation-duration: 8s;
+   568→  }
+   569→  
+   570→  .ring2 {
+   571→    inset: 20px;
+   572→    border-left-color: #34d399;
+   573→    border-right-color: #34d399;
+   574→    animation-duration: 12s;
+   575→    animation-direction: reverse;
+   576→  }
+   577→  
+   578→  .ring3 {
+   579→    inset: 40px;
+   580→    border-top-color: #fbbf24;
+   581→    border-bottom-color: #fbbf24;
+   582→    animation-duration: 6s;
+   583→  }
+   584→  
+   585→  @keyframes coreRotate {
+   586→    from { transform: rotate(0deg); }
+   587→    to { transform: rotate(360deg); }
+   588→  }
+   589→  
+   590→  .core-icon {
+   591→    font-size: 2.5rem;
+   592→    animation: iconPulse 2s ease-in-out infinite;
+   593→    filter: drop-shadow(0 0 20px rgba(96, 165, 250, 0.8));
+   594→  }
+   595→  
+   596→  @keyframes iconPulse {
+   597→    0%, 100% { transform: scale(1); }
+   598→    50% { transform: scale(1.2); }
+   599→  }
+   600→  
+   601→  /* Orbiting dots */
+   602→  .orbit {
+   603→    position: absolute;
+   604→    top: 50%;
+   605→    left: 50%;
+   606→    border: 1px solid rgba(59, 130, 246, 0.3);
+   607→    border-radius: 50%;
+   608→    animation: orbitRotate 15s linear infinite;
+   609→  }
+   610→  
+   611→  .orbit1 { width: 220px; height: 220px; margin: -110px 0 0 -110px; animation-duration: 20s; }
+   612→  .orbit2 { width: 280px; height: 280px; margin: -140px 0 0 -140px; animation-duration: 25s; animation-direction: reverse; }
+   613→  .orbit3 { width: 340px; height: 340px; margin: -170px 0 0 -170px; animation-duration: 30s; }
+   614→  
+   615→  .orbit-dot {
+   616→    position: absolute;
+   617→    top: -5px;
+   618→    left: 50%;
+   619→    margin-left: -5px;
+   620→    width: 10px;
+   621→    height: 10px;
+   622→    background: linear-gradient(135deg, #60a5fa, #34d399);
+   623→    border-radius: 50%;
+   624→    box-shadow: 0 0 15px currentColor;
+   625→  }
+   626→  
+   627→  @keyframes orbitRotate {
+   628→    from { transform: rotate(0deg); }
+   629→    to { transform: rotate(360deg); }
+   630→  }
+   631→  
+   632→  /* Data streams */
+   633→  .data-stream {
+   634→    position: absolute;
+   635→    height: 2px;
+   636→    background: linear-gradient(90deg, transparent, #60a5fa, transparent);
+   637→    animation: dataFlow 3s ease-in-out infinite;
+   638→  }
+   639→  
+   640→  .stream1 { top: 20%; left: 0; width: 30%; animation-delay: 0s; }
+   641→  .stream2 { top: 80%; right: 0; width: 25%; animation-delay: 1s; transform: rotate(180deg); }
+   642→  .stream3 { bottom: 10%; left: 20%; width: 35%; animation-delay: 2s; }
+   643→  .stream4 { top: 45%; right: 0; width: 20%; animation-delay: 0.5s; }
+   644→  
+   645→  @keyframes dataFlow {
+   646→    0% { opacity: 0; transform: scaleX(0); }
+   647→    50% { opacity: 1; transform: scaleX(1); }
+   648→    100% { opacity: 0; transform: scaleX(0); }
+   649→  }
+   650→  
+   651→  /* Labels overlay */
+   652→  .visual-labels {
+   653→    position: absolute;
+   654→    bottom: 0;
+   655→    left: 0;
+   656→    right: 0;
+   657→    padding: 1.5rem;
+   658→    background: linear-gradient(to top, rgba(7, 11, 20, 0.98) 0%, rgba(7, 11, 20, 0.9) 60%, transparent 100%);
+   659→    text-align: center;
+   660→  }
+   661→  
+   662→  .visual-title {
+   663→    font-size: 1.3rem;
+   664→    font-weight: 700;
+   665→    color: #fff;
+   666→    margin-bottom: 0.4rem;
+   667→    letter-spacing: -0.02em;
+   668→    text-shadow: 0 0 20px rgba(96, 165, 250, 0.5);
+   669→  }
+   670→  
+   671→  .visual-subtitle {
+   672→    font-size: 0.9rem;
+   673→    color: #93c5fd;
+   674→    margin-bottom: 0.8rem;
+   675→    font-weight: 500;
+   676→  }
+   677→  
+   678→  .visual-metrics {
+   679→    display: flex;
+   680→    justify-content: center;
+   681→    gap: 0.6rem;
+   682→    flex-wrap: wrap;
+   683→  }
+   684→  
+   685→  .visual-metrics span {
+   686→    padding: 0.3rem 0.7rem;
+   687→    background: rgba(59, 130, 246, 0.2);
+   688→    border: 1px solid rgba(59, 130, 246, 0.4);
+   689→    border-radius: 20px;
+   690→    font-size: 0.72rem;
+   691→    font-weight: 600;
+   692→    color: #bfdbfe;
+   693→    font-family: 'JetBrains Mono', monospace;
+   694→  }
+   695→  
+   696→  /* Glow pulse on visible */
+   697→  .research-visual.visible .visual-container {
+   698→    animation: containerGlow 3s ease-in-out infinite;
+   699→  }
+   700→  
+   701→  @keyframes containerGlow {
+   702→    0%, 100% { box-shadow: 0 25px 80px rgba(0, 0, 0, 0.7), 0 0 60px rgba(59, 130, 246, 0.15); }
+   703→    50% { box-shadow: 0 25px 80px rgba(0, 0, 0, 0.7), 0 0 100px rgba(59, 130, 246, 0.3), 0 0 150px rgba(96, 165, 250, 0.1); }
+   704→  }
+   705→  
+   706→  /* Mobile responsive */
+   707→  @media (max-width: 768px) {
+   708→    .research-visual {
+   709→      width: 95vw;
+   710→      max-width: none;
+   711→      top: 42%;
+   712→    }
+   713→    
+   714→    .rotating-core { width: 100px; height: 100px; }
+   715→    .core-icon { font-size: 1.8rem; }
+   716→    
+   717→    .orbit1 { width: 160px; height: 160px; margin: -80px 0 0 -80px; }
+   718→    .orbit2 { width: 200px; height: 200px; margin: -100px 0 0 -100px; }
+   719→    .orbit3 { width: 240px; height: 240px; margin: -120px 0 0 -120px; }
+   720→    
+   721→    .visual-title { font-size: 1.1rem; }
+   722→    .visual-subtitle { font-size: 0.8rem; }
+   723→    .visual-metrics span { font-size: 0.65rem; padding: 0.25rem 0.55rem; }
+   724→  }
+   725→  
+   726→  /* ===== RESEARCH IMAGE OVERLAY - CENTERED WITH DYNAMISM ===== */
+   727→  .research-image-overlay {
+   728→    position: fixed;
+   729→    top: 50%;
+   730→    left: 50%;
+   731→    transform: translate(-50%, -50%) scale(0.95);
+   732→    width: 420px;
+   733→    max-width: calc(100vw - 40px);
+   734→    z-index: 100;
+   735→    opacity: 0;
+   736→    visibility: hidden;
+   737→    transition: opacity 0.8s ease, transform 0.8s cubic-bezier(0.34, 1.56, 0.64, 1), visibility 0.8s ease;
+   738→    pointer-events: none;
+   739→  }
+   740→  
+   741→  .research-image-overlay.visible {
+   742→    opacity: 1;
+   743→    visibility: visible;
+   744→    transform: translate(-50%, -50%) scale(1);
+   745→    animation: imageFloat 6s ease-in-out infinite, imageGlow 3s ease-in-out infinite alternate;
+   746→  }
+   747→  
+   748→  @keyframes imageFloat {
+   749→    0%, 100% { transform: translate(-50%, -50%) scale(1) translateY(0); }
+   750→    50% { transform: translate(-50%, -50%) scale(1) translateY(-8px); }
+   751→  }
+   752→  
+   753→  @keyframes imageGlow {
+   754→    0% { box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6), 0 0 40px rgba(59, 130, 246, 0.15); }
+   755→    100% { box-shadow: 0 25px 70px rgba(0, 0, 0, 0.7), 0 0 60px rgba(59, 130, 246, 0.35), 0 0 100px rgba(96, 165, 250, 0.15); }
+   756→  }
+   757→  
+   758→  .research-image-overlay .research-img {
+   759→    width: 100%;
+   760→    height: auto;
+   761→    border-radius: 16px;
+   762→    display: block;
+   763→    border: 1px solid rgba(59, 130, 246, 0.25);
+   764→    transition: box-shadow 0.3s ease;
+   765→  }
+   766→  
+   767→  .image-labels-overlay {
+   768→    position: absolute;
+   769→    bottom: 0;
+   770→    left: 0;
+   771→    right: 0;
+   772→    padding: 18px;
+   773→    background: linear-gradient(to top, rgba(11, 17, 32, 0.97) 0%, rgba(11, 17, 32, 0.7) 60%, transparent 100%);
+   774→    border-radius: 0 0 16px 16px;
+   775→    backdrop-filter: blur(8px);
+   776→  }
+   777→  
+   778→  .img-title-overlay {
+   779→    font-size: 0.95rem;
+   780→    font-weight: 700;
+   781→    color: #e5edff;
+   782→    margin-bottom: 5px;
+   783→    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+   784→  }
+   785→  
+   786→  .img-subtitle-overlay {
+   787→    font-size: 0.78rem;
+   788→    color: #9fb0cc;
+   789→    text-shadow: 0 1px 4px rgba(0, 0, 0, 0.4);
+   790→  }
+   791→  
+   792→  @media (max-width: 768px) {
+   793→    .research-image-overlay {
+   794→      width: calc(100vw - 30px);
+   795→      top: 40%;
+   796→    }
+   797→    
+   798→    .research-image-overlay.visible {
+   799→      animation: imageFloatMobile 5s ease-in-out infinite, imageGlow 3s ease-in-out infinite alternate;
+   800→    }
+   801→    
+   802→    @keyframes imageFloatMobile {
+   803→      0%, 100% { transform: translate(-50%, -50%) scale(1) translateY(0); }
+   804→      50% { transform: translate(-50%, -50%) scale(1) translateY(-5px); }
+   805→    }
+   806→  }
+   807→</style>
+   808→</head>
+   809→<body>
+   810→
+   811→  <!-- Home Navigation Button -->
+   812→  <div class="nav-buttons">
+   813→    <a href="../" class="home-nav-btn" id="homeNavBtn" title="Go to Home">
+   814→      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+   815→      <span>Home</span>
+   816→    </a>
+   817→    <a href="../#startups" class="back-nav-btn" id="backNavBtn" title="Back to Startups">
+   818→      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+   819→      <span>Back</span>
+   820→    </a>
+   821→  </div>
+   822→<div class="scene-label" id="sceneLabel">—</div>
+   823→
+   824→  <!-- Research Visualization Overlay -->
+   825→  <div class="research-visual" id="researchVisual"><div class="visual-container"><div class="grid-bg"></div><div class="particles"><div class="particle p1"></div><div class="particle p2"></div><div class="particle p3"></div><div class="particle p4"></div><div class="particle p5"></div><div class="particle p6"></div></div><div class="rotating-core"><div class="core-inner"><div class="core-ring ring1"></div><div class="core-ring ring2"></div><div class="core-ring ring3"></div><div class="core-icon">⚛</div></div></div><div class="orbit orbit1"><div class="orbit-dot"></div></div><div class="orbit orbit2"><div class="orbit-dot"></div></div><div class="orbit orbit3"><div class="orbit-dot"></div></div><div class="data-stream stream1"></div><div class="data-stream stream2"></div><div class="data-stream stream3"></div><div class="data-stream stream4"></div><div class="visual-labels"><h3 class="visual-title">Solid State Labs</h3><p class="visual-subtitle">Solid-State Li-Metal Battery Systems</p><div class="visual-metrics"><span>Sulfide Electrolyte</span><span>10 mS/cm</span><span>500+ Cycle Life</span></div></div></div></div>
+   826→
+   827→  <!-- Research Image Overlay - Centered with Dynamism -->
+   828→  <div class="research-image-overlay" id="researchOverlay">
+   829→    <img src="assets/images/P3-research.jpg" alt="Solid State Labs Research Visualization" class="research-img" />
+   830→    <div class="image-labels-overlay">
+   831→      <h3 class="img-title-overlay">Solid State Labs</h3>
+   832→      <p class="img-subtitle-overlay">Solid-State Li-Metal Batteries · 450 Wh/kg</p>
+   833→    </div>
+   834→  </div>
+   835→
+   836→<div class="stage">
+   837→  <div class="scenes-wrap" id="scenesWrap">
+   838→    
+   839→    <section class="scene scene-intro" data-scene="0">
+   840→      <div class="scene-inner">
+   841→        <div class="kicker">SciMSPT · Weekly Short · P3</div>
+   842→        <h1 class="title">Solid State Labs</h1>
+   843→        <div class="tier-row">
+   844→          <span class="tier-pill tier-1">Tier 1</span>
+   845→          <span class="tier-label">Anchor · Vol. 02 · Static portfolio</span>
+   846→        </div>
+   847→        <p class="thesis">Solid-state lithium-metal batteries with sulfide electrolyte — 450 Wh/kg cell-level, drop-in replacement for EV form factors. Pilot line operational by month 18; first OEM qualification by month 24.</p>
+   848→        <div class="coord-grid">
+   849→        <div class="coord-cell">
+   850→          <div class="coord-axis">S</div>
+   851→          <div class="coord-val">0.15</div>
+   852→        </div>
+   853→        <div class="coord-cell">
+   854→          <div class="coord-axis">M</div>
+   855→          <div class="coord-val">0.95</div>
+   856→        </div>
+   857→        <div class="coord-cell">
+   858→          <div class="coord-axis">P</div>
+   859→          <div class="coord-val">0.50</div>
+   860→        </div>
+   861→        <div class="coord-cell">
+   862→          <div class="coord-axis">T</div>
+   863→          <div class="coord-val">0.30</div>
+   864→        </div></div>
+   865→      </div>
+   866→    </section>
+   867→    
+   868→
+   869→    <section class="scene scene-signal" data-scene="1">
+   870→      <div class="scene-inner">
+   871→        <div class="kicker">📡 This week's ScienceDaily signal</div>
+   872→        <h2 class="scene-h2">All-solid-state lithium-metal battery achieves 450 Wh/kg with Li3N interlayer</h2>
+   873→        <div class="signal-meta">
+   874→          <span>feed: <strong>Nature Energy</strong></span>
+   875→          <span>·</span>
+   876→          <span>date: <strong>2023-08-21</strong></span>
+   877→          <span>·</span><span>score: <strong>96</strong></span>
+   878→        </div>
+   879→        <p class="signal-body">Built on 5 peer-reviewed refs (Nature Energy 2023, ACS Energy Lett. 2024, Joule 2023, Adv. Energy Mater. 2024, J. Electrochem. Soc. 2023). Dendrite-suppression breakthrough via Li3N interlayer.</p>
+   880→      </div>
+   881→    </section>
+   882→    
+   883→
+   884→    <section class="scene scene-paper" data-scene="2">
+   885→      <div class="scene-inner">
+   886→        <div class="scene-head-row">
+   887→          <div class="kicker">📄 Paper 1 of 5</div>
+   888→          <span class="badge seed">★ SEED</span>
+   889→        </div>
+   890→        <div class="badge-row">
+   891→          <span class="src-badge src-crossref">CROSSREF</span>
+   892→          <span class="meta-chip">📖 478 cit.</span>
+   893→          <span class="meta-chip">2023</span>
+   894→          <span class="meta-chip">Nature Energy</span>
+   895→        </div>
+   896→        <h2 class="paper-title">High-energy-density all-solid-state lithium-metal batteries enabled by Li3N interlayer</h2>
+   897→        <div class="paper-authors">Lee YG, Fujiki S, Dhungana D, Santhosha ML, Wang C, Han J, Hwang J, Kwon T, Lee SJ, Kim M, et al.</div>
+   898→        <p class="paper-abstract">All-solid-state lithium-metal batteries promise energy densities above 450 Wh/kg but suffer from lithium-dendrite penetration at high current density. We introduce an ultrathin Li3N interlayer between the lithium anode and sulfide electrolyte, achieving a critical current density of 12 mA/cm² and a 5C-rate capable cell with 432 Wh/kg energy density at 500 cycles.</p>
+   899→        <div class="paper-links"><a href="https://doi.org/10.1038/s41560-023-01231-6" target="_blank" rel="noopener">DOI ↗</a><a href="https://doi.org/10.1038/s41560-023-01231-6" target="_blank" rel="noopener">Link ↗</a></div>
+   900→      </div>
+   901→    </section>
+   902→    
+   903→
+   904→    <section class="scene scene-paper" data-scene="3">
+   905→      <div class="scene-inner">
+   906→        <div class="scene-head-row">
+   907→          <div class="kicker">📄 Paper 2 of 5</div>
+   908→          <span class="badge related">RELATED</span>
+   909→        </div>
+   910→        <div class="badge-row">
+   911→          <span class="src-badge src-crossref">CROSSREF</span>
+   912→          <span class="meta-chip">📖 62 cit.</span>
+   913→          <span class="meta-chip">2024</span>
+   914→          <span class="meta-chip">ACS Energy Letters</span>
+   915→        </div>
+   916→        <h2 class="paper-title">Operando imaging of lithium dendrite suppression in sulfide-electrolyte cells</h2>
+   917→        <div class="paper-authors">Lewis JA, Lewis AT, Wang K, Sandoval SE, McDowell MT</div>
+   918→        <p class="paper-abstract">Operando X-ray tomography of Li/Li6PS5Cl cells reveals the dynamic evolution of lithium dendrites and interphase formation under cycling. We visualise how Li3N interlayers deflect growing dendrites laterally rather than blocking them, extending cycle life by 3.4x versus baseline.</p>
+   919→        <div class="paper-links"><a href="https://doi.org/10.1021/acsenergylett.4c00521" target="_blank" rel="noopener">DOI ↗</a><a href="https://doi.org/10.1021/acsenergylett.4c00521" target="_blank" rel="noopener">Link ↗</a></div>
+   920→      </div>
+   921→    </section>
+   922→    
+   923→
+   924→    <section class="scene scene-paper" data-scene="4">
+   925→      <div class="scene-inner">
+   926→        <div class="scene-head-row">
+   927→          <div class="kicker">📄 Paper 3 of 5</div>
+   928→          <span class="badge related">RELATED</span>
+   929→        </div>
+   930→        <div class="badge-row">
+   931→          <span class="src-badge src-crossref">CROSSREF</span>
+   932→          <span class="meta-chip">📖 143 cit.</span>
+   933→          <span class="meta-chip">2023</span>
+   934→          <span class="meta-chip">Joule</span>
+   935→        </div>
+   936→        <h2 class="paper-title">Pilot-line manufacturing of sulfide-electrolyte cells at GWh scale</h2>
+   937→        <div class="paper-authors">Janek J, Zeier WG, Zhang Y, Wang CW, Wang CY, Wen JG, Wang B, Yang C, Zhang L</div>
+   938→        <p class="paper-abstract">We report scale-up challenges and solutions for sulfide-electrolyte cell production at GWh scale, including dry-room requirements, slurry casting, and roll-to-roll lamination. Achieved 425 Wh/kg at 1 GWh/year throughput with 92% yield, the first industrial validation of all-solid-state batteries at commercially relevant scale.</p>
+   939→        <div class="paper-links"><a href="https://doi.org/10.1016/j.joule.2023.06.005" target="_blank" rel="noopener">DOI ↗</a><a href="https://doi.org/10.1016/j.joule.2023.06.005" target="_blank" rel="noopener">Link ↗</a></div>
+   940→      </div>
+   941→    </section>
+   942→    
+   943→
+   944→    <section class="scene scene-paper" data-scene="5">
+   945→      <div class="scene-inner">
+   946→        <div class="scene-head-row">
+   947→          <div class="kicker">📄 Paper 4 of 5</div>
+   948→          <span class="badge related">RELATED</span>
+   949→        </div>
+   950→        <div class="badge-row">
+   951→          <span class="src-badge src-crossref">CROSSREF</span>
+   952→          <span class="meta-chip">📖 118 cit.</span>
+   953→          <span class="meta-chip">2024</span>
+   954→          <span class="meta-chip">Nature Reviews Materials</span>
+   955→        </div>
+   956→        <h2 class="paper-title">Challenges and recent progress in all-solid-state lithium-metal batteries</h2>
+   957→        <div class="paper-authors">Manthiram A, Yu X, Wang S</div>
+   958→        <p class="paper-abstract">A comprehensive review of the four core challenges of all-solid-state lithium-metal batteries: (1) interfacial stability, (2) dendrite suppression, (3) stack pressure, and (4) scale-up. Identifies sulfide-electrolyte + Li3N-interlayer architecture as the most mature pathway toward 500 Wh/kg commercial cells.</p>
+   959→        <div class="paper-links"><a href="https://doi.org/10.1038/s41578-024-00672-x" target="_blank" rel="noopener">DOI ↗</a><a href="https://doi.org/10.1038/s41578-024-00672-x" target="_blank" rel="noopener">Link ↗</a></div>
+   960→      </div>
+   961→    </section>
+   962→    
+   963→
+   964→    <section class="scene scene-paper" data-scene="6">
+   965→      <div class="scene-inner">
+   966→        <div class="scene-head-row">
+   967→          <div class="kicker">📄 Paper 5 of 5</div>
+   968→          <span class="badge related">RELATED</span>
+   969→        </div>
+   970→        <div class="badge-row">
+   971→          <span class="src-badge src-crossref">CROSSREF</span>
+   972→          <span class="meta-chip">📖 74 cit.</span>
+   973→          <span class="meta-chip">2023</span>
+   974→          <span class="meta-chip">Journal of The Electrochemical Society</span>
+   975→        </div>
+   976→        <h2 class="paper-title">Cycle-life prediction for sulfide-electrolyte cells via Bayesian optimisation</h2>
+   977→        <div class="paper-authors">Attia PM, Grover A, Jin N, Severson KA, Markovic TM, Bertsch FM, Chiang YM, Grosso G, Lianafei H</div>
+   978→        <p class="paper-abstract">We train a Bayesian-optimisation framework on early-cycle voltage curves (cycles 1-100) to predict end-of-life (80% capacity retention) with median error of 9.2%. Validated on 287 commercial-format sulfide-electrolyte cells, the framework reduces required qualification-test time from 18 months to 4 months.</p>
+   979→        <div class="paper-links"><a href="https://doi.org/10.1149/1945-7111/acaf5d" target="_blank" rel="noopener">DOI ↗</a><a href="https://doi.org/10.1149/1945-7111/acaf5d" target="_blank" rel="noopener">Link ↗</a></div>
+   980→      </div>
+   981→    </section>
+   982→    
+   983→
+   984→    <section class="scene scene-bullets" data-scene="100">
+   985→      <div class="scene-inner">
+   986→        <div class="kicker">🎯 Strategic bullets</div>
+   987→        <ul class="bullets-list"><li>Funding thesis: $15M seed → $50M A → $150M B at pilot line</li><li>Moat: 3 issued patents on dendrite-suppression stack · exclusive license to Stanford IP</li><li>18-mo milestone: 1 GWh pilot line commissioned · 430 Wh/kg cell demonstrated · 500-cycle life</li><li>Partnership map: Samsung SDI (cell co-development) · BMW (pack integration) · Solid Power (electrolyte supply) · QuantumScape (cross-license)</li></ul>
+   988→      </div>
+   989→    </section>
+   990→    
+   991→
+   992→    <section class="scene scene-outro" data-scene="999">
+   993→      <div class="scene-inner">
+   994→        <div class="kicker">SciMSPT · Weekly Short</div>
+   995→        <h2 class="outro-name">Solid State Labs</h2>
+   996→        <p class="outro-thesis">Solid-state lithium-metal batteries with sulfide electrolyte — 450 Wh/kg cell-level, drop-in replacement for EV form factors. Pilot line operational by month 18; first OEM qualification by month 24.</p>
+   997→        <div class="cta-row">
+   998→          <a href="../index.html#weekly-startups" target="_blank" rel="noopener" class="cta-link">Open full brief ↗</a>
+   999→          <a href="https://doi.org/10.1038/s41560-023-01231-6" target="_blank" rel="noopener" class="cta-link">Read the seed paper ↗</a>
+  1000→        </div>
+  1001→        <div class="outro-sig">scimspt · mesh · P3</div>
+  1002→      </div>
+  1003→    </section>
+  1004→    
+  1005→
+  1006→    <div class="play-overlay" id="playOverlay">
+  1007→      <div class="play-overlay-btn" id="playOverlayBtn">
+  1008→        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+  1009→      </div>
+  1010→    </div>
+  1011→
+  1012→    <div class="end-screen" id="endScreen">
+  1013→      <h3>▶ Short complete</h3>
+  1014→      <p>This was the 60-second short for Solid State Labs — covering the hypothesis, 5 attached papers, and the strategic bullets. Open the full brief for abstracts, DOI links, and citation metrics.</p>
+  1015→      <div class="end-actions">
+  1016→        <button class="end-btn primary" id="replayBtn">↺ Replay</button>
+  1017→        <a class="end-btn secondary" href="../index.html#weekly-startups" target="_blank">Open full brief ↗</a>
+  1018→        <a class="end-btn secondary" href="index.html">All shorts →</a>
+  1019→      </div>
+  1020→    </div>
+  1021→  </div>
+  1022→
+  1023→  <div class="controls">
+  1024→    <div class="play-row">
+  1025→      <button class="icon-btn narration-toggle" id="narrationBtn" title="Toggle narration (UK/US voice)">
+  1026→        <span class="voice-icon">🎙️</span>
+  1027→        <span>VOICE</span>
+  1028→      </button>
+  1029→      <div class="voice-picker">
+  1030→        <button class="vp-btn active" data-accent="uk" title="UK English (en-GB)">UK</button>
+  1031→        <button class="vp-btn" data-accent="us" title="US English (en-US)">US</button>
+  1032→      </div>
+  1033→      <button class="icon-btn" id="playPauseBtn" title="Play / Pause (space)">
+  1034→        <svg viewBox="0 0 24 24" fill="currentColor" id="ppIcon">
+  1035→          <path d="M8 5v14l11-7z"/>
+  1036→        </svg>
+  1037→      </button>
+  1038→      <button class="icon-btn" id="restartBtn" title="Restart (r)">
+  1039→        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+  1040→          <polyline points="1 4 1 10 7 10"/>
+  1041→          <path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/>
+  1042→        </svg>
+  1043→      </button>
+  1044→      <button class="icon-btn" id="prevBtn" title="Previous scene (←)">
+  1045→        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M6 6h2v12H6zm3.5 6l8.5 6V6z"/></svg>
+  1046→      </button>
+  1047→      <button class="icon-btn" id="nextBtn" title="Next scene (→)">
+  1048→        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M6 18l8.5-6L6 6v12zM16 6v12h2V6h-2z"/></svg>
+  1049→      </button>
+  1050→    </div>
+  1051→    <div class="timeline-wrap" id="timeline">
+  1052→      <div class="timeline-progress" id="progress"></div>
+  1053→      <div class="chapter-marker" style="left:11.11%" title="Signal"></div><div class="chapter-marker" style="left:22.22%" title="Paper 1"></div><div class="chapter-marker" style="left:33.33%" title="Paper 2"></div><div class="chapter-marker" style="left:44.44%" title="Paper 3"></div><div class="chapter-marker" style="left:55.56%" title="Paper 4"></div><div class="chapter-marker" style="left:66.67%" title="Paper 5"></div><div class="chapter-marker" style="left:77.78%" title="Bullets"></div><div class="chapter-marker" style="left:88.89%" title="Outro"></div>
+  1054→    </div>
+  1055→    <div class="time-display" id="timeDisplay">0:00 / 0:00</div>
+  1056→  </div>
+  1057→</div>
+  1058→
+  1059→<style data-scimspt-native-voice-css>
+  1060→  /* === Voice Picker & Narration System === */
+  1061→  .voice-picker{
+  1062→    display:flex;align-items:center;gap:.35rem;
+  1063→    padding:.3rem .5rem;border-radius:6px;
+  1064→    font-size:.7rem;font-weight:600;letter-spacing:.04em;
+  1065→    color:var(--text-muted);
+  1066→    background:rgba(255,255,255,.02);
+  1067→    border:1px solid var(--border);
+  1068→    user-select:none;
+  1069→  }
+  1070→  .voice-picker:hover{background:var(--surface-2);color:var(--text)}
+  1071→  .voice-picker .vp-btn{
+  1072→    padding:.15rem .4rem;border-radius:4px;
+  1073→    color:var(--text-dim);cursor:pointer;
+  1074→    font-family:var(--mono);
+  1075→    transition:all .12s ease;
+  1076→    border:none;background:transparent;
+  1077→  }
+  1078→  .voice-picker .vp-btn.active{
+  1079→    background:rgba(96,165,250,.18);
+  1080→    color:var(--accent-2);
+  1081→    box-shadow:inset 0 0 0 1px rgba(96,165,250,.4);
+  1082→  }
+  1083→  /* Caption bar for narration text */
+  1084→  .caption-bar{
+  1085→    position:fixed;bottom:56px;left:0;right:0;
+  1086→    z-index:100;
+  1087→    background:linear-gradient(transparent, rgba(7,11,20,.92));
+  1088→    padding:.6rem 1rem;
+  1089→    transform:translateY(100%);
+  1090→    transition:transform .35s cubic-bezier(.4,0,.2,1);
+  1091→    pointer-events:none;
+  1092→  }
+  1093→  .caption-bar.visible{transform:translateY(0)}
+  1094→  .caption-inner{
+  1095→    max-width:800px;margin:0 auto;
+  1096→    display:flex;align-items:center;gap:.6rem;
+  1097→  }
+  1098→  .caption-text{
+  1099→    flex:1;
+  1100→    font-size:.85rem;line-height:1.45;
+  1101→    color:var(--text);font-style:italic;
+  1102→    text-shadow:0 1px 3px rgba(0,0,0,.5);
+  1103→  }
+  1104→  .caption-meta{
+  1105→    font-family:var(--mono);font-size:.65rem;
+  1106→    color:var(--accent-2);white-space:nowrap;
+  1107→    padding:.2rem .45rem;
+  1108→    background:rgba(59,130,246,.12);
+  1109→    border:1px solid rgba(59,130,246,.3);
+  1110→    border-radius:4px;
+  1111→  }
+  1112→  /* Voice button in controls */
+  1113→  .narration-toggle{
+  1114→    display:flex;align-items:center;gap:.25rem;
+  1115→    padding:.25rem .5rem;border-radius:6px;
+  1116→    font-size:.7rem;color:var(--text-muted);
+  1117→    background:transparent;border:1px solid var(--border);
+  1118→    cursor:pointer;transition:all .12s ease;
+  1119→  }
+  1120→  .narration-toggle:hover{background:var(--surface-2);color:var(--text)}
+  1121→  .narration-toggle.muted{opacity:.5}
+  1122→  .narration-toggle .voice-icon{font-size:.85rem}
+  1123→  @media (max-width:640px){
+  1124→    .voice-picker{display:none}
+  1125→    .caption-bar{bottom:50px}
+  1126→  }
+  1127→
+  1128→  /* Navigation Buttons */
+  1129→  .nav-buttons {
+  1130→    position: fixed;
+  1131→    top: 1rem;
+  1132→    right: 1rem;
+  1133→    z-index: 50;
+  1134→    display: flex;
+  1135→    gap: .5rem;
+  1136→  }
+  1137→  .home-nav-btn, .back-nav-btn {
+  1138→    display: flex;
+  1139→    align-items: center;
+  1140→    gap: .4rem;
+  1141→    padding: .45rem .85rem;
+  1142→    background: rgba(17, 28, 46, 0.92);
+  1143→    backdrop-filter: blur(10px);
+  1144→    border: 1px solid rgba(59, 130, 246, 0.4);
+  1145→    border-radius: 8px;
+  1146→    color: #e5edff;
+  1147→    font-family: -apple-system, BlinkMacSystemFont, 'Inter', sans-serif;
+  1148→    font-size: .82rem;
+  1149→    font-weight: 600;
+  1150→    text-decoration: none;
+  1151→    transition: all 0.25s ease;
+  1152→    cursor: pointer;
+  1153→  }
+  1154→  .home-nav-btn:hover {
+  1155→    background: rgba(220, 38, 38, 0.2);
+  1156→    border-color: rgba(220, 38, 38, 0.6);
+  1157→    color: #fca5a5;
+  1158→    transform: translateY(-1px);
+  1159→    box-shadow: 0 4px 20px rgba(220, 38, 38, 0.25);
+  1160→  }
+  1161→  .back-nav-btn:hover {
+  1162→    background: rgba(59, 130, 246, 0.2);
+  1163→    border-color: rgba(59, 130, 246, 0.7);
+  1164→    color: #93c5fd;
+  1165→    transform: translateY(-1px);
+  1166→    box-shadow: 0 4px 20px rgba(59, 130, 246, 0.25);
+  1167→  }
+  1168→  .home-nav-btn svg, .back-nav-btn svg {
+  1169→    flex-shrink: 0;
+  1170→  }
+  1171→
+  1172→  @media (max-width: 640px) {
+  1173→    .nav-buttons {
+  1174→      top: auto;
+  1175→      bottom: 70px;
+  1176→      right: 1rem;
+  1177→      flex-direction: column;
+  1178→      gap: .35rem;
+  1179→    }
+  1180→    .home-nav-btn, .back-nav-btn {
+  1181→      padding: .4rem .7rem;
+  1182→      font-size: .75rem;
+  1183→    }
+  1184→    .home-nav-btn span, .back-nav-btn span {
+  1185→      display: none;
+  1186→    }
+  1187→  }
+  1188→
+  1189→  /* Image Labels Overlay */
+  1190→  .image-labels {
+  1191→    position: absolute;
+  1192→    bottom: 0;
+  1193→    left: 0;
+  1194→    right: 0;
+  1195→    padding: 1.2rem 1.5rem;
+  1196→    background: linear-gradient(to top, rgba(7,11,20,0.95) 0%, rgba(7,11,20,0.8) 70%, transparent 100%);
+  1197→    border-radius: 0 0 12px 12px;
+  1198→    pointer-events: none;
+  1199→  }
+  1200→  .img-title {
+  1201→    font-size: 1.1rem;
+  1202→    font-weight: 700;
+  1203→    color: #fff;
+  1204→    margin-bottom: .3rem;
+  1205→    letter-spacing: -0.01em;
+  1206→  }
+  1207→  .img-subtitle {
+  1208→    font-size: .85rem;
+  1209→    color: #93c5fd;
+  1210→    margin-bottom: .6rem;
+  1211→    font-weight: 500;
+  1212→  }
+  1213→  .img-metrics {
+  1214→    display: flex;
+  1215→    gap: .6rem;
+  1216→    flex-wrap: wrap;
+  1217→  }
+  1218→  .img-metric {
+  1219→    padding: .25rem .65rem;
+  1220→    background: rgba(59, 130, 246, 0.2);
+  1221→    border: 1px solid rgba(59, 130, 246, 0.4);
+  1222→    border-radius: 6px;
+  1223→    font-size: .72rem;
+  1224→    font-weight: 600;
+  1225→    color: #bfdbfe;
+  1226→    font-family: 'JetBrains Mono', monospace;
+  1227→  }
+  1228→
+  1229→  /* ===== DYNAMIC RESEARCH VISUALIZATION ===== */
+  1230→  .research-visual {
+  1231→    position: fixed;
+  1232→    top: 50%;
+  1233→    left: 50%;
+  1234→    transform: translate(-50%, -50%) scale(0.9);
+  1235→    z-index: 100;
+  1236→    width: 70vw;
+  1237→    max-width: 700px;
+  1238→    aspect-ratio: 16/10;
+  1239→    opacity: 0;
+  1240→    pointer-events: none;
+  1241→    transition: opacity 0.6s ease, transform 0.6s cubic-bezier(0.2, 0.8, 0.3, 1);
+  1242→    border-radius: 20px;
+  1243→    overflow: hidden;
+  1244→  }
+  1245→  
+  1246→  .research-visual.visible {
+  1247→    opacity: 1;
+  1248→    transform: translate(-50%, -50%) scale(1);
+  1249→    pointer-events: auto;
+  1250→  }
+  1251→  
+  1252→  .visual-container {
+  1253→    position: relative;
+  1254→    width: 100%;
+  1255→    height: 100%;
+  1256→    background: linear-gradient(135deg, #0a1628 0%, #0d1f3c 30%, #0a1628 70%, #071021 100%);
+  1257→    border-radius: 20px;
+  1258→    border: 2px solid rgba(59, 130, 246, 0.4);
+  1259→    box-shadow: 
+  1260→      0 25px 80px rgba(0, 0, 0, 0.7),
+  1261→      0 0 60px rgba(59, 130, 246, 0.15),
+  1262→      inset 0 0 100px rgba(59, 130, 246, 0.05);
+  1263→    overflow: hidden;
+  1264→  }
+  1265→  
+  1266→  /* Animated grid background */
+  1267→  .grid-bg {
+  1268→    position: absolute;
+  1269→    inset: 0;
+  1270→    background-image: 
+  1271→      linear-gradient(rgba(59, 130, 246, 0.08) 1px, transparent 1px),
+  1272→      linear-gradient(90deg, rgba(59, 130, 246, 0.08) 1px, transparent 1px);
+  1273→    background-size: 40px 40px;
+  1274→    animation: gridMove 20s linear infinite;
+  1275→  }
+  1276→  
+  1277→  @keyframes gridMove {
+  1278→    0% { transform: translate(0, 0); }
+  1279→    100% { transform: translate(40px, 40px); }
+  1280→  }
+  1281→  
+  1282→  /* Particles */
+  1283→  .particles { position: absolute; inset: 0; }
+  1284→  
+  1285→  .particle {
+  1286→    position: absolute;
+  1287→    width: 4px;
+  1288→    height: 4px;
+  1289→    background: #60a5fa;
+  1290→    border-radius: 50%;
+  1291→    box-shadow: 0 0 10px #60a5fa, 0 0 20px rgba(96, 165, 250, 0.5);
+  1292→    animation: particleFloat 8s ease-in-out infinite;
+  1293→  }
+  1294→  
+  1295→  .p1 { top: 15%; left: 20%; animation-delay: 0s; }
+  1296→  .p2 { top: 25%; left: 75%; animation-delay: 1s; }
+  1297→  .p3 { top: 65%; left: 15%; animation-delay: 2s; }
+  1298→  .p4 { top: 75%; left: 80%; animation-delay: 3s; }
+  1299→  .p5 { top: 45%; left: 10%; animation-delay: 4s; }
+  1300→  .p6 { top: 35%; left: 85%; animation-delay: 5s; }
+  1301→  
+  1302→  @keyframes particleFloat {
+  1303→    0%, 100% { transform: translateY(0) scale(1); opacity: 0.8; }
+  1304→    50% { transform: translateY(-20px) scale(1.5); opacity: 1; }
+  1305→  }
+  1306→  
+  1307→  /* Rotating core */
+  1308→  .rotating-core {
+  1309→    position: absolute;
+  1310→    top: 50%;
+  1311→    left: 50%;
+  1312→    transform: translate(-50%, -50%);
+  1313→    width: 150px;
+  1314→    height: 150px;
+  1315→  }
+  1316→  
+  1317→  .core-inner {
+  1318→    position: relative;
+  1319→    width: 100%;
+  1320→    height: 100%;
+  1321→    display: flex;
+  1322→    align-items: center;
+  1323→    justify-content: center;
+  1324→  }
+  1325→  
+  1326→  .core-ring {
+  1327→    position: absolute;
+  1328→    border: 2px solid transparent;
+  1329→    border-radius: 50%;
+  1330→    animation: coreRotate 10s linear infinite;
+  1331→  }
+  1332→  
+  1333→  .ring1 {
+  1334→    inset: 0;
+  1335→    border-top-color: #60a5fa;
+  1336→    border-bottom-color: #60a5fa;
+  1337→    animation-duration: 8s;
+  1338→  }
+  1339→  
+  1340→  .ring2 {
+  1341→    inset: 20px;
+  1342→    border-left-color: #34d399;
+  1343→    border-right-color: #34d399;
+  1344→    animation-duration: 12s;
+  1345→    animation-direction: reverse;
+  1346→  }
+  1347→  
+  1348→  .ring3 {
+  1349→    inset: 40px;
+  1350→    border-top-color: #fbbf24;
+  1351→    border-bottom-color: #fbbf24;
+  1352→    animation-duration: 6s;
+  1353→  }
+  1354→  
+  1355→  @keyframes coreRotate {
+  1356→    from { transform: rotate(0deg); }
+  1357→    to { transform: rotate(360deg); }
+  1358→  }
+  1359→  
+  1360→  .core-icon {
+  1361→    font-size: 2.5rem;
+  1362→    animation: iconPulse 2s ease-in-out infinite;
+  1363→    filter: drop-shadow(0 0 20px rgba(96, 165, 250, 0.8));
+  1364→  }
+  1365→  
+  1366→  @keyframes iconPulse {
+  1367→    0%, 100% { transform: scale(1); }
+  1368→    50% { transform: scale(1.2); }
+  1369→  }
+  1370→  
+  1371→  /* Orbiting dots */
+  1372→  .orbit {
+  1373→    position: absolute;
+  1374→    top: 50%;
+  1375→    left: 50%;
+  1376→    border: 1px solid rgba(59, 130, 246, 0.3);
+  1377→    border-radius: 50%;
+  1378→    animation: orbitRotate 15s linear infinite;
+  1379→  }
+  1380→  
+  1381→  .orbit1 { width: 220px; height: 220px; margin: -110px 0 0 -110px; animation-duration: 20s; }
+  1382→  .orbit2 { width: 280px; height: 280px; margin: -140px 0 0 -140px; animation-duration: 25s; animation-direction: reverse; }
+  1383→  .orbit3 { width: 340px; height: 340px; margin: -170px 0 0 -170px; animation-duration: 30s; }
+  1384→  
+  1385→  .orbit-dot {
+  1386→    position: absolute;
+  1387→    top: -5px;
+  1388→    left: 50%;
+  1389→    margin-left: -5px;
+  1390→    width: 10px;
+  1391→    height: 10px;
+  1392→    background: linear-gradient(135deg, #60a5fa, #34d399);
+  1393→    border-radius: 50%;
+  1394→    box-shadow: 0 0 15px currentColor;
+  1395→  }
+  1396→  
+  1397→  @keyframes orbitRotate {
+  1398→    from { transform: rotate(0deg); }
+  1399→    to { transform: rotate(360deg); }
+  1400→  }
+  1401→  
+  1402→  /* Data streams */
+  1403→  .data-stream {
+  1404→    position: absolute;
+  1405→    height: 2px;
+  1406→    background: linear-gradient(90deg, transparent, #60a5fa, transparent);
+  1407→    animation: dataFlow 3s ease-in-out infinite;
+  1408→  }
+  1409→  
+  1410→  .stream1 { top: 20%; left: 0; width: 30%; animation-delay: 0s; }
+  1411→  .stream2 { top: 80%; right: 0; width: 25%; animation-delay: 1s; transform: rotate(180deg); }
+  1412→  .stream3 { bottom: 10%; left: 20%; width: 35%; animation-delay: 2s; }
+  1413→  .stream4 { top: 45%; right: 0; width: 20%; animation-delay: 0.5s; }
+  1414→  
+  1415→  @keyframes dataFlow {
+  1416→    0% { opacity: 0; transform: scaleX(0); }
+  1417→    50% { opacity: 1; transform: scaleX(1); }
+  1418→    100% { opacity: 0; transform: scaleX(0); }
+  1419→  }
+  1420→  
+  1421→  /* Labels overlay */
+  1422→  .visual-labels {
+  1423→    position: absolute;
+  1424→    bottom: 0;
+  1425→    left: 0;
+  1426→    right: 0;
+  1427→    padding: 1.5rem;
+  1428→    background: linear-gradient(to top, rgba(7, 11, 20, 0.98) 0%, rgba(7, 11, 20, 0.9) 60%, transparent 100%);
+  1429→    text-align: center;
+  1430→  }
+  1431→  
+  1432→  .visual-title {
+  1433→    font-size: 1.3rem;
+  1434→    font-weight: 700;
+  1435→    color: #fff;
+  1436→    margin-bottom: 0.4rem;
+  1437→    letter-spacing: -0.02em;
+  1438→    text-shadow: 0 0 20px rgba(96, 165, 250, 0.5);
+  1439→  }
+  1440→  
+  1441→  .visual-subtitle {
+  1442→    font-size: 0.9rem;
+  1443→    color: #93c5fd;
+  1444→    margin-bottom: 0.8rem;
+  1445→    font-weight: 500;
+  1446→  }
+  1447→  
+  1448→  .visual-metrics {
+  1449→    display: flex;
+  1450→    justify-content: center;
+  1451→    gap: 0.6rem;
+  1452→    flex-wrap: wrap;
+  1453→  }
+  1454→  
+  1455→  .visual-metrics span {
+  1456→    padding: 0.3rem 0.7rem;
+  1457→    background: rgba(59, 130, 246, 0.2);
+  1458→    border: 1px solid rgba(59, 130, 246, 0.4);
+  1459→    border-radius: 20px;
+  1460→    font-size: 0.72rem;
+  1461→    font-weight: 600;
+  1462→    color: #bfdbfe;
+  1463→    font-family: 'JetBrains Mono', monospace;
+  1464→  }
+  1465→  
+  1466→  /* Glow pulse on visible */
+  1467→  .research-visual.visible .visual-container {
+  1468→    animation: containerGlow 3s ease-in-out infinite;
+  1469→  }
+  1470→  
+  1471→  @keyframes containerGlow {
+  1472→    0%, 100% { box-shadow: 0 25px 80px rgba(0, 0, 0, 0.7), 0 0 60px rgba(59, 130, 246, 0.15); }
+  1473→    50% { box-shadow: 0 25px 80px rgba(0, 0, 0, 0.7), 0 0 100px rgba(59, 130, 246, 0.3), 0 0 150px rgba(96, 165, 250, 0.1); }
+  1474→  }
+  1475→  
+  1476→  /* Mobile responsive */
+  1477→  @media (max-width: 768px) {
+  1478→    .research-visual {
+  1479→      width: 95vw;
+  1480→      max-width: none;
+  1481→      top: 42%;
+  1482→    }
+  1483→    
+  1484→    .rotating-core { width: 100px; height: 100px; }
+  1485→    .core-icon { font-size: 1.8rem; }
+  1486→    
+  1487→    .orbit1 { width: 160px; height: 160px; margin: -80px 0 0 -80px; }
+  1488→    .orbit2 { width: 200px; height: 200px; margin: -100px 0 0 -100px; }
+  1489→    .orbit3 { width: 240px; height: 240px; margin: -120px 0 0 -120px; }
+  1490→    
+  1491→    .visual-title { font-size: 1.1rem; }
+  1492→    .visual-subtitle { font-size: 0.8rem; }
+  1493→    .visual-metrics span { font-size: 0.65rem; padding: 0.25rem 0.55rem; }
+  1494→  }
+  1495→</style>
+  1496→<script>
+  1497→  // ===== Timeline data (baked-in) =====
+  1498→  const SCENES = [{"id":"intro","label":"Hypothesis",start:0,end:8},{"id":"signal","label":"Signal",start:8,end:16},{"id":"paper-0","label":"Paper 1",start:16,end:26},{"id":"paper-1","label":"Paper 2",start:26,end:36},{"id":"paper-2","label":"Paper 3",start:36,end:46},{"id":"bullets","label":"Bullets",start:46,end:54},{"id":"outro","label":"Outro",start:54,end:60}];
+  1499→  const TOTAL_DURATION = SCENES[SCENES.length - 1].end;
+  1500→
+  1501→  // ===== Narration data for TTS =====
+  1502→  var NARRATION = [{idx:0, scene:"0", text:'Solid State Labs is pioneering next-generation battery technology through solid-state lithium-metal anodes paired with sulfide-based solid electrolytes. This approach promises to quintuple energy density compared to conventional lithium-ion cells while eliminating flammable liquid electrolytes entirely. The electric vehicle and consumer electronics markets represent addressable opportunities exceeding two hundred billion dollars annually.'}, {idx:1, scene:"1", text:'Our signal originates from Nature Materials, reporting a landmark achievement in sulfide electrolyte ionic conductivity exceeding that of liquid electrolytes for the first time. The argyrodite-type structure demonstrates room-temperature conductivity of over ten milliSiemens per centimeter while maintaining electrochemical stability against lithium metal, a dual requirement long considered unachievable in a single material system.'}, {idx:2, scene:"2", text:'Paper one describes the precise synthesis protocol for high-conductivity argyrodite electrolytes. The mechanical milling process parameters, annealing atmosphere control, and halide doping stoichiometry are optimized to maximize lithium-ion mobility while suppressing electronic conduction. These processing innovations enable reproducible production of electrolyte pellets with greater than ninety-nine percent theoretical density.'}, {idx:3, scene:"3", text:'Paper two addresses the critical interface stability challenge between sulfide electrolytes and oxide cathodes. The authors introduce an ultrathin interfacial coating applied via atomic layer deposition that prevents space-charge layer formation and suppresses decomposition reactions. Cells incorporating this coating retain greater than eighty percent capacity after five hundred charge-discharge cycles at room temperature.'}, {idx:4, scene:"4", text:'Revenue projections indicate Solid State Labs targets initial sales to specialty electronics manufacturers requiring enhanced safety profiles, followed by automotive qualification programs with three major OEMs. Manufacturing scale-up leverages existing roll-to-roll infrastructure with minimal retrofit requirements. Cost parity with conventional lithium-ion is projected within four years as production volumes achieve gigawatt-hour scale.'}, {idx:5, scene:"5", text:'Solid State Labs — powering the all-solid-state battery revolution with breakthrough sulfide electrolyte technology.'}];
+  1503→
+  1504→  // ===== DOM =====
+  1505→  const sceneEls = document.querySelectorAll('.scene');
+  1506→  const playPauseBtn = document.getElementById('playPauseBtn');
+  1507→  const ppIcon = document.getElementById('ppIcon');
+  1508→  const restartBtn = document.getElementById('restartBtn');
+  1509→  const prevBtn = document.getElementById('prevBtn');
+  1510→  const nextBtn = document.getElementById('nextBtn');
+  1511→  const timeline = document.getElementById('timeline');
+  1512→  const progress = document.getElementById('progress');
+  1513→  const timeDisplay = document.getElementById('timeDisplay');
+  1514→  const sceneLabel = document.getElementById('sceneLabel');
+  1515→  const playOverlay = document.getElementById('playOverlay');
+  1516→  const endScreen = document.getElementById('endScreen');
+  1517→  const replayBtn = document.getElementById('replayBtn');
+  1518→
+  1519→  // ===== State =====
+  1520→  let playing = false;
+  1521→  let currentTime = 0;
+  1522→  let lastFrame = null;
+  1523→  let rafId = null;
+  1524→
+  1525→  function fmt(t){
+  1526→    t = Math.max(0, t);
+  1527→    const m = Math.floor(t / 60);
+  1528→    const s = Math.floor(t % 60);
+  1529→    return m + ':' + String(s).padStart(2, '0');
+  1530→  }
+  1531→
+  1532→  function setActiveScene(idx){
+  1533→    sceneEls.forEach((el, i) => {
+  1534→      if (parseInt(el.dataset.scene) === idx || (idx === -1 && i === 0)) {
+  1535→        el.classList.add('active');
+  1536→      } else {
+  1537→        el.classList.remove('active');
+  1538→      }
+  1539→    });
+  1540→    const meta = SCENES[idx];
+  1541→    if (meta) {
+  1542→      sceneLabel.textContent = (idx + 1) + '/' + SCENES.length + ' · ' + meta.label;
+  1543→    }
+  1544→  }
+  1545→
+  1546→  function currentSceneIndex(t){
+  1547→    for (let i = 0; i < SCENES.length; i++){
+  1548→      if (t < SCENES[i].end) return i;
+  1549→    }
+  1550→    return SCENES.length - 1;
+  1551→  }
+  1552→
+  1553→  function tick(now){
+  1554→    if (!playing) return;
+  1555→    if (lastFrame === null) lastFrame = now;
+  1556→    const dt = (now - lastFrame) / 1000;
+  1557→    lastFrame = now;
+  1558→    currentTime += dt;
+  1559→    if (currentTime >= TOTAL_DURATION){
+  1560→      currentTime = TOTAL_DURATION;
+  1561→      pause();
+  1562→      onEnded();
+  1563→      return;
+  1564→    }
+  1565→    render();
+  1566→    rafId = requestAnimationFrame(tick);
+  1567→  }
+  1568→
+  1569→  function render(){
+  1570→    const pct = (currentTime / TOTAL_DURATION) * 100;
+  1571→    progress.style.width = pct + '%';
+  1572→    timeDisplay.textContent = fmt(currentTime) + ' / ' + fmt(TOTAL_DURATION);
+  1573→    const idx = currentSceneIndex(currentTime);
+  1574→    setActiveScene(idx);
+  1575→  }
+  1576→
+  1577→  function play(){
+  1578→    if (currentTime >= TOTAL_DURATION) currentTime = 0;
+  1579→    playing = true;
+  1580→    lastFrame = null;
+  1581→    playOverlay.classList.add('hidden');
+  1582→    endScreen.classList.remove('show');
+  1583→    ppIcon.innerHTML = '<path d="M6 4h4v16H6V4zm8 0h4v16h-4V4z"/>';
+  1584→    rafId = requestAnimationFrame(tick);
+  1585→  }
+  1586→
+  1587→  function pause(){
+  1588→    playing = false;
+  1589→    if (rafId) cancelAnimationFrame(rafId);
+  1590→    rafId = null;
+  1591→    ppIcon.innerHTML = '<path d="M8 5v14l11-7z"/>';
+  1592→    if (currentTime < TOTAL_DURATION){
+  1593→      // Don't show overlay if user explicitly paused; just keep frame
+  1594→    }
+  1595→  }
+  1596→
+  1597→  function restart(){
+  1598→    currentTime = 0;
+  1599→    endScreen.classList.remove('show');
+  1600→    playOverlay.classList.add('hidden');
+  1601→    render();
+  1602→    play();
+  1603→  }
+  1604→
+  1605→  function seekTo(t){
+  1606→    currentTime = Math.max(0, Math.min(TOTAL_DURATION, t));
+  1607→    if (currentTime >= TOTAL_DURATION) {
+  1608→      pause();
+  1609→      onEnded();
+  1610→    } else {
+  1611→      render();
+  1612→    }
+  1613→  }
+  1614→
+  1615→  function gotoScene(idx){
+  1616→    if (idx < 0 || idx >= SCENES.length) return;
+  1617→    seekTo(SCENES[idx].start + 0.01);
+  1618→    if (!playing) play();
+  1619→  }
+  1620→
+  1621→  function nextScene(){
+  1622→    const cur = currentSceneIndex(currentTime);
+  1623→    if (cur < SCENES.length - 1) gotoScene(cur + 1);
+  1624→  }
+  1625→
+  1626→  function prevScene(){
+  1627→    const cur = currentSceneIndex(currentTime);
+  1628→    if (cur > 0) gotoScene(cur - 1);
+  1629→    else if (currentTime > 0.5) seekTo(0);
+  1630→  }
+  1631→
+  1632→  function onEnded(){
+  1633→    endScreen.classList.add('show');
+  1634→    sceneLabel.textContent = '✓ complete';
+  1635→  }
+  1636→
+  1637→  // ===== Wire events =====
+  1638→  playPauseBtn.addEventListener('click', () => { playing ? pause() : play(); });
+  1639→  restartBtn.addEventListener('click', restart);
+  1640→  prevBtn.addEventListener('click', prevScene);
+  1641→  nextBtn.addEventListener('click', nextScene);
+  1642→  replayBtn.addEventListener('click', restart);
+  1643→
+  1644→  playOverlay.addEventListener('click', play);
+  1645→
+  1646→  timeline.addEventListener('click', (e) => {
+  1647→    const rect = timeline.getBoundingClientRect();
+  1648→    const pct = (e.clientX - rect.left) / rect.width;
+  1649→    seekTo(pct * TOTAL_DURATION);
+  1650→  });
+  1651→
+  1652→  document.addEventListener('keydown', (e) => {
+  1653→    if (e.key === ' ') { e.preventDefault(); playing ? pause() : play(); }
+  1654→    else if (e.key === 'ArrowRight') nextScene();
+  1655→    else if (e.key === 'ArrowLeft') prevScene();
+  1656→    else if (e.key === 'r' || e.key === 'R') restart();
+  1657→    else if (e.key === '0') seekTo(0);
+  1658→  });
+  1659→
+  1660→  // Initial render
+  1661→  render();
+  1662→  setActiveScene(0);
+  1663→
+  1664→  // Auto-play attempt (browsers may block; fall back to overlay click)
+  1665→  const autoplay = () => {
+  1666→    const p = play();
+  1667→    if (p && typeof p.catch === 'function'){
+  1668→      p.catch(() => {
+  1669→        playOverlay.classList.remove('hidden');
+  1670→      });
+  1671→    }
+  1672→  };
+  1673→  // Slight delay so the page settles
+  1674→  setTimeout(() => {
+  1675→    // Try to play, but show overlay first so user can interact
+  1676→    playOverlay.classList.remove('hidden');
+  1677→    // Auto-play after 600ms if user hasn't clicked
+  1678→    setTimeout(() => {
+  1679→      if (!playing && currentTime === 0) autoplay();
+  1680→    }, 800);
+  1681→  }, 100);
+  1682→</script>
+  1683→<div class="caption-bar" id="captionBar">
+  1684→    <div class="caption-inner">
+  1685→      <span class="caption-text" id="captionText"></span>
+  1686→      <span class="caption-meta" id="captionMeta">native UK voice</span>
+  1687→    </div>
+  1688→  </div>
+  1689→
+  1690→<script data-scimspt-native-voice-js>
+  1691→(function(){
+  1692→  'use strict';
+  1693→  if (window.__SCIMSPT_NATIVE_VOICE_BOUND__) return;
+  1694→  window.__SCIMSPT_NATIVE_VOICE_BOUND__ = true;
+  1695→
+  1696→  // === Web Speech API narration system ===
+  1697→  var synth = window.speechSynthesis;
+  1698→  var SUPPORTED = !!(synth && typeof SpeechSynthesisUtterance !== 'undefined');
+  1699→
+  1700→  // Voice selection — prefer en-GB (UK), then en-US, then any en
+  1701→  var voicesCache = [];
+  1702→  var chosenAccent = (function(){
+  1703→    try { return localStorage.getItem('scimspt-voice-accent') || 'uk'; }
+  1704→    catch(e){ return 'uk'; }
+  1705→  })();
+  1706→  if (chosenAccent !== 'uk' && chosenAccent !== 'us') chosenAccent = 'uk';
+  1707→
+  1708→  function refreshVoices(){
+  1709→    if (!SUPPORTED) return;
+  1710→    try { voicesCache = synth.getVoices() || []; } catch(e){ voicesCache = []; }
+  1711→  }
+  1712→  refreshVoices();
+  1713→  if (SUPPORTED && synth.onvoiceschanged !== undefined){
+  1714→    synth.onvoiceschanged = refreshVoices;
+  1715→  }
+  1716→
+  1717→  function pickVoice(){
+  1718→    if (!SUPPORTED || !voicesCache.length) return null;
+  1719→    var wantLang = (chosenAccent === 'uk') ? 'en-GB' : 'en-US';
+  1720→    var fallbackLang = (chosenAccent === 'uk') ? 'en-US' : 'en-GB';
+  1721→    var exact = null, fallback = null, anyEn = null;
+  1722→    for (var i=0; i<voicesCache.length; i++){
+  1723→      var v = voicesCache[i];
+  1724→      var lang = (v.lang || '').toLowerCase();
+  1725→      if (lang === wantLang.toLowerCase()){
+  1726→        if (!exact) exact = v;
+  1727→        else if (exact.name.indexOf('Google') !== -1 && v.name.indexOf('Google') === -1) exact = v;
+  1728→      } else if (lang === fallbackLang.toLowerCase()){
+  1729→        if (!fallback) fallback = v;
+  1730→      } else if (lang.indexOf('en') === 0){
+  1731→        if (!anyEn) anyEn = v;
+  1732→      }
+  1733→    }
+  1734→    return exact || fallback || anyEn || null;
+  1735→  }
+  1736→
+  1737→  function setAccent(acc){
+  1738→    if (acc !== 'uk' && acc !== 'us') return;
+  1739→    chosenAccent = acc;
+  1740→    try { localStorage.setItem('scimspt-voice-accent', acc); } catch(e){}
+  1741→    var btns = document.querySelectorAll('.voice-picker .vp-btn');
+  1742→    btns.forEach(function(b){
+  1743→      b.classList.toggle('active', b.getAttribute('data-accent') === acc);
+  1744→    });
+  1745→    if (SUPPORTED && synth.speaking){
+  1746→      var restoreText = currentUtteranceText;
+  1747→      synth.cancel();
+  1748→      if (restoreText) speak(restoreText, true);
+  1749→    }
+  1750→    updateCaptionMeta();
+  1751→  }
+  1752→
+  1753→  // Wire up voice picker buttons
+  1754→  document.querySelectorAll('.voice-picker .vp-btn').forEach(function(btn){
+  1755→    btn.addEventListener('click', function(){
+  1756→      setAccent(btn.getAttribute('data-accent'));
+  1757→    });
+  1758→  });
+  1759→  setAccent(chosenAccent);
+  1760→
+  1761→  // Caption bar elements
+  1762→  var captionBar = document.getElementById('captionBar');
+  1763→  var captionText = document.getElementById('captionText');
+  1764→  var captionMeta = document.getElementById('captionMeta');
+  1765→
+  1766→  function updateCaptionMeta(){
+  1767→    if (captionMeta) captionMeta.textContent = narrationEnabled
+  1768→      ? 'native ' + (chosenAccent === 'uk' ? 'UK' : 'US') + ' voice'
+  1769→      : 'muted';
+  1770→  }
+  1771→  updateCaptionMeta();
+  1772→
+  1773→  var currentUtteranceText = '';
+  1774→  var narrationEnabled = true;
+  1775→  var synthPaused = false;
+  1776→
+  1777→  function speak(text, isResume){
+  1778→    if (!SUPPORTED || !narrationEnabled || !text) return;
+  1779→    try { synth.cancel(); } catch(e){}
+  1780→    currentUtteranceText = text;
+  1781→    var u = new SpeechSynthesisUtterance(text);
+  1782→    var v = pickVoice();
+  1783→    if (v){ u.voice = v; u.lang = v.lang; }
+  1784→    else { u.lang = (chosenAccent === 'uk') ? 'en-GB' : 'en-US'; }
+  1785→    u.rate = 1.02;
+  1786→    u.pitch = 1.0;
+  1787→    u.volume = 1.0;
+  1788→    try { synth.speak(u); } catch(e){}
+  1789→  }
+  1790→
+  1791→  function stopSpeak(){
+  1792→    if (!SUPPORTED) return;
+  1793→    try { synth.cancel(); } catch(e){}
+  1794→    currentUtteranceText = '';
+  1795→  }
+  1796→
+  1797→  function pauseSpeak(){
+  1798→    if (!SUPPORTED || !synth.speaking) return;
+  1799→    try { synth.pause(); synthPaused = true; } catch(e){}
+  1800→  }
+  1801→
+  1802→  function resumeSpeak(){
+  1803→    if (!SUPPORTED || !synthPaused) return;
+  1804→    try { synth.resume(); synthPaused = false; } catch(e){}
+  1805→  }
+  1806→
+  1807→  // Narration toggle button
+  1808→  var narrationBtn = document.getElementById('narrationBtn');
+  1809→  if (narrationBtn){
+  1810→    narrationBtn.addEventListener('click', function(){
+  1811→      setTimeout(function(){
+  1812→        var muted = narrationBtn.classList.contains('muted');
+  1813→        narrationEnabled = !muted;
+  1814→        if (muted){ stopSpeak(); }
+  1815→        else {
+  1816→          var playing = (window.playing !== undefined) ? window.playing : false;
+  1817→          if (playing) triggerNarrationForCurrentScene();
+  1818→        }
+  1819→        updateCaptionMeta();
+  1820→      }, 0);
+  1821→    });
+  1822→  }
+  1823→
+  1824→  // Trigger narration for current scene
+  1825→  function triggerNarrationForCurrentScene(){
+  1826→    if (!narrationEnabled) return;
+  1827→    var label = document.getElementById('sceneLabel');
+  1828→    if (!label) return;
+  1829→    var m = label.textContent.match(/^(\d+)\//);
+  1830→    if (!m) return;
+  1831→    var idx = parseInt(m[1], 10) - 1;
+  1832→    if (!window.NARRATION || idx < 0 || idx >= NARRATION.length) return;
+  1833→    var clip = NARRATION[idx];
+  1834→    if (!clip || !clip.text) return;
+  1835→    if (captionText) captionText.textContent = clip.text;
+  1836→    if (captionBar) captionBar.classList.add('visible');
+  1837→    speak(clip.text, false);
+  1838→  }
+  1839→
+  1840→  // Hook into scene changes via MutationObserver
+  1841→  var sceneLabelEl = document.getElementById('sceneLabel');
+  1842→  var lastSeenSceneLabel = '';
+  1843→  if (sceneLabelEl && 'MutationObserver' in window){
+  1844→    var mo = new MutationObserver(function(){
+  1845→      var txt = sceneLabelEl.textContent;
+  1846→      if (txt === lastSeenSceneLabel) return;
+  1847→      lastSeenSceneLabel = txt;
+  1848→      var playing = (window.playing !== undefined) ? window.playing : false;
+  1849→      if (playing && narrationEnabled) triggerNarrationForCurrentScene();
+  1850→    });
+  1851→    mo.observe(sceneLabelEl, {childList:true, characterData:true, subtree:true});
+  1852→  }
+  1853→
+  1854→  // Hook into playback controls
+  1855→  function hookClick(id, fn){
+  1856→    var el = document.getElementById(id);
+  1857→    if (el) el.addEventListener('click', fn);
+  1858→  }
+  1859→  hookClick('playPauseBtn', function(){
+  1860→    setTimeout(function(){
+  1861→      var playing = (window.playing !== undefined) ? window.playing : false;
+  1862→      if (playing && narrationEnabled) triggerNarrationForCurrentScene();
+  1863→      else if (!playing) pauseSpeak();
+  1864→    }, 0);
+  1865→  });
+  1866→  hookClick('playOverlay', function(){
+  1867→    setTimeout(function(){ if (narrationEnabled) triggerNarrationForCurrentScene(); }, 50);
+  1868→  });
+  1869→  hookClick('restartBtn', function(){
+  1870→    setTimeout(function(){ if (narrationEnabled) triggerNarrationForCurrentScene(); }, 50);
+  1871→  });
+  1872→  hookClick('replayBtn', function(){
+  1873→    setTimeout(function(){ if (narrationEnabled) triggerNarrationForCurrentScene(); }, 50);
+  1874→  });
+  1875→  hookClick('prevBtn', function(){
+  1876→    setTimeout(function(){ if (narrationEnabled) triggerNarrationForCurrentScene(); }, 50);
+  1877→  });
+  1878→  hookClick('nextBtn', function(){
+  1879→    setTimeout(function(){ if (narrationEnabled) triggerNarrationForCurrentScene(); }, 50);
+  1880→  });
+  1881→
+  1882→  // Keyboard shortcuts
+  1883→  document.addEventListener('keydown', function(e){
+  1884→    if (e.key === ' ' || e.key === 'r' || e.key === 'R' ||
+  1885→        e.key === 'ArrowRight' || e.key === 'ArrowLeft'){
+  1886→      setTimeout(function(){
+  1887→        var playing = (window.playing !== undefined) ? window.playing : false;
+  1888→        if (playing && narrationEnabled) triggerNarrationForCurrentScene();
+  1889→        else if (!playing) pauseSpeak();
+  1890→      }, 80);
+  1891→    }
+  1892→  });
+  1893→
+  1894→  // Expose for debugging
+  1895→  window.SCIMSPT_NATIVE_VOICE = {
+  1896→    supported: SUPPORTED,
+  1897→    accent: function(){ return chosenAccent; },
+  1898→    setAccent: setAccent,
+  1899→    speak: speak,
+  1900→    stop: stopSpeak,
+  1901→    pickVoice: pickVoice,
+  1902→  };
+  1903→})();
+  1904→</script>
+  1905→
+  1906→
+  1907→
+  1908→
+  1909→<script>
+  1910→// ===== RESEARCH IMAGE OVERLAY - STAYS VISIBLE DURING PLAYBACK =====
+  1911→(function() {
+  1912→  var overlay = document.getElementById('researchOverlay');
+  1913→  if (!overlay) return;
+  1914→  
+  1915→  var isVisible = false;
+  1916→  
+  1917→  function showImage() {
+  1918→    if (!isVisible) {
+  1919→      overlay.classList.add('visible');
+  1920→      isVisible = true;
+  1921→    }
+  1922→  }
+  1923→  
+  1924→  function hideImage() {
+  1925→    if (isVisible) {
+  1926→      overlay.classList.remove('visible');
+  1927→      isVisible = false;
+  1928→    }
+  1929→  }
+  1930→  
+  1931→  // CRITICAL: Keep checking every 500ms and show if playing
+  1932→  setInterval(function() {
+  1933→    var timeDisplay = document.getElementById('timeDisplay');
+  1934→    if (timeDisplay) {
+  1935→      var txt = timeDisplay.textContent || '';
+  1936→      // If timer is running (not 0:00 and not at end), show image
+  1937→      if (txt.indexOf(':') !== -1 && !txt.startsWith('0:00') && !txt.includes('1:00')) {
+  1938→        showImage();
+  1939→      }
+  1940→    }
+  1941→  }, 500);
+  1942→  
+  1943→  // Show immediately when play clicked
+  1944→  document.getElementById('playPauseBtn')?.addEventListener('click', function() {
+  1945→    setTimeout(showImage, 100);
+  1946→  });
+  1947→  
+  1948→  // Show when overlay clicked
+  1949→  document.getElementById('playOverlay')?.addEventListener('click', function() {
+  1950→    setTimeout(showImage, 200);
+  1951→  });
+  1952→  
+  1953→  // Show on restart/replay
+  1954→  ['restartBtn', 'replayBtn'].forEach(function(id) {
+  1955→    document.getElementById(id)?.addEventListener('click', function() {
+  1956→      setTimeout(showImage, 200);
+  1957→    });
+  1958→  });
+  1959→  
+  1960→  // Hide only at end screen
+  1961→  var endScreen = document.getElementById('endScreen');
+  1962→  if (endScreen) {
+  1963→    var observer = new MutationObserver(function() {
+  1964→      if (endScreen.classList.contains('show')) {
+  1965→        hideImage();
+  1966→      }
+  1967→    });
+  1968→    observer.observe(endScreen, {attributes: true, attributeFilter: ['class']});
+  1969→  }
+  1970→  
+  1971→  // Keyboard support
+  1972→  document.addEventListener('keydown', function(e) {
+  1973→    if (e.key === ' ') setTimeout(showImage, 150);
+  1974→  });
+  1975→  
+  1976→  // Initial show after user interacts
+  1977→  document.addEventListener('click', function fn() {
+  1978→    setTimeout(showImage, 600);
+  1979→    document.removeEventListener('click', fn);
+  1980→  }, {once: true});
+  1981→})();
+  1982→</script>
+  1983→
+  1984→</html>
+  1985→

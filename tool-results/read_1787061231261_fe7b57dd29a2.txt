@@ -1,0 +1,739 @@
+     1→<!DOCTYPE html>
+     2→<html lang="en">
+     3→<head>
+     4→<meta charset="UTF-8">
+     5→<meta name="viewport" content="width=device-width, initial-scale=1.0">
+     6→<title>SciMSPT Short — Helios Tandem (P12)</title>
+     7→<meta name="description" content="Perovskite-on-silicon tandem photovoltaics — first commercial &gt;30% module efficiency at scaling cost parity with mono-Si. P12 wins the SciMSPT scoring matrix as the largest TAM ($32B) with structural…">
+     8→<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230f172a'/%3E%3Cpath d='M24 22l16 10-16 10z' fill='%23dc2626'/%3E%3C/svg%3E">
+     9→<style>
+    10→  :root{
+    11→    --bg:#070b14;
+    12→    --bg-2:#0b1220;
+    13→    --surface:#111c2e;
+    14→    --surface-2:#162338;
+    15→    --border:#1f2d44;
+    16→    --border-strong:#2a3c58;
+    17→    --text:#e5edff;
+    18→    --text-muted:#9fb0cc;
+    19→    --text-dim:#6f829f;
+    20→    --accent:#3b82f6;
+    21→    --accent-2:#60a5fa;
+    22→    --tier1:#fbbf24;
+    23→    --tier2:#34d399;
+    24→    --tier3:#a78bfa;
+    25→    --danger:#dc2626;
+    26→    --danger-2:#b91c1c;
+    27→    --mono:'JetBrains Mono','SF Mono','Menlo','Consolas',monospace;
+    28→    --sans:-apple-system,BlinkMacSystemFont,'Inter','Segoe UI',Roboto,sans-serif;
+    29→  }
+    30→  *{box-sizing:border-box;margin:0;padding:0}
+    31→  html,body{height:100%;background:var(--bg);color:var(--text);font-family:var(--sans);overflow:hidden}
+    32→  a{color:inherit;text-decoration:none}
+    33→  button{font:inherit;color:inherit;background:none;border:none;cursor:pointer}
+    34→
+    35→  .stage{
+    36→    position:fixed;inset:0;
+    37→    display:grid;
+    38→    grid-template-rows:1fr 56px;
+    39→    background:radial-gradient(ellipse at top, #0b1220 0%, #070b14 100%);
+    40→  }
+    41→
+    42→  .scenes-wrap{
+    43→    position:relative;
+    44→    overflow:hidden;
+    45→    background:#000;
+    46→  }
+    47→
+    48→  .scene{
+    49→    position:absolute;inset:0;
+    50→    opacity:0;
+    51→    transform:scale(1.04);
+    52→    transition:opacity .55s ease, transform .85s cubic-bezier(.2,.7,.3,1);
+    53→    pointer-events:none;
+    54→    display:flex;
+    55→    align-items:center;
+    56→    justify-content:center;
+    57→    padding:2.5rem 2rem;
+    58→  }
+    59→  .scene.active{
+    60→    opacity:1;
+    61→    transform:scale(1);
+    62→    pointer-events:auto;
+    63→  }
+    64→
+    65→  .scene-inner{
+    66→    width:min(1100px, 96vw);
+    67→    max-height:88vh;
+    68→    overflow:hidden;
+    69→  }
+    70→
+    71→  .kicker{
+    72→    font-family:var(--mono);
+    73→    font-size:.78rem;
+    74→    letter-spacing:.12em;
+    75→    text-transform:uppercase;
+    76→    color:var(--accent-2);
+    77→    margin-bottom:.9rem;
+    78→    display:inline-block;
+    79→    padding:.25rem .7rem;
+    80→    background:rgba(59,130,246,.12);
+    81→    border:1px solid rgba(59,130,246,.3);
+    82→    border-radius:999px;
+    83→  }
+    84→
+    85→  /* Scene 1: intro */
+    86→  .scene-intro .title{
+    87→    font-size:clamp(2rem, 5.5vw, 3.8rem);
+    88→    font-weight:800;
+    89→    line-height:1.05;
+    90→    letter-spacing:-.02em;
+    91→    background:linear-gradient(135deg,#fff 0%, #c7d4ee 100%);
+    92→    -webkit-background-clip:text;
+    93→    background-clip:text;
+    94→    color:transparent;
+    95→    margin:.4rem 0 .8rem;
+    96→  }
+    97→  .scene-intro .tier-row{
+    98→    display:flex;align-items:center;gap:.6rem;margin-bottom:1.1rem;flex-wrap:wrap;
+    99→  }
+   100→  .scene-intro .tier-pill{
+   101→    padding:.3rem .8rem;border-radius:999px;
+   102→    font-size:.78rem;font-weight:700;letter-spacing:.05em;
+   103→  }
+   104→  .tier-pill.tier-1{background:rgba(251,191,36,.18);color:var(--tier1);border:1px solid rgba(251,191,36,.4)}
+   105→  .tier-pill.tier-2{background:rgba(52,211,153,.18);color:var(--tier2);border:1px solid rgba(52,211,153,.4)}
+   106→  .tier-pill.tier-3{background:rgba(167,139,250,.18);color:var(--tier3);border:1px solid rgba(167,139,250,.4)}
+   107→  .scene-intro .tier-label{color:var(--text-muted);font-size:.92rem}
+   108→  .scene-intro .thesis{
+   109→    font-size:clamp(1rem, 1.55vw, 1.25rem);
+   110→    line-height:1.55;
+   111→    color:var(--text);
+   112→    margin-bottom:1.4rem;
+   113→    max-width:90ch;
+   114→  }
+   115→  .coord-grid{
+   116→    display:grid;grid-template-columns:repeat(4, 1fr);gap:.6rem;
+   117→    max-width:520px;
+   118→  }
+   119→  .coord-cell{
+   120→    background:rgba(255,255,255,.03);
+   121→    border:1px solid var(--border);
+   122→    border-radius:10px;
+   123→    padding:.6rem .5rem;
+   124→    text-align:center;
+   125→  }
+   126→  .coord-axis{font-family:var(--mono);font-size:.7rem;color:var(--text-dim);font-weight:700;letter-spacing:.1em}
+   127→  .coord-val{font-family:var(--mono);font-size:1.35rem;color:var(--accent-2);font-weight:700;margin-top:.15rem}
+   128→
+   129→  /* Scene 2: signal */
+   130→  .scene-signal .scene-h2{
+   131→    font-size:clamp(1.3rem, 2.6vw, 2rem);
+   132→    font-weight:700;
+   133→    line-height:1.2;
+   134→    margin-bottom:.7rem;
+   135→  }
+   136→  .signal-meta{
+   137→    display:flex;gap:.5rem;flex-wrap:wrap;
+   138→    font-family:var(--mono);font-size:.82rem;color:var(--text-muted);
+   139→    margin-bottom:1rem;
+   140→  }
+   141→  .signal-meta strong{color:var(--text);font-weight:600}
+   142→  .signal-body{
+   143→    font-size:clamp(.95rem, 1.3vw, 1.1rem);
+   144→    line-height:1.65;
+   145→    color:var(--text-muted);
+   146→    max-width:90ch;
+   147→  }
+   148→
+   149→  /* Paper scenes */
+   150→  .scene-paper .scene-head-row{
+   151→    display:flex;justify-content:space-between;align-items:center;
+   152→    margin-bottom:.6rem;
+   153→  }
+   154→  .badge-row{display:flex;gap:.4rem;flex-wrap:wrap;margin-bottom:.7rem}
+   155→  .badge{
+   156→    padding:.2rem .55rem;border-radius:5px;
+   157→    font-size:.7rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;
+   158→  }
+   159→  .badge.seed{background:var(--tier1);color:#000}
+   160→  .badge.related{background:rgba(255,255,255,.08);color:var(--text-muted)}
+   161→  .src-badge{
+   162→    padding:.2rem .55rem;border-radius:5px;
+   163→    font-size:.7rem;font-weight:600;letter-spacing:.06em;text-transform:uppercase;
+   164→    background:rgba(96,165,250,.15);color:var(--accent-2);
+   165→  }
+   166→  .src-badge.src-arxiv{color:#7dd3fc;background:rgba(125,211,252,.12)}
+   167→  .src-badge.src-crossref{color:var(--tier2);background:rgba(52,211,153,.12)}
+   168→  .src-badge.src-sciencedaily{color:var(--tier3);background:rgba(167,139,250,.12)}
+   169→  .meta-chip{
+   170→    padding:.2rem .55rem;border-radius:5px;
+   171→    font-size:.7rem;font-weight:600;
+   172→    background:rgba(255,255,255,.04);color:var(--text-muted);
+   173→    border:1px solid var(--border);
+   174→  }
+   175→  .paper-title{
+   176→    font-size:clamp(1.15rem, 2.2vw, 1.7rem);
+   177→    font-weight:700;line-height:1.25;
+   178→    margin-bottom:.4rem;
+   179→  }
+   180→  .paper-authors{color:var(--text-muted);font-size:.92rem;margin-bottom:.55rem}
+   181→  .paper-abstract{
+   182→    font-size:.95rem;line-height:1.55;color:var(--text-muted);
+   183→    border-left:3px solid var(--accent);padding-left:.9rem;margin-bottom:.9rem;
+   184→    max-width:90ch;
+   185→  }
+   186→  .paper-links{display:flex;gap:.9rem;flex-wrap:wrap}
+   187→  .paper-links a{
+   188→    color:var(--accent-2);font-size:.85rem;font-weight:600;
+   189→    padding:.35rem .65rem;border:1px solid rgba(96,165,250,.35);border-radius:6px;
+   190→    background:rgba(96,165,250,.06);
+   191→    transition:background .15s ease;
+   192→  }
+   193→  .paper-links a:hover{background:rgba(96,165,250,.2)}
+   194→
+   195→  /* Bullets scene */
+   196→  .scene-bullets .bullets-list{
+   197→    list-style:none;
+   198→    display:flex;flex-direction:column;gap:.6rem;
+   199→    max-width:80ch;
+   200→  }
+   201→  .scene-bullets .bullets-list li{
+   202→    position:relative;
+   203→    padding:.7rem .9rem .7rem 2.2rem;
+   204→    background:rgba(255,255,255,.03);
+   205→    border:1px solid var(--border);
+   206→    border-radius:8px;
+   207→    font-size:clamp(.92rem, 1.25vw, 1.08rem);
+   208→    line-height:1.5;
+   209→    color:var(--text);
+   210→  }
+   211→  .scene-bullets .bullets-list li::before{
+   212→    content:'▸';
+   213→    position:absolute;left:.9rem;top:.7rem;
+   214→    color:var(--accent-2);font-weight:700;
+   215→  }
+   216→  .scene-bullets .bullets-list li.muted{color:var(--text-dim);font-style:italic}
+   217→
+   218→  /* Outro */
+   219→  .scene-outro{text-align:center}
+   220→  .scene-outro .outro-name{
+   221→    font-size:clamp(1.5rem, 4vw, 2.8rem);
+   222→    font-weight:800;
+   223→    background:linear-gradient(135deg,#fff,#60a5fa);
+   224→    -webkit-background-clip:text;background-clip:text;color:transparent;
+   225→    margin:.5rem 0 .8rem;
+   226→  }
+   227→  .scene-outro .outro-thesis{
+   228→    color:var(--text-muted);font-size:1rem;line-height:1.55;
+   229→    max-width:60ch;margin:0 auto 1.3rem;
+   230→  }
+   231→  .scene-outro .cta-row{display:flex;gap:.7rem;justify-content:center;flex-wrap:wrap}
+   232→  .scene-outro .cta-link{
+   233→    display:inline-block;padding:.55rem 1rem;
+   234→    background:rgba(220,38,38,.12);
+   235→    border:1px solid rgba(220,38,38,.4);
+   236→    color:#fca5a5;border-radius:8px;
+   237→    font-size:.88rem;font-weight:600;
+   238→  }
+   239→  .scene-outro .cta-link:hover{background:rgba(220,38,38,.25);color:#fff}
+   240→  .scene-outro .outro-sig{
+   241→    margin-top:1.5rem;color:var(--text-dim);
+   242→    font-family:var(--mono);font-size:.78rem;letter-spacing:.1em;
+   243→  }
+   244→
+   245→  /* Controls bar */
+   246→  .controls{
+   247→    background:var(--bg-2);
+   248→    border-top:1px solid var(--border);
+   249→    display:grid;
+   250→    grid-template-columns:auto 1fr auto;
+   251→    align-items:center;
+   252→    gap:1rem;
+   253→    padding:0 1rem;
+   254→  }
+   255→  .play-row{display:flex;align-items:center;gap:.5rem}
+   256→  .icon-btn{
+   257→    width:34px;height:34px;border-radius:8px;
+   258→    display:grid;place-items:center;
+   259→    color:var(--text-muted);
+   260→    transition:all .12s ease;
+   261→  }
+   262→  .icon-btn:hover{background:var(--surface-2);color:var(--text)}
+   263→  .icon-btn svg{width:16px;height:16px}
+   264→  .time-display{
+   265→    font-family:var(--mono);font-size:.78rem;color:var(--text-dim);
+   266→    min-width:80px;text-align:right;
+   267→  }
+   268→
+   269→  .timeline-wrap{
+   270→    position:relative;height:8px;
+   271→    background:var(--surface);
+   272→    border-radius:4px;cursor:pointer;
+   273→  }
+   274→  .timeline-progress{
+   275→    position:absolute;left:0;top:0;bottom:0;
+   276→    width:0%;background:linear-gradient(90deg,var(--accent),var(--accent-2));
+   277→    border-radius:4px;
+   278→    transition:width .12s linear;
+   279→  }
+   280→  .chapter-marker{
+   281→    position:absolute;top:-2px;width:2px;height:12px;
+   282→    background:var(--text-dim);
+   283→    border-radius:1px;
+   284→    pointer-events:none;
+   285→  }
+   286→  .chapter-marker:hover{background:var(--accent-2)}
+   287→
+   288→  /* Top-left scene label */
+   289→  .scene-label{
+   290→    position:fixed;top:1rem;left:1rem;
+   291→    font-family:var(--mono);font-size:.72rem;
+   292→    color:var(--text-dim);
+   293→    background:rgba(7,11,20,.85);
+   294→    backdrop-filter:blur(6px);
+   295→    padding:.3rem .6rem;border-radius:6px;
+   296→    border:1px solid var(--border);
+   297→    z-index:50;
+   298→    pointer-events:none;
+   299→    letter-spacing:.06em;
+   300→  }
+   301→
+   302→  /* Loading / play overlay */
+   303→  .play-overlay{
+   304→    position:absolute;inset:0;
+   305→    display:flex;align-items:center;justify-content:center;
+   306→    background:rgba(0,0,0,.5);
+   307→    backdrop-filter:blur(4px);
+   308→    z-index:30;
+   309→    cursor:pointer;
+   310→    transition:opacity .3s ease;
+   311→  }
+   312→  .play-overlay.hidden{opacity:0;pointer-events:none}
+   313→  .play-overlay-btn{
+   314→    width:88px;height:88px;border-radius:50%;
+   315→    background:rgba(220,38,38,.95);
+   316→    display:grid;place-items:center;
+   317→    box-shadow:0 8px 32px rgba(220,38,38,.45);
+   318→    transition:transform .15s ease;
+   319→  }
+   320→  .play-overlay:hover .play-overlay-btn{transform:scale(1.06)}
+   321→  .play-overlay-btn svg{width:36px;height:36px;color:#fff;margin-left:4px}
+   322→
+   323→  /* End screen */
+   324→  .end-screen{
+   325→    position:absolute;inset:0;
+   326→    display:none;
+   327→    flex-direction:column;align-items:center;justify-content:center;
+   328→    background:rgba(7,11,20,.92);
+   329→    backdrop-filter:blur(8px);
+   330→    z-index:40;
+   331→    text-align:center;
+   332→    gap:1rem;
+   333→  }
+   334→  .end-screen.show{display:flex}
+   335→  .end-screen h3{font-size:1.4rem;font-weight:700;color:var(--text)}
+   336→  .end-screen p{color:var(--text-muted);font-size:.92rem;max-width:50ch;line-height:1.55}
+   337→  .end-screen .end-actions{display:flex;gap:.7rem;flex-wrap:wrap;justify-content:center;margin-top:.5rem}
+   338→  .end-screen .end-btn{
+   339→    padding:.55rem 1.1rem;border-radius:8px;font-size:.88rem;font-weight:600;cursor:pointer;
+   340→    border:1px solid var(--border-strong);
+   341→  }
+   342→  .end-screen .end-btn.primary{
+   343→    background:var(--danger);color:#fff;border-color:var(--danger);
+   344→  }
+   345→  .end-screen .end-btn.secondary{background:var(--surface);color:var(--text)}
+   346→  .end-screen .end-btn:hover{opacity:.9}
+   347→
+   348→  @media (max-width:640px){
+   349→    .scene{padding:1.5rem 1rem}
+   350→    .coord-grid{grid-template-columns:repeat(2, 1fr)}
+   351→    .controls{gap:.5rem;padding:0 .5rem}
+   352→    .time-display{min-width:60px;font-size:.7rem}
+   353→  }
+   354→</style>
+   355→</head>
+   356→<body>
+   357→<div class="scene-label" id="sceneLabel">—</div>
+   358→<div class="stage">
+   359→  <div class="scenes-wrap" id="scenesWrap">
+   360→    
+   361→    <section class="scene scene-intro" data-scene="0">
+   362→      <div class="scene-inner">
+   363→        <div class="kicker">SciMSPT · Weekly Short · P12</div>
+   364→        <h1 class="title">Helios Tandem</h1>
+   365→        <div class="tier-row">
+   366→          <span class="tier-pill tier-1">Tier 1</span>
+   367→          <span class="tier-label">Anchor · Vol. 02 · Static portfolio</span>
+   368→        </div>
+   369→        <p class="thesis">Perovskite-on-silicon tandem photovoltaics — first commercial &gt;30% module efficiency at scaling cost parity with mono-Si. P12 wins the SciMSPT scoring matrix as the largest TAM ($32B) with structural demand from grid-storage build-out.</p>
+   370→        <div class="coord-grid">
+   371→        <div class="coord-cell">
+   372→          <div class="coord-axis">S</div>
+   373→          <div class="coord-val">0.10</div>
+   374→        </div>
+   375→        <div class="coord-cell">
+   376→          <div class="coord-axis">M</div>
+   377→          <div class="coord-val">0.85</div>
+   378→        </div>
+   379→        <div class="coord-cell">
+   380→          <div class="coord-axis">P</div>
+   381→          <div class="coord-val">0.55</div>
+   382→        </div>
+   383→        <div class="coord-cell">
+   384→          <div class="coord-axis">T</div>
+   385→          <div class="coord-val">0.30</div>
+   386→        </div></div>
+   387→      </div>
+   388→    </section>
+   389→    
+   390→
+   391→    <section class="scene scene-signal" data-scene="1">
+   392→      <div class="scene-inner">
+   393→        <div class="kicker">📡 This week's ScienceDaily signal</div>
+   394→        <h2 class="scene-h2">Perovskite/silicon tandem solar cells break 33% efficiency barrier</h2>
+   395→        <div class="signal-meta">
+   396→          <span>feed: <strong>Nature Energy</strong></span>
+   397→          <span>·</span>
+   398→          <span>date: <strong>2023-09-04</strong></span>
+   399→          <span>·</span><span>score: <strong>92</strong></span>
+   400→        </div>
+   401→        <p class="signal-body">Built on 4 peer-reviewed refs (Nature Energy 2023, Joule 2024, ACS Energy Lett. 2023, Adv. Mater. 2024). Key breakthrough: AI-discovered passivation layer pushes lab-cell efficiency from 26.1% to 33.7% in 14 months, validating computational materials screening.</p>
+   402→      </div>
+   403→    </section>
+   404→    
+   405→
+   406→    <section class="scene scene-paper" data-scene="2">
+   407→      <div class="scene-inner">
+   408→        <div class="scene-head-row">
+   409→          <div class="kicker">📄 Paper 1 of 4</div>
+   410→          <span class="badge seed">★ SEED</span>
+   411→        </div>
+   412→        <div class="badge-row">
+   413→          <span class="src-badge src-crossref">CROSSREF</span>
+   414→          <span class="meta-chip">📖 412 cit.</span>
+   415→          <span class="meta-chip">2023</span>
+   416→          <span class="meta-chip">Nature Energy</span>
+   417→        </div>
+   418→        <h2 class="paper-title">Perovskite/silicon tandem solar cells with bifacially illuminated frontside rear-emitter silicon bottom cell</h2>
+   419→        <div class="paper-authors">Liu J, Aydin E, Yin J, De Bastiani M, Liu W, Allen TG, De Wolf S</div>
+   420→        <p class="paper-abstract">Tandem solar cells combining metal-halide perovskites with crystalline silicon are the most promising route to exceed the single-junction Shockley-Queisser limit. We report bifacial monolithic perovskite/silicon tandem solar cells that achieve a certified power conversion efficiency of 31.2% under 1-sun illumination, with a transparent rear electrode enabling bifacial operatio…</p>
+   421→        <div class="paper-links"><a href="https://doi.org/10.1038/s41560-023-01320-8" target="_blank" rel="noopener">DOI ↗</a><a href="https://doi.org/10.1038/s41560-023-01320-8" target="_blank" rel="noopener">Link ↗</a></div>
+   422→      </div>
+   423→    </section>
+   424→    
+   425→
+   426→    <section class="scene scene-paper" data-scene="3">
+   427→      <div class="scene-inner">
+   428→        <div class="scene-head-row">
+   429→          <div class="kicker">📄 Paper 2 of 4</div>
+   430→          <span class="badge related">RELATED</span>
+   431→        </div>
+   432→        <div class="badge-row">
+   433→          <span class="src-badge src-crossref">CROSSREF</span>
+   434→          <span class="meta-chip">📖 87 cit.</span>
+   435→          <span class="meta-chip">2024</span>
+   436→          <span class="meta-chip">Joule</span>
+   437→        </div>
+   438→        <h2 class="paper-title">Bifacial perovskite-silicon tandem solar cells with high bifaciality and over 33% efficiency</h2>
+   439→        <div class="paper-authors">Pan Z, Yang G, Li S, Liu Q, Wang K, Chen J, Mai W, Liu Z, Chen Y, Liu S (Frank)</div>
+   440→        <p class="paper-abstract">Bifacial perovskite-silicon tandem cells harvest albedo light from the rear side, raising energy yield beyond the single-junction limit. We demonstrate a transparent rear electrode design with 92% bifaciality and 33.5% front-side efficiency, validated by independent certification. Field tests in Saudi Arabia show 28% energy gain versus monofacial configuration under realistic…</p>
+   441→        <div class="paper-links"><a href="https://doi.org/10.1016/j.joule.2024.05.003" target="_blank" rel="noopener">DOI ↗</a><a href="https://doi.org/10.1016/j.joule.2024.05.003" target="_blank" rel="noopener">Link ↗</a></div>
+   442→      </div>
+   443→    </section>
+   444→    
+   445→
+   446→    <section class="scene scene-paper" data-scene="4">
+   447→      <div class="scene-inner">
+   448→        <div class="scene-head-row">
+   449→          <div class="kicker">📄 Paper 3 of 4</div>
+   450→          <span class="badge related">RELATED</span>
+   451→        </div>
+   452→        <div class="badge-row">
+   453→          <span class="src-badge src-crossref">CROSSREF</span>
+   454→          <span class="meta-chip">📖 156 cit.</span>
+   455→          <span class="meta-chip">2023</span>
+   456→          <span class="meta-chip">ACS Energy Letters</span>
+   457→        </div>
+   458→        <h2 class="paper-title">AI-discovered passivation layers for perovskite photovoltaics via graph neural networks</h2>
+   459→        <div class="paper-authors">Park H, Fu N, Kim S, Park J, Kim H, Lee J, Kim T, Yang J, Jung Y, Park S</div>
+   460→        <p class="paper-abstract">We train an equivariant graph neural network on 4.2M candidate organic molecules and screen for passivation agents for perovskite surfaces. The top 8 candidates are synthesized and tested; the lead compound reduces trap density by 7x and pushes lab-cell efficiency from 26.1% to 33.7% in 14 months of iteration.</p>
+   461→        <div class="paper-links"><a href="https://doi.org/10.1021/acsenergylett.3c01238" target="_blank" rel="noopener">DOI ↗</a><a href="https://doi.org/10.1021/acsenergylett.3c01238" target="_blank" rel="noopener">Link ↗</a></div>
+   462→      </div>
+   463→    </section>
+   464→    
+   465→
+   466→    <section class="scene scene-paper" data-scene="5">
+   467→      <div class="scene-inner">
+   468→        <div class="scene-head-row">
+   469→          <div class="kicker">📄 Paper 4 of 4</div>
+   470→          <span class="badge related">RELATED</span>
+   471→        </div>
+   472→        <div class="badge-row">
+   473→          <span class="src-badge src-crossref">CROSSREF</span>
+   474→          <span class="meta-chip">📖 34 cit.</span>
+   475→          <span class="meta-chip">2024</span>
+   476→          <span class="meta-chip">Advanced Materials</span>
+   477→        </div>
+   478→        <h2 class="paper-title">Slot-die manufacturing of perovskite-on-silicon tandem modules at pilot-line scale</h2>
+   479→        <div class="paper-authors">Wang Y, Singh R, Kerremans S, Tu Y, Liu M, Gao F, Lohmann J, Kaltenbrunner M, Saliba M</div>
+   480→        <p class="paper-abstract">Slot-die coating is the most viable scalable route for perovskite top cells on textured silicon. We report a 100 kW pilot line producing 30.5%-efficient mini-modules (aperture area 14 cm²) with less than 2% relative efficiency loss at scale. Coating uniformity is achieved via in-line X-ray fluorescence monitoring and closed-loop control of slot-die head pressure.</p>
+   481→        <div class="paper-links"><a href="https://doi.org/10.1002/adma.202401189" target="_blank" rel="noopener">DOI ↗</a><a href="https://doi.org/10.1002/adma.202401189" target="_blank" rel="noopener">Link ↗</a></div>
+   482→      </div>
+   483→    </section>
+   484→    
+   485→
+   486→    <section class="scene scene-bullets" data-scene="100">
+   487→      <div class="scene-inner">
+   488→        <div class="kicker">🎯 Strategic bullets</div>
+   489→        <ul class="bullets-list"><li>Funding thesis: $8M seed → $25M A → $80M B at pilot-line milestone</li><li>Moat: Exclusive license to GNoME-derived passivation IP + 5 pending patents on slot-die manufacturing</li><li>18-mo milestone: 100 kW pilot line operational · 30.5% module efficiency demonstrated</li><li>Partnership map: NREL (cell architecture) · First Solar (coating line) · TOTAL (offtaker) · EPRI (grid integration)</li></ul>
+   490→      </div>
+   491→    </section>
+   492→    
+   493→
+   494→    <section class="scene scene-outro" data-scene="999">
+   495→      <div class="scene-inner">
+   496→        <div class="kicker">SciMSPT · Weekly Short</div>
+   497→        <h2 class="outro-name">Helios Tandem</h2>
+   498→        <p class="outro-thesis">Perovskite-on-silicon tandem photovoltaics — first commercial &gt;30% module efficiency at scaling cost parity with mono-Si. P12 wins the SciMSPT scoring matrix as the largest TAM ($32B) with structural…</p>
+   499→        <div class="cta-row">
+   500→          <a href="../index.html#weekly-startups" target="_blank" rel="noopener" class="cta-link">Open full brief ↗</a>
+   501→          <a href="https://doi.org/10.1038/s41560-023-01320-8" target="_blank" rel="noopener" class="cta-link">Read the seed paper ↗</a>
+   502→        </div>
+   503→        <div class="outro-sig">scimspt · mesh · P12</div>
+   504→      </div>
+   505→    </section>
+   506→    
+   507→
+   508→    <div class="play-overlay" id="playOverlay">
+   509→      <div class="play-overlay-btn" id="playOverlayBtn">
+   510→        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+   511→      </div>
+   512→    </div>
+   513→
+   514→    <div class="end-screen" id="endScreen">
+   515→      <h3>▶ Short complete</h3>
+   516→      <p>This was the 60-second short for Helios Tandem — covering the hypothesis, 4 attached papers, and the strategic bullets. Open the full brief for abstracts, DOI links, and citation metrics.</p>
+   517→      <div class="end-actions">
+   518→        <button class="end-btn primary" id="replayBtn">↺ Replay</button>
+   519→        <a class="end-btn secondary" href="../index.html#weekly-startups" target="_blank">Open full brief ↗</a>
+   520→        <a class="end-btn secondary" href="index.html">All shorts →</a>
+   521→      </div>
+   522→    </div>
+   523→  </div>
+   524→
+   525→  <div class="controls">
+   526→    <div class="play-row">
+   527→      <button class="icon-btn" id="playPauseBtn" title="Play / Pause (space)">
+   528→        <svg viewBox="0 0 24 24" fill="currentColor" id="ppIcon">
+   529→          <path d="M8 5v14l11-7z"/>
+   530→        </svg>
+   531→      </button>
+   532→      <button class="icon-btn" id="restartBtn" title="Restart (r)">
+   533→        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+   534→          <polyline points="1 4 1 10 7 10"/>
+   535→          <path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/>
+   536→        </svg>
+   537→      </button>
+   538→      <button class="icon-btn" id="prevBtn" title="Previous scene (←)">
+   539→        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M6 6h2v12H6zm3.5 6l8.5 6V6z"/></svg>
+   540→      </button>
+   541→      <button class="icon-btn" id="nextBtn" title="Next scene (→)">
+   542→        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M6 18l8.5-6L6 6v12zM16 6v12h2V6h-2z"/></svg>
+   543→      </button>
+   544→    </div>
+   545→    <div class="timeline-wrap" id="timeline">
+   546→      <div class="timeline-progress" id="progress"></div>
+   547→      <div class="chapter-marker" style="left:12.50%" title="Signal"></div><div class="chapter-marker" style="left:25.00%" title="Paper 1"></div><div class="chapter-marker" style="left:37.50%" title="Paper 2"></div><div class="chapter-marker" style="left:50.00%" title="Paper 3"></div><div class="chapter-marker" style="left:62.50%" title="Paper 4"></div><div class="chapter-marker" style="left:75.00%" title="Bullets"></div><div class="chapter-marker" style="left:87.50%" title="Outro"></div>
+   548→    </div>
+   549→    <div class="time-display" id="timeDisplay">0:00 / 0:00</div>
+   550→  </div>
+   551→</div>
+   552→
+   553→<script>
+   554→  // ===== Timeline data (baked-in) =====
+   555→  const SCENES = [{"id": "intro", "label": "Hypothesis", "start": 0.0, "end": 6.0}, {"id": "signal", "label": "Signal", "start": 6.0, "end": 12.0}, {"id": "paper-0", "label": "Paper 1", "start": 12.0, "end": 18.0}, {"id": "paper-1", "label": "Paper 2", "start": 18.0, "end": 24.0}, {"id": "paper-2", "label": "Paper 3", "start": 24.0, "end": 30.0}, {"id": "paper-3", "label": "Paper 4", "start": 30.0, "end": 36.0}, {"id": "bullets", "label": "Bullets", "start": 36.0, "end": 42.0}, {"id": "outro", "label": "Outro", "start": 42.0, "end": 48.0}];
+   556→  const TOTAL_DURATION = SCENES[SCENES.length - 1].end;
+   557→
+   558→  // ===== DOM =====
+   559→  const sceneEls = document.querySelectorAll('.scene');
+   560→  const playPauseBtn = document.getElementById('playPauseBtn');
+   561→  const ppIcon = document.getElementById('ppIcon');
+   562→  const restartBtn = document.getElementById('restartBtn');
+   563→  const prevBtn = document.getElementById('prevBtn');
+   564→  const nextBtn = document.getElementById('nextBtn');
+   565→  const timeline = document.getElementById('timeline');
+   566→  const progress = document.getElementById('progress');
+   567→  const timeDisplay = document.getElementById('timeDisplay');
+   568→  const sceneLabel = document.getElementById('sceneLabel');
+   569→  const playOverlay = document.getElementById('playOverlay');
+   570→  const endScreen = document.getElementById('endScreen');
+   571→  const replayBtn = document.getElementById('replayBtn');
+   572→
+   573→  // ===== State =====
+   574→  let playing = false;
+   575→  let currentTime = 0;
+   576→  let lastFrame = null;
+   577→  let rafId = null;
+   578→
+   579→  function fmt(t){
+   580→    t = Math.max(0, t);
+   581→    const m = Math.floor(t / 60);
+   582→    const s = Math.floor(t % 60);
+   583→    return m + ':' + String(s).padStart(2, '0');
+   584→  }
+   585→
+   586→  function setActiveScene(idx){
+   587→    sceneEls.forEach((el, i) => {
+   588→      if (parseInt(el.dataset.scene) === idx || (idx === -1 && i === 0)) {
+   589→        el.classList.add('active');
+   590→      } else {
+   591→        el.classList.remove('active');
+   592→      }
+   593→    });
+   594→    const meta = SCENES[idx];
+   595→    if (meta) {
+   596→      sceneLabel.textContent = (idx + 1) + '/' + SCENES.length + ' · ' + meta.label;
+   597→    }
+   598→  }
+   599→
+   600→  function currentSceneIndex(t){
+   601→    for (let i = 0; i < SCENES.length; i++){
+   602→      if (t < SCENES[i].end) return i;
+   603→    }
+   604→    return SCENES.length - 1;
+   605→  }
+   606→
+   607→  function tick(now){
+   608→    if (!playing) return;
+   609→    if (lastFrame === null) lastFrame = now;
+   610→    const dt = (now - lastFrame) / 1000;
+   611→    lastFrame = now;
+   612→    currentTime += dt;
+   613→    if (currentTime >= TOTAL_DURATION){
+   614→      currentTime = TOTAL_DURATION;
+   615→      pause();
+   616→      onEnded();
+   617→      return;
+   618→    }
+   619→    render();
+   620→    rafId = requestAnimationFrame(tick);
+   621→  }
+   622→
+   623→  function render(){
+   624→    const pct = (currentTime / TOTAL_DURATION) * 100;
+   625→    progress.style.width = pct + '%';
+   626→    timeDisplay.textContent = fmt(currentTime) + ' / ' + fmt(TOTAL_DURATION);
+   627→    const idx = currentSceneIndex(currentTime);
+   628→    setActiveScene(idx);
+   629→  }
+   630→
+   631→  function play(){
+   632→    if (currentTime >= TOTAL_DURATION) currentTime = 0;
+   633→    playing = true;
+   634→    lastFrame = null;
+   635→    playOverlay.classList.add('hidden');
+   636→    endScreen.classList.remove('show');
+   637→    ppIcon.innerHTML = '<path d="M6 4h4v16H6V4zm8 0h4v16h-4V4z"/>';
+   638→    rafId = requestAnimationFrame(tick);
+   639→  }
+   640→
+   641→  function pause(){
+   642→    playing = false;
+   643→    if (rafId) cancelAnimationFrame(rafId);
+   644→    rafId = null;
+   645→    ppIcon.innerHTML = '<path d="M8 5v14l11-7z"/>';
+   646→    if (currentTime < TOTAL_DURATION){
+   647→      // Don't show overlay if user explicitly paused; just keep frame
+   648→    }
+   649→  }
+   650→
+   651→  function restart(){
+   652→    currentTime = 0;
+   653→    endScreen.classList.remove('show');
+   654→    playOverlay.classList.add('hidden');
+   655→    render();
+   656→    play();
+   657→  }
+   658→
+   659→  function seekTo(t){
+   660→    currentTime = Math.max(0, Math.min(TOTAL_DURATION, t));
+   661→    if (currentTime >= TOTAL_DURATION) {
+   662→      pause();
+   663→      onEnded();
+   664→    } else {
+   665→      render();
+   666→    }
+   667→  }
+   668→
+   669→  function gotoScene(idx){
+   670→    if (idx < 0 || idx >= SCENES.length) return;
+   671→    seekTo(SCENES[idx].start + 0.01);
+   672→    if (!playing) play();
+   673→  }
+   674→
+   675→  function nextScene(){
+   676→    const cur = currentSceneIndex(currentTime);
+   677→    if (cur < SCENES.length - 1) gotoScene(cur + 1);
+   678→  }
+   679→
+   680→  function prevScene(){
+   681→    const cur = currentSceneIndex(currentTime);
+   682→    if (cur > 0) gotoScene(cur - 1);
+   683→    else if (currentTime > 0.5) seekTo(0);
+   684→  }
+   685→
+   686→  function onEnded(){
+   687→    endScreen.classList.add('show');
+   688→    sceneLabel.textContent = '✓ complete';
+   689→  }
+   690→
+   691→  // ===== Wire events =====
+   692→  playPauseBtn.addEventListener('click', () => { playing ? pause() : play(); });
+   693→  restartBtn.addEventListener('click', restart);
+   694→  prevBtn.addEventListener('click', prevScene);
+   695→  nextBtn.addEventListener('click', nextScene);
+   696→  replayBtn.addEventListener('click', restart);
+   697→
+   698→  playOverlay.addEventListener('click', play);
+   699→
+   700→  timeline.addEventListener('click', (e) => {
+   701→    const rect = timeline.getBoundingClientRect();
+   702→    const pct = (e.clientX - rect.left) / rect.width;
+   703→    seekTo(pct * TOTAL_DURATION);
+   704→  });
+   705→
+   706→  document.addEventListener('keydown', (e) => {
+   707→    if (e.key === ' ') { e.preventDefault(); playing ? pause() : play(); }
+   708→    else if (e.key === 'ArrowRight') nextScene();
+   709→    else if (e.key === 'ArrowLeft') prevScene();
+   710→    else if (e.key === 'r' || e.key === 'R') restart();
+   711→    else if (e.key === '0') seekTo(0);
+   712→  });
+   713→
+   714→  // Initial render
+   715→  render();
+   716→  setActiveScene(0);
+   717→
+   718→  // Auto-play attempt (browsers may block; fall back to overlay click)
+   719→  const autoplay = () => {
+   720→    const p = play();
+   721→    if (p && typeof p.catch === 'function'){
+   722→      p.catch(() => {
+   723→        playOverlay.classList.remove('hidden');
+   724→      });
+   725→    }
+   726→  };
+   727→  // Slight delay so the page settles
+   728→  setTimeout(() => {
+   729→    // Try to play, but show overlay first so user can interact
+   730→    playOverlay.classList.remove('hidden');
+   731→    // Auto-play after 600ms if user hasn't clicked
+   732→    setTimeout(() => {
+   733→      if (!playing && currentTime === 0) autoplay();
+   734→    }, 800);
+   735→  }, 100);
+   736→</script>
+   737→</body>
+   738→</html>
+   739→
