@@ -1,0 +1,938 @@
+     1→// LLM Content Generator
+     2→// Uses OpenAI/Claude APIs for content generation
+     3→
+     4→import {
+     5→  GeneratedContent,
+     6→  ProjectProfile,
+     7→  AbstractRequirements,
+     8→  ImpactFramework,
+     9→  ReadingScore,
+    10→  SimilarityScore,
+    11→  SemanticFieldType,
+    12→} from "./types";
+    13→
+    14→// LLM Provider configuration
+    15→interface LLMProvider {
+    16→  name: "openai" | "anthropic" | "mock";
+    17→  apiKey?: string;
+    18→  model: string;
+    19→}
+    20→
+    21→class LLMContentGenerator {
+    22→  private provider: LLMProvider;
+    23→
+    24→  constructor() {
+    25→    // Determine which provider to use based on available API keys
+    26→    if (process.env.OPENAI_API_KEY) {
+    27→      this.provider = {
+    28→        name: "openai",
+    29→        apiKey: process.env.OPENAI_API_KEY,
+    30→        model: "gpt-4-turbo-preview",
+    31→      };
+    32→    } else if (process.env.ANTHROPIC_API_KEY) {
+    33→      this.provider = {
+    34→        name: "anthropic",
+    35→        apiKey: process.env.ANTHROPIC_API_KEY,
+    36→        model: "claude-3-opus-20240229",
+    37→      };
+    38→    } else {
+    39→      this.provider = {
+    40→        name: "mock",
+    41→        model: "nexus-mock-v1",
+    42→      };
+    43→    }
+    44→  }
+    45→
+    46→  /**
+    47→   * Generate project abstract
+    48→   */
+    49→  async generateAbstract(
+    50→    projectData: Partial<ProjectProfile>,
+    51→    requirements: AbstractRequirements
+    52→  ): Promise<GeneratedContent> {
+    53→    const prompt = this.buildAbstractPrompt(projectData, requirements);
+    54→    
+    55→    return await this.generateContent(prompt, requirements.maxWords, "abstract");
+    56→  }
+    57→
+    58→  /**
+    59→   * Generate impact statement
+    60→   */
+    61→  async generateImpactStatement(
+    62→    projectData: Partial<ProjectProfile>,
+    63→    framework: ImpactFramework
+    64→  ): Promise<GeneratedContent> {
+    65→    const prompt = this.buildImpactPrompt(projectData, framework);
+    66→    
+    67→    return await this.generateContent(prompt, 2000, "impact_statement");
+    68→  }
+    69→
+    70→  /**
+    71→   * Generate risk assessment
+    72→   */
+    73→  async generateRiskAssessment(
+    74→    sector: string,
+    75→    projectSpecifics: { title: string; duration: string; budget: number }
+    76→  ): Promise<GeneratedContent> {
+    77→    const prompt = this.buildRiskPrompt(sector, projectSpecifics);
+    78→    
+    79→    return await this.generateContent(prompt, 1500, "risk_assessment");
+    80→  }
+    81→
+    82→  /**
+    83→   * Generate innovation description
+    84→   */
+    85→  async generateInnovationDescription(
+    86→    projectData: Partial<ProjectProfile>,
+    87→    context: { stateOfArt: string; noveltyPoints: string[] }
+    88→  ): Promise<GeneratedContent> {
+    89→    const prompt = this.buildInnovationPrompt(projectData, context);
+    90→    
+    91→    return await this.generateContent(prompt, 1500, "innovation_description");
+    92→  }
+    93→
+    94→  /**
+    95→   * Generate market analysis
+    96→   */
+    97→  async generateMarketAnalysis(
+    98→    companyData: { sector: string; product: string; targetMarket: string }
+    99→  ): Promise<GeneratedContent> {
+   100→    const prompt = this.buildMarketPrompt(companyData);
+   101→    
+   102→    return await this.generateContent(prompt, 1200, "market_analysis");
+   103→  }
+   104→
+   105→  /**
+   106→   * Generate competitor analysis
+   107→   */
+   108→  async generateCompetitorAnalysis(
+   109→    companyData: { sector: string; competitors?: string[] }
+   110→  ): Promise<GeneratedContent> {
+   111→    const prompt = this.buildCompetitorPrompt(companyData);
+   112→    
+   113→    return await this.generateContent(prompt, 1000, "competitor_analysis");
+   114→  }
+   115→
+   116→  /**
+   117→   * Generate commercialisation plan
+   118→   */
+   119→  async generateCommercialisationPlan(
+   120→    projectData: Partial<ProjectProfile>,
+   121→    timeline: { yearsToMarket: number; milestones: string[] }
+   122→  ): Promise<GeneratedContent> {
+   123→    const prompt = this.buildCommercialisationPrompt(projectData, timeline);
+   124→    
+   125→    return await this.generateContent(prompt, 1500, "commercialisation_plan");
+   126→  }
+   127→
+   128→  /**
+   129→   * Adapt tone for different audiences
+   130→   */
+   131→  async adaptTone(
+   132→    content: string,
+   133→    targetAudience: "academic" | "business" | "government"
+   134→  ): Promise<string> {
+   135→    const toneGuides = {
+   136→      academic: {
+   137→        style: "formal academic writing with citations and technical depth",
+   138→        vocabulary: "specialized terminology appropriate for peer review",
+   139→        structure: "structured with clear methodology and evidence-based claims",
+   140→      },
+   141→      business: {
+   142→        style: "professional business language focused on value proposition",
+   143→        vocabulary: "business terminology emphasizing ROI and market opportunity",
+   144→        structure: "executive summary format with clear value drivers",
+   145→      },
+   146→      government: {
+   147→        style: "clear policy-oriented language aligned with public benefit",
+   148→        vocabulary: "terms aligned with government priorities and frameworks",
+   149→        structure: "aligned with evaluation criteria and measurable outcomes",
+   150→      },
+   151→    };
+   152→
+   153→    const guide = toneGuides[targetAudience];
+   154→    const prompt = `Adapt the following text for a ${targetAudience} audience.
+   155→
+   156→Target Style: ${guide.style}
+   157→Vocabulary: ${guide.vocabulary}
+   158→Structure: ${guide.structure}
+   159→
+   160→Original Text:
+   161→${content}
+   162→
+   163→Adapted Text:`;
+   164→
+   165→    if (this.provider.name === "mock") {
+   166→      return this.mockToneAdaptation(content, targetAudience);
+   167→    }
+   168→
+   169→    try {
+   170→      const result = await this.callLLM(prompt, 3000);
+   171→      return result;
+   172→    } catch (error) {
+   173→      console.error("Error adapting tone:", error);
+   174→      return content;
+   175→    }
+   176→  }
+   177→
+   178→  /**
+   179→   * Check reading level of text
+   180→   */
+   181→  checkReadingLevel(text: string, _targetGrade: number): ReadingScore {
+   182→    const words = text.split(/\s+/).filter(w => w.length > 0);
+   183→    const sentences = text.split(/[.!?]+/).filter(s => s.trim().length > 0);
+   184→    const syllables = words.reduce((sum, word) => sum + this.countSyllables(word), 0);
+   185→
+   186→    const wordCount = Math.max(words.length, 1);
+   187→    const sentenceCount = Math.max(sentences.length, 1);
+   188→
+   189→    // Flesch-Kincaid Grade Level
+   190→    const fleschKincaid = (
+   191→      0.39 * (wordCount / sentenceCount) +
+   192→      11.8 * (syllables / wordCount) -
+   193→      15.59
+   194→    );
+   195→
+   196→    // Coleman-Liau Index
+   197→    const avgWordLength = wordCount > 0 ? words.reduce((sum, w) => sum + w.length, 0) / wordCount : 0;
+   198→    const colemanLiau = (0.0588 * avgWordLength * 100) - (0.296 * (sentenceCount / wordCount) * 100) - 15.8;
+   199→
+   200→    return {
+   201→      gradeLevel: Math.round(fleschKincaid),
+   202→      fleschKincaid: Math.round(fleschKincaid * 10) / 10,
+   203→      colemanLiau: Math.round(colemanLiau * 10) / 10,
+   204→      wordsPerSentence: Math.round((wordCount / sentenceCount) * 10) / 10,
+   205→      syllablesPerWord: Math.round((syllables / wordCount) * 100) / 100,
+   206→    };
+   207→  }
+   208→
+   209→  /**
+   210→   * Check similarity to reference texts (for plagiarism/originality)
+   211→   */
+   212→  checkSimilarityToWinners(text: string, referenceTexts: string[]): SimilarityScore {
+   213→    const normalizedText = text.toLowerCase().replace(/[^\w\s]/g, "");
+   214→    const textWords = new Set(normalizedText.split(/\s+/));
+   215→
+   216→    const matches: SimilarityScore["matches"] = [];
+   217→    let totalSimilarity = 0;
+   218→
+   219→    for (const ref of referenceTexts) {
+   220→      const normalizedRef = ref.toLowerCase().replace(/[^\w\s]/g, "");
+   221→      const refWords = normalizedRef.split(/\s+/);
+   222→
+   223→      // Simple Jaccard similarity
+   224→      const commonWords = [...textWords].filter(w => refWords.includes(w));
+   225→      const allWords = new Set([...textWords, ...refWords]);
+   226→      const similarity = commonWords.length / allWords.size;
+   227→
+   228→      if (similarity > 0.3) {
+   229→        matches.push({
+   230→          text: commonWords.slice(0, 5).join(" "),
+   231→          reference: ref.substring(0, 100),
+   232→          similarity: Math.round(similarity * 100) / 100,
+   233→        });
+   234→        totalSimilarity = Math.max(totalSimilarity, similarity);
+   235→      }
+   236→    }
+   237→
+   238→    return {
+   239→      percentage: Math.round(totalSimilarity * 100),
+   240→      matches: matches.slice(0, 5),
+   241→      overallAssessment: totalSimilarity > 0.5 
+   242→        ? "High similarity detected - consider rephrasing"
+   243→        : totalSimilarity > 0.3
+   244→        ? "Moderate similarity - acceptable but could be more original"
+   245→        : "Good originality - low similarity to references",
+   246→    };
+   247→  }
+   248→
+   249→  // ==================== PRIVATE METHODS ====================
+   250→
+   251→  private async callLLM(prompt: string, maxTokens: number): Promise<string> {
+   252→    if (this.provider.name === "openai" && this.provider.apiKey) {
+   253→      return await this.callOpenAI(prompt, maxTokens);
+   254→    } else if (this.provider.name === "anthropic" && this.provider.apiKey) {
+   255→      return await this.callAnthropic(prompt, maxTokens);
+   256→    } else {
+   257→      return this.generateMockResponse(prompt);
+   258→    }
+   259→  }
+   260→
+   261→  private async callOpenAI(prompt: string, maxTokens: number): Promise<string> {
+   262→    const response = await fetch("https://api.openai.com/v1/chat/completions", {
+   263→      method: "POST",
+   264→      headers: {
+   265→        "Content-Type": "application/json",
+   266→        Authorization: `Bearer ${this.provider.apiKey}`,
+   267→      },
+   268→      body: JSON.stringify({
+   269→        model: this.provider.model,
+   270→        messages: [
+   271→          {
+   272→            role: "system",
+   273→            content: "You are an expert grant writer specializing in research funding applications. Write clear, compelling, and professional content that maximizes success rates.",
+   274→          },
+   275→          { role: "user", content: prompt },
+   276→        ],
+   277→        max_tokens: maxTokens,
+   278→        temperature: 0.7,
+   279→      }),
+   280→    });
+   281→
+   282→    if (!response.ok) {
+   283→      throw new Error(`OpenAI API error: ${response.status}`);
+   284→    }
+   285→
+   286→    const data = await response.json();
+   287→    return data.choices[0].message.content;
+   288→  }
+   289→
+   290→  private async callAnthropic(prompt: string, maxTokens: number): Promise<string> {
+   291→    const response = await fetch("https://api.anthropic.com/v1/messages", {
+   292→      method: "POST",
+   293→      headers: {
+   294→        "Content-Type": "application/json",
+   295→        "x-api-key": this.provider.apiKey!,
+   296→        "anthropic-version": "2023-06-01",
+   297→      },
+   298→      body: JSON.stringify({
+   299→        model: this.provider.model,
+   300→        max_tokens: maxTokens,
+   301→        messages: [
+   302→          {
+   303→            role: "user",
+   304→            content: `You are an expert grant writer specializing in research funding applications. Write clear, compelling, and professional content.\n\n${prompt}`,
+   305→          },
+   306→        ],
+   307→      }),
+   308→    });
+   309→
+   310→    if (!response.ok) {
+   311→      throw new Error(`Anthropic API error: ${response.status}`);
+   312→    }
+   313→
+   314→    const data = await response.json();
+   315→    return data.content[0].text;
+   316→  }
+   317→
+   318→  private async generateContent(
+   319→    prompt: string,
+   320→    maxWords: number,
+   321→    fieldType: SemanticFieldType
+   322→  ): Promise<GeneratedContent> {
+   323→    try {
+   324→      const content = await this.callLLM(prompt, maxWords * 2); // Approximate tokens
+   325→      
+   326→      const wordCount = content.split(/\s+/).length;
+   327→      const readingTime = Math.ceil(wordCount / 200); // Average reading speed
+   328→
+   329→      return {
+   330→        content,
+   331→        wordCount,
+   332→        readingTime,
+   333→        confidence: this.provider.name === "mock" ? 0.7 : 0.9,
+   334→        suggestions: this.generateSuggestions(fieldType),
+   335→      };
+   336→    } catch (error) {
+   337→      console.error(`Error generating ${fieldType}:`, error);
+   338→      
+   339→      // Return mock content as fallback
+   340→      const fallbackContent = this.getMockContent(fieldType);
+   341→      return {
+   342→        content: fallbackContent,
+   343→        wordCount: fallbackContent.split(/\s+/).length,
+   344→        readingTime: Math.ceil(fallbackContent.split(/\s+/).length / 200),
+   345→        confidence: 0.5,
+   346→        suggestions: ["Consider providing custom content for best results"],
+   347→      };
+   348→    }
+   349→  }
+   350→
+   351→  private generateMockResponse(prompt: string): string {
+   352→    // Generate contextual mock responses based on prompt keywords
+   353→    const lowerPrompt = prompt.toLowerCase();
+   354→
+   355→    if (lowerPrompt.includes("abstract")) {
+   356→      return this.getMockContent("project_abstract");
+   357→    } else if (lowerPrompt.includes("impact")) {
+   358→      return this.getMockContent("impact_statement");
+   359→    } else if (lowerPrompt.includes("risk")) {
+   360→      return this.getMockContent("risk_assessment");
+   361→    } else if (lowerPrompt.includes("innovation")) {
+   362→      return this.getMockContent("innovation_description");
+   363→    } else if (lowerPrompt.includes("market")) {
+   364→      return this.getMockContent("market_analysis");
+   365→    } else if (lowerPrompt.includes("commercial")) {
+   366→      return this.getMockContent("commercialisation_plan");
+   367→    } else if (lowerPrompt.includes("competitor")) {
+   368→      return this.getMockContent("competitor_analysis");
+   369→    }
+   370→
+   371→    return "This is generated content for your application. In production, this would be replaced with AI-generated content tailored to your specific project details.";
+   372→  }
+   373→
+   374→  private getMockContent(fieldType: SemanticFieldType): string {
+   375→    const mockContents: Record<SemanticFieldType, string> = {
+   376→      company_legal_name: "[Company Legal Name]",
+   377→      registration_number: "[Registration Number]",
+   378→      registered_address: "[Registered Address]",
+   379→      company_website: "[Website URL]",
+   380→      incorporation_date: "[Date]",
+   381→      legal_structure: "[Legal Structure]",
+   382→      sector: "[Primary Sector]",
+   383→      sic_codes: "[SIC Codes]",
+   384→      employee_count: "[Number of Employees]",
+   385→      annual_revenue: "[Annual Revenue]",
+   386→      project_title: "[Project Title]",
+   387→      project_abstract: `This project addresses a critical gap in [sector] by developing innovative solutions that leverage cutting-edge technology and methodologies. Our approach combines [key methodology 1] with [key methodology 2] to deliver transformative outcomes that significantly advance the state-of-the-art.
+   388→
+   389→The proposed work builds upon our team's extensive expertise in [relevant domain], demonstrated through [key achievement 1] and [key achievement 2]. We have assembled a world-class consortium comprising leading researchers from [institution 1], industry partners from [company], and end-users who will ensure real-world impact.
+   390→
+   391→Key objectives include:
+   392→• Development of novel [technology/approach] that achieves [specific metric]
+   393→• Validation through [methodology] ensuring robustness and scalability  
+   394→• Dissemination of results via [channels] maximizing reach and adoption
+   395→
+   396→This work aligns directly with [funder priority] and will contribute to [broader goal], positioning [country/region] at the forefront of global innovation in [field].`,
+   397→      project_duration: "[Duration, e.g., 24 months]",
+   398→      project_start_date: "[Start Date]",
+   399→      project_end_date: "[End Date]",
+   400→      total_project_cost: "[Total Cost]",
+   401→      funding_requested: "[Funding Amount]",
+   402→      team_member_name: "[Team Member Name]",
+   403→      team_member_role: "[Role]",
+   404→      team_member_bio: `[Name] brings over [X] years of experience in [field], with particular expertise in [specialization]. They hold a [degree] from [institution] and have published [number] papers in leading journals including [journal names].
+   405→
+   406→Their previous work includes [notable achievement 1], which resulted in [outcome], and [notable achievement 2], demonstrating their capability to deliver complex projects successfully. [Name]'s unique combination of theoretical knowledge and practical implementation experience makes them ideally suited to lead this workstream.`,
+   407→      team_member_qualifications: "[Qualifications]",
+   408→      principal_investigator: "[PI Name]",
+   409→      key_personnel: "[Key Personnel Details]",
+   410→      impact_statement: `This project will deliver significant economic, social, and environmental impact across multiple dimensions:
+   411→
+   412→**Economic Impact**
+   413→• Creation of [X] high-value jobs in [region/sector]
+   414→• Generation of £[X] in additional economic activity over 5 years
+   415→• Development of exportable technology with potential market value of £[X]
+   416→• Attraction of further investment into the UK innovation ecosystem
+   417→
+   418→**Social Impact**
+   419→• Improved [social outcome] benefiting [X] individuals/communities
+   420→• Enhanced skills development through training and knowledge transfer
+   421→• Increased accessibility of [technology/service] to underserved groups
+   422→• Strengthening of UK's position in [strategic area]
+   423→
+   424→**Environmental Impact**
+   425→• Reduction of [environmental metric] by [X]%
+   426→• Development of sustainable alternatives to [current approach]
+   427→• Contribution to UK's net-zero targets through [mechanism]
+   428→• Establishment of circular economy principles in [sector]
+   429→
+   430→**Knowledge & Capability**
+   431→• Publication of [X] high-impact papers advancing scientific understanding
+   432→• Creation of open-source tools/resources for the research community
+   433→• Training of [X] researchers and PhD students
+   434→• Establishment of new collaborations between academia and industry
+   435→
+   436→**Policy & Regulatory**
+   437→• Evidence base to inform future policy decisions in [area]
+   438→• Standards development for emerging technologies
+   439→• Best practice guidelines for [application area]
+   440→
+   441→We will measure impact through [metrics] and report progress quarterly to ensure accountability and enable course correction.`,
+   442→      risk_assessment: `We have identified and developed mitigation strategies for the following key risks:
+   443→
+   444→**Technical Risks**
+   445→
+   446→*Risk 1:* [Technical challenge may affect timeline]
+   447→*Mitigation:* Contingency time built into project plan; alternative approaches identified; engagement with external experts for validation.
+   448→*Probability:* Medium | *Impact:* High | *Residual Risk:* Low
+   449→
+   450→*Risk 2:* [Technology may not perform as expected]
+   451→*Mitigation:* Extensive prototyping phase before full implementation; iterative testing approach; partnership with established manufacturers.
+   452→*Probability:* Low | *Impact:* High | *Residual Risk:* Low
+   453→
+   454→**Commercial Risks**
+   455→
+   456→*Risk 3:* Market conditions may change during project*
+   457→*Mitigation:* Flexible project scope allowing pivots; diverse stakeholder engagement; monitoring of market indicators throughout.
+   458→*Probability:* Medium | *Impact:* Medium | *Residual Risk:* Low
+   459→
+   460→**Organizational Risks**
+   461→
+   462→*Risk 4:* Key personnel availability*
+   463→*Mitigation:* Knowledge sharing protocols; succession planning; cross-training within team; documented processes.
+   464→*Probability:* Low | *Impact:* High | *Residual Risk:* Very Low
+   465→
+   466→**External Risks**
+   467→
+   468→*Risk 5:* [Regulatory/policy changes]*
+   469→*Mitigation:* Active engagement with regulators; flexible compliance framework; advisory board input on regulatory matters.
+   470→*Probability:* Low | *Impact:* Medium | *Residual Risk:* Low
+   471→
+   472→Overall, our comprehensive risk management approach ensures that identified risks are actively monitored and managed throughout the project lifecycle.`,
+   473→      innovation_description: `Our project represents a significant advancement beyond the current state-of-the-art through several key innovations:
+   474→
+   475→**Novel Approach**
+   476→Unlike existing solutions that [describe current limitation], we propose [novel approach] which enables [capability/benefit]. This represents a paradigm shift in how [problem] is addressed, moving from [old method] to [new method].
+   477→
+   478→**Technical Innovation**
+   479→• [Innovation 1]: First application of [technique] to [domain], achieving [improvement]
+   480→• [Innovation 2]: Novel combination of [A] and [B] creating synergistic effects
+   481→• [Innovation 3]: Proprietary methodology that reduces [metric] by [X]%
+   482→
+   483→**Methodological Advances**
+   484→Our interdisciplinary approach combines insights from [field 1], [field 2], and [field 3] in ways not previously attempted. This integration allows us to address challenges that single-discipline approaches cannot solve.
+   485→
+   486→**Differentiation from State-of-the-Art**
+   487→Current solutions suffer from:
+   488→1. [Limitation 1] - Our solution addresses this through [approach]
+   489→2. [Limitation 2] - We overcome this by [method]
+   490→3. [Limitation 3] - Our unique contribution is [innovation]
+   491→
+   492→**Pathway to Exploitation**
+   493→The innovations developed here have immediate applications in [application 1] and [application 2], with potential for broader impact in [future area]. Our IP strategy includes [patent/publication plans].
+   494→
+   495→This work positions the UK as a global leader in [field], building on national strengths in [strength 1] and [strength 2].`,
+   496→      market_analysis: `**Market Overview**
+   497→
+   498→The global [sector] market is valued at £[X]bn (2024) and projected to grow at CAGR of [X]% through 2030, driven by [driver 1], [driver 2], and [driver 3].
+   499→
+   500→**Target Segments**
+   501→
+   502→*Primary Segment:* [Description] - Value £[X]m, growing at [X]% annually
+   503→Characteristics: [characteristics], Pain points: [pain points]
+   504→
+   505→*Secondary Segment:* [Description] - Value £[X]m
+   506→Characteristics: [characteristics], Needs: [needs]
+   507→
+   508→**Customer Profile**
+   509→
+   510→Our ideal customers are [description] who currently struggle with [problem]. They typically spend £[X] annually on [alternative solutions] and experience [frustrations].
+   511→
+   512→**Market Trends**
+   513→
+   514→1. Increasing demand for [capability] due to [trend]
+   515→2. Shift towards [approach] driven by [factor]
+   516→3. Growing importance of [requirement] among buyers
+   517→4. Emerging opportunities in [new area]
+   518→
+   519→**Entry Strategy**
+   520→
+   521→We will enter the market through [channel], leveraging [advantage]. Initial focus on [segment] provides beachhead for expansion into [adjacent markets].
+   522→
+   523→**Pricing Model**
+   524→
+   525→Based on customer research and competitive analysis, we anticipate pricing of [range], representing [value proposition] compared to alternatives.`,
+   526→      competitor_analysis: `**Competitive Landscape**
+   527→
+   528→*Direct Competitors:*
+   529→
+   530→1. **[Competitor A]** - Market leader with [X]% share
+   531→   - Strengths: [strengths]
+   532→   - Weaknesses: [weaknesses]
+   533→   - Our Differentiation: [how we differ]
+   534→
+   535→2. **[Competitor B]** - Established player focusing on [area]
+   536→   - Strengths: [strengths]
+   537→   - Weaknesses: [weaknesses]
+   538→   - Our Differentiation: [how we differ]
+   539→
+   540→3. **[Competitor C]** - Emerging competitor using [approach]
+   541→   - Strengths: [strengths]
+   542→   - Weaknesses: [weaknesses]
+   543→   - Our Differentiation: [how we differ]
+   544→
+   545→*Indirect Competitors:*
+   546→
+   547→Alternative solutions include [alternatives], which customers use because [reason]. These solutions lack [capability] that our solution provides.
+   548→
+   549→**Competitive Advantages**
+   550→
+   551→Our solution offers distinct advantages:
+   552→
+   553→1. **Technology Leadership**: [Unique capability] not available elsewhere
+   554→2. **Performance**: [X]x improvement on key metric vs. competitors
+   555→3. **Cost Efficiency**: [X]% lower TCO compared to alternatives
+   556→4. **Integration**: Seamless connectivity with [ecosystem]
+   557→5. **Support**: UK-based expertise and responsive service
+   558→
+   559→**Competitive Moats**
+   560→
+   561→• IP protection through [patents/filing]
+   562→• Data network effects from [mechanism]
+   563→• Switching costs created by [integration depth]
+   564→• Brand recognition built through [achievements]
+   565→
+   566→**Market Positioning**
+   567→
+   568→We position ourselves as [positioning statement], targeting customers who [customer profile]. This avoids direct competition with [competitors] while capturing underserved demand.`,
+   569→      commercialisation_plan: `**Commercialisation Strategy Overview**
+   570→
+   571→Our path to market follows a phased approach designed to minimize risk while maximizing impact and returns.
+   572→
+   573→**Phase 1: Foundation (Months 1-12)**
+   574→
+   575→*Objectives:*
+   576→• Complete core technology development
+   577→• Establish IP protection (patent filing by Month 6)
+   578→• Secure initial pilot customers (2-3 organizations)
+   579→• Validate product-market fit through user testing
+   580→
+   581→*Activities:*
+   582→- Technical milestone completion
+   583→- IP strategy execution
+   584→- Pilot program design and recruitment
+   585→- Initial revenue generation (£[X]k)
+   586→
+   587→**Phase 2: Market Entry (Months 13-24)**
+   588→
+   589→*Objectives:*
+   590→• Launch commercial product offering
+   591→• Achieve [X] paying customers
+   592→• Establish distribution partnerships
+   593→• Reach £[X]k ARR
+   594→
+   595→*Activities:*
+   596→- Product launch and marketing campaign
+   597→- Partnership development with [partner types]
+   598→- Sales team expansion ([X] FTEs)
+   599→- Customer success program implementation
+   600→
+   601→**Phase 3: Scale (Months 25-36+)**
+   602→
+   603→*Objectives:*
+   604→• Market leadership in [segment]
+   605→• International expansion to [markets]
+   606→• Platform/eco-system development
+   607→• Series A fundraising preparation
+   608→
+   609→*Activities:*
+   610→- Geographic expansion
+   611→- Product line extension
+   612→- Strategic alliance formation
+   613→- Exit option evaluation
+   614→
+   615→**Revenue Model**
+   616→
+   617→• [Product/Service 1]: Pricing at £[X], targeting [volume] sales/year
+   618→• [Product/Service 2]: Subscription model at £[X]/month
+   619→• [Service 3]: Professional services at £[X]/day
+   620→
+   621→**Go-to-Market Channels**
+   622→
+   623→1. Direct sales to enterprise customers
+   624→2. Partner channel through [partner types]
+   625→3. Digital self-service for SMB segment
+   626→4. Academic/research licensing
+   627→
+   628→**Risk Mitigation**
+   629→
+   630→• Diversified revenue streams reduce dependency on single source
+   631→• Flexible cost structure scales with revenue
+   632→• Multiple exit options (trade sale, IPO, MBO)`,
+   633→      value_for_money: `**Value for Money Statement**
+   634→
+   635→This proposal delivers exceptional value for money through efficient resource utilization, strong outcomes focus, and sustainable impact creation.
+   636→
+   637→**Cost Effectiveness**
+   638→
+   639→• Total project cost of £[X] represents excellent value given [benchmark comparison]
+   640→• Our costs are [X]% below sector average due to [efficiency measures]
+   641→• Leveraged investment: Every £1 of grant funding leverages £[X] of co-investment
+   642→
+   643→**Outcome Focus**
+   644→
+   645→Funds requested will directly deliver:
+   646→• [X] new products/services reaching market
+   647→• [X] jobs created/safeguarded
+   648→• £[X] of economic value generated
+   649→• [X] environmental benefits achieved
+   650→
+   651→**Efficient Delivery**
+   652→
+   653→• Lean project management minimizes overhead ([X]% of budget)
+   654→• Proven methodologies reduce iteration cycles
+   655→• Experienced team ensures first-time-right delivery
+   656→• Shared resources with partners maximize efficiency
+   657→
+   658→**Long-term Value**
+   659→
+   660→Beyond immediate outputs, this investment creates:
+   661→• Intellectual property worth £[X] (estimated)
+   662→• Skilled workforce ([X] people upskilled)
+   663→• Supply chain capabilities retained/grown in UK
+   664→• Foundation for follow-on funding/investment
+   665→
+   666→**Comparison to Alternatives**
+   667→
+   668→Compared to other options:
+   669→• More cost-effective than in-house development (save [X]%)
+   670→• Lower risk than pure R&D (de-risked through [approach])
+   671→• Greater impact than incremental improvements
+   672→• Faster time-to-market than academic-only approaches
+   673→
+   674→**Accountability**
+   675→
+   676→We commit to:
+   677→• Quarterly progress reporting against milestones
+   678→• Transparent financial reporting
+   679→• Independent evaluation of outcomes
+   680→• Reallocation authority if circumstances change
+   681→
+   682→This investment represents an efficient use of public funds with strong likelihood of delivering significant returns across economic, social, and environmental dimensions.`,
+   683→      public_engagement: `**Public Engagement and Dissemination Plan**
+   684→
+   685→We are committed to maximizing the impact of this work through comprehensive public engagement activities.
+   686→
+   687→**Stakeholder Groups**
+   688→
+   689→1. **General Public**
+   690→   - Accessible summaries of findings
+   691→   - Public lectures/demonstrations
+   692→   - Social media content and campaigns
+   693→
+   694→2. **Policy Makers**
+   695→   - Policy briefings and recommendations
+   696→   - Parliamentary engagement events
+   697→   - Response to consultations
+   698→
+   699→3. **Industry**
+   700→   - Technology transfer events
+   701→   - Industry advisory board meetings
+   702→   - Open days and facility tours
+   703→
+   704→4. **Academic Community**
+   705→   - Open access publications
+   706→   - Conference presentations
+   707→   - Data sharing via repositories
+   708→
+   709→5. **Education Sector**
+   710→   - School outreach programs
+   711→   - Work placement opportunities
+   712→   - Educational resource development
+   713→
+   714→**Engagement Activities**
+   715→
+   716→*Year 1:*
+   717→• Launch event with media coverage
+   718→• Website/blog with regular updates
+   719→• [X] school visits/workshops
+   720→• Participation in [relevant festival/event]
+   721→
+   722→*Year 2:*
+   723→• Public exhibition/installation
+   724→• Podcast/video series production
+   725→• Citizen science component (if applicable)
+   726→• Stakeholder conference
+   727→
+   728→*Year 3:*
+   729→• Final showcase event
+   730→• Comprehensive impact report
+   731→• Legacy planning for continued engagement
+   732→• Knowledge transfer to practitioners
+   733→
+   734→**Accessibility Commitment**
+   735→
+   736→All outputs will be:
+   737→• Available in accessible formats
+   738→• Written in plain language where possible
+   739→• Translated where appropriate
+   740→• Free at point of access where feasible
+   741→
+   742→**Evaluation**
+   743→
+   744→We will measure engagement success through:
+   745→• Attendance/participation numbers
+   746→• Audience feedback surveys
+   747→• Media coverage metrics
+   748→• Download/citation statistics
+   749→• Follow-up action tracking`,
+   750→      budget_breakdown: "[Budget breakdown table/data]",
+   751→      cost_justification: "[Cost justification narrative]",
+   752→      matching_funding: "[Matching funding details]",
+   753→      cash_contribution: "[Cash contribution amount]",
+   754→      in_kind_contribution: "[In-kind contribution details]",
+   755→      eligibility_declaration: "[Eligibility confirmation]",
+   756→      state_aid_declaration: "[State aid declaration]",
+   757→      conflict_of_interest: "[Conflict of interest disclosure]",
+   758→      previous_funding: "[Previous funding history]",
+   759→      financial_accounts: "[Financial accounts attachment]",
+   760→      governance_document: "[Governance document attachment]",
+   761→      organizational_chart: "[Org chart attachment]",
+   762→      supporting_letters: "[Letters of support attachment]",
+   763→    };
+   764→
+   765→    return mockContents[fieldType] || "[Content to be provided]";
+   766→  }
+   767→
+   768→  private buildAbstractPrompt(data: Partial<ProjectProfile>, req: AbstractRequirements): string {
+   769→    return `Write a compelling project abstract for a grant application with these requirements:
+   770→
+   771→Project Information:
+   772→${JSON.stringify(data, null, 2)}
+   773→
+   774→Requirements:
+   775→- Maximum ${req.maxWords} words
+   776→- Focus areas: ${req.focusAreas.join(", ")}
+   777→- Evaluation criteria: ${req.evaluationCriteria.join(", ")}
+   778→- Style guide: ${req.styleGuide}
+   779→
+   780→The abstract should:
+   781→1. Hook the reader with the problem/opportunity
+   782→2. Present the innovative solution clearly
+   783→3. Demonstrate capability to deliver
+   784→4. Highlight expected impact
+   785→5. Align with funder priorities
+   786→
+   787→Write the abstract now:`;
+   788→  }
+   789→
+   790→  private buildImpactPrompt(data: Partial<ProjectProfile>, framework: ImpactFramework): string {
+   791→    return `Generate a comprehensive impact statement based on:
+   792→
+   793→Project: ${data.title || "Innovation Project"}
+   794→Company: ${data.company?.name || "Research Organization"}
+   795→
+   796→Impact Framework Dimensions:
+   797→${framework.dimensions.map(d => `- ${d.name}: ${d.description}`).join("\n")}
+   798→
+   799→Timeframe: ${framework.timeframe}
+   800→Stakeholders: ${framework.stakeholders.join(", ")}
+   801→
+   802→Include specific, measurable impacts across economic, social, environmental, and knowledge dimensions.`;
+   803→  }
+   804→
+   805→  private buildRiskPrompt(sector: string, specifics: { title: string; duration: string; budget: number }): string {
+   806→    return `Identify and provide mitigation strategies for risks in:
+   807→
+   808→Sector: ${sector}
+   809→Project: ${specifics.title}
+   810→Duration: ${specifics.duration}
+   811→Budget: £${specifics.budget.toLocaleString()}
+   812→
+   813→Provide 5-7 key risks with:
+   814→- Clear description
+   815→- Probability (Low/Medium/High)
+   816→- Impact (Low/Medium/High)
+   817→- Specific mitigation actions
+   818→- Residual risk after mitigation`;
+   819→  }
+   820→
+   821→  private buildInnovationPrompt(data: Partial<ProjectProfile>, context: { stateOfArt: string; noveltyPoints: string[] }): string {
+   822→    return `Describe what makes this project innovative and novel:
+   823→
+   824→Project: ${data.title || "Innovation Project"}
+   825→Current State of Art: ${context.stateOfArt}
+   826→Novelty Points: ${context.noveltyPoints.join(", ")}
+   827→
+   828→Explain:
+   829→1. How this advances beyond current capabilities
+   830→2. The paradigm shift or breakthrough involved
+   831→3. Why this hasn't been done before
+   832→4. The unique combination of approaches
+   833→5. Competitive differentiation achieved`;
+   834→  }
+   835→
+   836→  private buildMarketPrompt(company: { sector: string; product: string; targetMarket: string }): string {
+   837→    return `Analyze the market opportunity for:
+   838→
+   839→Sector: ${company.sector}
+   840→Product/Solution: ${company.product}
+   841→Target Market: ${company.targetMarket}
+   842→
+   843→Provide:
+   844→1. Market size and growth trajectory
+   845→2. Target customer segments
+   846→3. Key trends and drivers
+   847→4. Entry strategy
+   848→5. Revenue model considerations`;
+   849→  }
+   850→
+   851→  private buildCompetitorPrompt(company: { sector: string; competitors?: string[] }): string {
+   852→    return `Analyze the competitive landscape in ${company.sector}${company.competitors ? `\nKnown competitors: ${company.competitors.join(", ")}` : ""}.
+   853→
+   854→Provide:
+   855→1. Main competitors and their positioning
+   856→2. Their strengths and weaknesses
+   857→3. Our competitive advantages
+   858→4. Market differentiation strategy
+   859→5. Barriers to entry/moats`;
+   860→  }
+   861→
+   862→  private buildCommercialisationPrompt(data: Partial<ProjectProfile>, timeline: { yearsToMarket: number; milestones: string[] }): string {
+   863→    return `Develop a commercialisation plan for:
+   864→
+   865→Project: ${data.title || "Innovation Project"}
+   866→Timeline to Market: ${timeline.yearsToMarket} years
+   867→Key Milestones: ${timeline.milestones.join(", ")}
+   868→
+   869→Include:
+   870→1. Phased go-to-market strategy
+   871→2. Revenue model and pricing
+   872→3. Distribution channels
+   873→4. Partnership strategy
+   874→5. Investment/Funding requirements post-grant
+   875→6. Risk factors and mitigation`;
+   876→  }
+   877→
+   878→  private mockToneAdaptation(content: string, audience: string): string {
+   879→    switch (audience) {
+   880→      case "academic":
+   881→        return `[Academic Version]\n\n${content}\n\n[References and citations would be added for academic submission.]`;
+   882→      case "business":
+   883→        return `[Business-Focused Version]\n\nExecutive Summary:\n${content.substring(0, 500)}...\n\nKey Value Drivers:\n• ROI projections\n• Market opportunity\n• Competitive advantage\n\n[Business case formatting applied.]`;
+   884→      case "government":
+   885→        return `[Policy-Aligned Version]\n\n${content}\n\nAlignment with Government Priorities:\n✓ Economic Growth\n✓ Innovation Leadership\n✓ Skills Development\n\n[Public benefit framing applied.]`;
+   886→      default:
+   887→        return content;
+   888→    }
+   889→  }
+   890→
+   891→  private generateSuggestions(fieldType: SemanticFieldType): string[] {
+   892→    const suggestionMap: Partial<Record<SemanticFieldType, string[]>> = {
+   893→      project_abstract: [
+   894→        "Include specific metrics and targets",
+   895→        "Reference relevant prior work",
+   896→        "Align with stated funder priorities",
+   897→      ],
+   898→      impact_statement: [
+   899→        "Quantify impacts where possible",
+   900→        "Cover multiple impact dimensions",
+   901→        "Include measurement approach",
+   902→      ],
+   903→      risk_assessment: [
+   904→        "Ensure risks cover technical, commercial, organizational areas",
+   905→        "Include probability and impact assessments",
+   906→        "Show realistic mitigation strategies",
+   907→      ],
+   908→      innovation_description: [
+   909→        "Clearly articulate what's novel",
+   910→        "Compare to state-of-the-art",
+   911→        "Explain why this hasn't been done before",
+   912→      ],
+   913→    };
+   914→
+   915→    return suggestionMap[fieldType] || ["Review for clarity and completeness"];
+   916→  }
+   917→
+   918→  private countSyllables(word: string): number {
+   919→    word = word.toLowerCase().replace(/[^a-z]/g, "");
+   920→    if (word.length <= 3) return 1;
+   921→    
+   922→    let count = 0;
+   923→    const vowels = "aeiouy";
+   924→    let prevIsVowel = false;
+   925→
+   926→    for (const char of word) {
+   927→      const isVowel = vowels.includes(char);
+   928→      if (isVowel && !prevIsVowel) count++;
+   929→      prevIsVowel = isVowel;
+   930→    }
+   931→
+   932→    return Math.max(count, 1);
+   933→  }
+   934→}
+   935→
+   936→// Singleton instance
+   937→export const llmGenerator = new LLMContentGenerator();
+   938→

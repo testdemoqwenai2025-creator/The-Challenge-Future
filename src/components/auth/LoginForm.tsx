@@ -131,7 +131,8 @@ export function LoginForm() {
 
         <div className="space-y-2">
           <div className="flex items-center justify-between">
-            <Label htmlFor="password">Password</Label            <button
+            <Label htmlFor="password">Password</Label>
+            <button
               type="button"
               className="text-xs text-primary hover:underline"
               onClick={() => alert('Password reset: In production, this would send a reset email')}

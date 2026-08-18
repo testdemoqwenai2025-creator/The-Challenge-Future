@@ -22,6 +22,8 @@ model User {
   plan          String    @default("explorer") // explorer, pro, team, enterprise
   organization  String?
   emailVerified DateTime?
+  isActive      Boolean   @default(true)
+  lastLoginAt   DateTime?
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
   
@@ -32,6 +34,10 @@ model User {
   searches      SearchHistory[]
   accounts      Account[]
   sessions      Session[]
+  ownedTeams    Team[]       @relation("TeamOwner")
+  teamMemberships TeamMember[]
+  sentInvitations  TeamInvitation[] @relation("Inviter")
+  receivedInvitations TeamInvitation[] @relation("Invitee")
   
   @@map("users")
 }
@@ -167,6 +173,8 @@ model Application {
   id                String   @id @default(cuid())
   userId            String
   user              User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  teamId            String?
+  team              Team?    @relation(fields: [teamId], references: [id], onDelete: SetNull)
   grantProgrammeId  String?
   grantProgramme    GrantProgramme? @relation(fields: [grantProgrammeId], references: [id], onDelete: SetNull)
   status            String   @default("discovered") // discovered, matched, in_progress, submitted, awarded, rejected, withdrawn
@@ -185,6 +193,7 @@ model Application {
   updatedAt         DateTime @updatedAt
   
   @@index([userId])
+  @@index([teamId])
   @@index([status])
   @@index([grantProgrammeId])
   @@map("applications")
@@ -263,6 +272,96 @@ model SearchHistory {
   @@index([userId])
   @@index([createdAt])
   @@map("search_history")
+}
+
+// ==================== TEAM & COLLABORATION ====================
+
+model Team {
+  id              String    @id @default(cuid())
+  name            String
+  slug            String    @unique
+  description     String?
+  ownerId         String
+  owner           User      @relation("TeamOwner", fields: [ownerId], references: [id], onDelete: Cascade)
+  plan            String    @default("team") // team, enterprise
+  maxSeats        Int       @default(10)
+  usedSeats       Int       @default(1) // Owner counts as one seat
+  settings        Json?     // Team-specific settings (notifications, branding, etc.)
+  isActive        Boolean   @default(true)
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+  
+  // Relations
+  members         TeamMember[]
+  applications    Application[]  // Shared applications
+  invitations     TeamInvitation[]
+  
+  @@index([ownerId])
+  @@index([slug])
+  @@map("teams")
+}
+
+model TeamMember {
+  id              String    @id @default(cuid())
+  teamId          String
+  team            Team      @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  userId          String
+  user            User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  role            String    @default("member") // owner, admin, editor, viewer
+  permissions     String?   // JSON array of specific permissions
+  joinedAt        DateTime  @default(now())
+  lastActivityAt  DateTime  @updatedAt
+  
+  @@unique([teamId, userId])
+  @@index([userId])
+  @@index([teamId])
+  @@map("team_members")
+}
+
+model TeamInvitation {
+  id              String    @id @default(cuid())
+  teamId          String
+  team            Team      @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  inviterId       String
+  inviter         User      @relation("Inviter", fields: [inviterId], references: [id], onDelete: Cascade)
+  inviteeEmail    String
+  inviteeId       String?   // Set once user accepts and has account
+  invitee         User?     @relation("Invitee", fields: [inviteeId], references: [id], onDelete: SetNull)
+  role            String    @default("member") // Role to assign upon acceptance
+  status          String    @default("pending") // pending, accepted, declined, expired, revoked
+  token           String    @unique // Secure token for invitation link
+  message         String?   // Personal message from inviter
+  expiresAt       DateTime
+  respondedAt     DateTime?
+  createdAt       DateTime  @default(now())
+  
+  @@index([teamId])
+  @@index([inviteeEmail])
+  @@index([status])
+  @@index([token])
+  @@map("team_invitations")
+}
+
+// ==================== ACTIVITY LOGS ====================
+
+model ActivityLog {
+  id              String    @id @default(cuid())
+  userId          String?
+  teamId          String?
+  entityType      String    // application, company, grant, team, user, etc.
+  entityId        String?
+  action          String    // created, updated, deleted, submitted, viewed, etc.
+  metadata        Json?     // Additional context about the action
+  ipAddress       String?
+  userAgent       String?
+  createdAt       DateTime  @default(now())
+  
+  @@index([userId])
+  @@index([teamId])
+  @@index([entityType, entityId])
+  @@index([createdAt])
+  @@index([action])
+  @@map("activity_logs")
 }
 
 // ==================== KNOWLEDGE GRAPH (Entity Relationships) ====================
