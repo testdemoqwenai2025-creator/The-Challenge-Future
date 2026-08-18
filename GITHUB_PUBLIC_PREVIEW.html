@@ -1,0 +1,1275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NEXUS Platform - Public GitHub Repository Preview</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif;
+            background: #ffffff;
+            color: #24292f;
+            line-height: 1.5;
+        }
+        
+        /* GitHub Header */
+        .github-header {
+            background: #24292f;
+            padding: 16px 32px;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+        
+        .github-logo {
+            fill: #f0f6fc;
+            height: 32px;
+        }
+        
+        .header-search {
+            flex: 1;
+            max-width: 720px;
+        }
+        
+        .header-search input {
+            width: 100%;
+            padding: 6px 12px;
+            background: #0d1117;
+            border: 1px solid #30363d;
+            border-radius: 6px;
+            color: #c9d1d9;
+            font-size: 14px;
+        }
+        
+        .header-nav {
+            display: flex;
+            gap: 16px;
+            align-items: center;
+        }
+        
+        .header-nav a {
+            color: #f0f6fc;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 600;
+        }
+        
+        /* Repository Header */
+        .repo-container {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 16px 32px;
+        }
+        
+        .repo-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 8px;
+            font-size: 14px;
+            color: #57606a;
+        }
+        
+        .repo-header a {
+            color: #0969da;
+            text-decoration: none;
+        }
+        
+        .repo-header a:hover {
+            text-decoration: underline;
+        }
+        
+        .repo-title-row {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            margin-bottom: 16px;
+        }
+        
+        .repo-title-left {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .repo-icon {
+            width: 20px;
+            height: 20px;
+            color: #57606a;
+        }
+        
+        .repo-name {
+            font-size: 28px;
+            font-weight: 400;
+            color: #24292f;
+        }
+        
+        .repo-visibility {
+            padding: 2px 8px;
+            border: 1px solid #d0d7de;
+            border-radius: 16px;
+            font-size: 12px;
+            color: #57606a;
+            font-weight: 500;
+        }
+        
+        .repo-actions {
+            display: flex;
+            gap: 4px;
+        }
+        
+        .btn {
+            padding: 5px 12px;
+            background: #f6f8fa;
+            border: 1px solid #d0d7de;
+            border-radius: 6px;
+            color: #24292f;
+            font-size: 12px;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.15s;
+            text-decoration: none;
+        }
+        
+        .btn:hover {
+            background: #f3f4f6;
+            border-color: #8c959f;
+        }
+        
+        .btn-primary {
+            background: #2da44e;
+            border-color: rgba(27,31,36,0.15);
+            color: #fff;
+            font-weight: 500;
+        }
+        
+        .btn-primary:hover {
+            background: #2c974b;
+        }
+        
+        .repo-description {
+            font-size: 16px;
+            margin-bottom: 16px;
+            color: #24292f;
+        }
+        
+        /* Tabs */
+        .repo-tabs {
+            display: flex;
+            gap: 0;
+            border-bottom: 1px solid #d0d7de;
+            overflow-x: auto;
+        }
+        
+        .tab-item {
+            padding: 8px 12px;
+            color: #57606a;
+            text-decoration: none;
+            font-size: 14px;
+            border-bottom: 2px solid transparent;
+            white-space: nowrap;
+        }
+        
+        .tab-item.active {
+            color: #24292f;
+            border-bottom-color: #fd8c73;
+            font-weight: 600;
+        }
+        
+        .tab-item:hover {
+            color: #24292f;
+            background: #f6f8fa;
+        }
+        
+        /* Main Content Grid */
+        .content-grid {
+            display: grid;
+            grid-template-columns: 296px 1fr;
+            gap: 24px;
+            margin-top: 16px;
+        }
+        
+        /* Sidebar */
+        .sidebar-section {
+            background: #f6f8fa;
+            border: 1px solid #d0d7de;
+            border-radius: 6px;
+            padding: 16px;
+            margin-bottom: 16px;
+        }
+        
+        .sidebar-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: #24292f;
+            margin-bottom: 12px;
+        }
+        
+        .about-text {
+            font-size: 14px;
+            color: #24292f;
+            line-height: 1.6;
+            margin-bottom: 12px;
+        }
+        
+        .topic-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 4px;
+            margin-bottom: 16px;
+        }
+        
+        .topic-tag {
+            display: inline-block;
+            padding: 2px 10px;
+            background: #ddf4ff;
+            color: #0969da;
+            border-radius: 16px;
+            font-size: 12px;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        
+        .topic-tag:hover {
+            background: #b6e3ff;
+        }
+        
+        .stat-row {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 13px;
+            color: #57606a;
+            margin-bottom: 8px;
+        }
+        
+        .stat-icon {
+            width: 16px;
+            height: 16px;
+            color: #57606a;
+        }
+        
+        .stat-link {
+            color: #0969da;
+            text-decoration: none;
+        }
+        
+        .stat-link:hover {
+            text-decoration: underline;
+        }
+        
+        /* Languages */
+        .language-bar {
+            display: flex;
+            height: 8px;
+            border-radius: 4px;
+            overflow: hidden;
+            margin-bottom: 8px;
+        }
+        
+        .lang-ts { background: #3178c6; width: 75%; }
+        .lang-css { background: #563d7c; width: 10%; }
+        .lang-js { background: #f1e05a; width: 10%; }
+        .lang-other { background: #ededed; width: 5%; }
+        
+        .language-list {
+            display: flex;
+            gap: 12px;
+            font-size: 12px;
+            color: #57606a;
+        }
+        
+        .language-item {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        
+        .lang-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+        }
+        
+        /* Files Section */
+        .files-container {
+            background: #fff;
+            border: 1px solid #d0d7de;
+            border-radius: 6px;
+            overflow: hidden;
+        }
+        
+        .files-header {
+            padding: 10px 16px;
+            background: #f6f8fa;
+            border-bottom: 1px solid #d0d7de;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 14px;
+            font-weight: 600;
+        }
+        
+        .file-row {
+            display: flex;
+            align-items: center;
+            padding: 8px 16px;
+            border-top: 1px solid #eaeef2;
+            font-size: 14px;
+        }
+        
+        .file-row:hover {
+            background: #f6f8fa;
+        }
+        
+        .file-icon {
+            width: 16px;
+            height: 16px;
+            margin-right: 8px;
+            color: #57606a;
+        }
+        
+        .file-icon.folder {
+            color: #54aeff;
+        }
+        
+        .file-name {
+            color: #0969da;
+            text-decoration: none;
+            flex: 1;
+            font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+            font-size: 13px;
+        }
+        
+        .file-name:hover {
+            text-decoration: underline;
+        }
+        
+        .file-message {
+            color: #57606a;
+            flex: 2;
+            font-size: 13px;
+            padding: 0 16px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        
+        .file-time {
+            color: #57606a;
+            font-size: 13px;
+        }
+        
+        /* README Preview */
+        .readme-preview {
+            margin-top: 24px;
+            border: 1px solid #d0d7de;
+            border-radius: 6px;
+            overflow: hidden;
+        }
+        
+        .readme-header {
+            padding: 10px 16px;
+            background: #f6f8fa;
+            border-bottom: 1px solid #d0d7de;
+            font-size: 14px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .readme-body {
+            padding: 24px;
+            max-width: 100%;
+        }
+        
+        .readme-body h1 {
+            font-size: 32px;
+            margin-bottom: 16px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid #d0d7de;
+            color: #24292f;
+        }
+        
+        .readme-body h2 {
+            font-size: 24px;
+            margin-top: 32px;
+            margin-bottom: 16px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid #d0d7de;
+            color: #24292f;
+        }
+        
+        .readme-body p {
+            margin-bottom: 16px;
+            line-height: 1.7;
+            color: #24292f;
+        }
+        
+        .readme-body code {
+            background: rgba(175,184,193,0.2);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+            font-size: 13px;
+        }
+        
+        .readme-body pre {
+            background: #f6f8fa;
+            border: 1px solid #d0d7de;
+            border-radius: 6px;
+            padding: 16px;
+            overflow-x: auto;
+            margin-bottom: 16px;
+        }
+        
+        .readme-body pre code {
+            background: transparent;
+            padding: 0;
+            color: #24292f;
+        }
+        
+        .readme-body table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 16px;
+        }
+        
+        .readme-body th,
+        .readme-body td {
+            padding: 8px 12px;
+            border: 1px solid #d0d7de;
+            text-align: left;
+        }
+        
+        .readme-body th {
+            background: #f6f8fa;
+            font-weight: 600;
+        }
+        
+        .readme-body strong {
+            font-weight: 600;
+        }
+        
+        .readme-body em {
+            font-style: italic;
+            color: #57606a;
+        }
+        
+        .readme-body a {
+            color: #0969da;
+            text-decoration: none;
+        }
+        
+        .readme-body a:hover {
+            text-decoration: underline;
+        }
+        
+        .badge-row {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 16px;
+            flex-wrap: wrap;
+        }
+        
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 4px 10px;
+            border-radius: 16px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+        
+        .badge-blue {
+            background: #ddf4ff;
+            color: #0969da;
+        }
+        
+        .badge-green {
+            background: #dafbe1;
+            color: #116329;
+        }
+        
+        .badge-purple {
+            background: #f0e5ff;
+            color: #692acc;
+        }
+        
+        .badge-orange {
+            background: #fff8c5;
+            color: #9a6700;
+        }
+        
+        /* Live Demo Banner */
+        .demo-banner {
+            background: linear-gradient(135deg, #2da44e 0%, #238636 100%);
+            padding: 20px 24px;
+            border-radius: 8px;
+            margin-bottom: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 2px 8px rgba(45,164,78,0.3);
+        }
+        
+        .demo-text {
+            color: #fff;
+            font-weight: 600;
+            font-size: 16px;
+        }
+        
+        .demo-link {
+            color: #fff;
+            background: rgba(255,255,255,0.2);
+            padding: 10px 20px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: background 0.15s;
+            font-size: 14px;
+        }
+        
+        .demo-link:hover {
+            background: rgba(255,255,255,0.3);
+        }
+        
+        /* Footer */
+        .footer {
+            text-align: center;
+            padding: 40px 24px;
+            color: #57606a;
+            font-size: 14px;
+            border-top: 1px solid #d0d7de;
+            margin-top: 48px;
+            background: #f6f8fa;
+        }
+        
+        @media (max-width: 1024px) {
+            .content-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .sidebar-section {
+                order: 2;
+            }
+        }
+
+        /* Status indicator */
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 12px;
+            border-radius: 16px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+        
+        .status-active {
+            background: #dafbe1;
+            color: #116329;
+        }
+        
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: currentColor;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- GitHub Header -->
+    <header class="github-header">
+        <svg class="github-logo" viewBox="0 0 16 16" version="1.1" aria-hidden="true">
+            <path d="M8 0c4.42 0 8 3.58 8 8a8.013 8.013 0 0 1-5.45 7.59c-.4.08-.55-.17-.55-.38 0-.27.01-1.13.01-2.2 0-.75-.25-1.23-.54-1.48 1.78-.2 3.65-.88 3.65-3.95 0-.88-.31-1.59-.82-2.15.08-.2.36-1.02-.08-2.12 0 0-.67-.22-2.2.82-.64-.18-1.32-.27-2-.27-.68 0-1.36.09-2 .27-1.53-1.03-2.2-.82-2.2-.82-.44 1.1-.16 1.92-.08 2.12-.51.56-.82 1.28-.82 2.15 0 3.06 1.86 3.75 3.64 3.95-.23.2-.44.55-.51 1.07-.46.21-1.61.55-2.33-.66-.15-.24-.6-.83-1.23-.82-.67.01-.27.38.01.53.34.19.73.9.82 1.13.16.45.68 1.31 2.69.93 0 .67.01 1.3.01 1.49 0 .21-.15.45-.55.38A7.995 7.995 0 0 1 0 8c0-4.42 3.58-8 8-8Z"></path>
+        </svg>
+        
+        <div class="header-search">
+            <input type="text" placeholder="Type / to search" readonly>
+        </div>
+        
+        <nav class="header-nav">
+            <a href="#">Pull requests</a>
+            <a href="#">Issues</a>
+            <a href="#">Marketplace</a>
+            <a href="#">Explore</a>
+        </nav>
+    </header>
+
+    <!-- Main Container -->
+    <main class="repo-container">
+        
+        <!-- Breadcrumb -->
+        <div class="repo-header">
+            <svg class="repo-icon" viewBox="0 0 16 16" version="1.1" aria-hidden="true">
+                <path d="M2 2.5A2.5 2.5 0 0 1 4.5 0h8.75a.75.75 0 0 1 .75.75v12.5a.75.75 0 0 1-.75.75h-2.5a.75.75 0 0 1 0-1.5h1.75v-2h-8a1 1 0 0 0-.714 1.7.75.75 0 1 1-1.072 1.05A2.495 2.495 0 0 1 2 11.5Zm10.5-1h-8a1 1 0 0 0-1 1v6.708A2.486 2.486 0 0 1 4.5 9h8ZM5 12.25a.25.25 0 0 1 .25-.25h3.5a.25.25 0 0 1 .25.25v3.25a.25.25 0 0 1-.4.2l-1.45-1.087a.249.249 0 0 0-.3 0L5.4 15.7a.25.25 0 0 1-.4-.2Z"></path>
+            </svg>
+            <span><a href="#">testdemoqwenai2025-creator</a> / <strong>The-Challenge-Future</strong></span>
+        </div>
+
+        <!-- Title & Actions -->
+        <div class="repo-title-row">
+            <div class="repo-title-left">
+                <h1 class="repo-name">The-Challenge-Future</h1>
+                <span class="repo-visibility">Public</span>
+                <span class="status-badge status-active">
+                    <span class="status-dot"></span>
+                    Active Development
+                </span>
+            </div>
+            
+            <div class="repo-actions">
+                <button class="btn">
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M5 5.372v.878c0 .414.336.75.75.75h4.5a.75.75 0 0 0 .75-.75v-.878a2.25 2.25 0 1 1 1.5 0v.878a2.25 2.25 0 0 1-2.25 2.25h-1.5v2.128a2.251 2.251 0 1 1-1.5 0V8.5h-1.5A2.25 2.25 0 0 1 3.5 6.25v-.878a2.25 2.25 0 1 1 1.5 0ZM5 3.25a.75.75 0 1 0-1.5 0 .75.75 0 0 0 1.5 0Zm6.75.75a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5Zm-3 8.75a.75.75 0 1 0-1.5 0 .75.75 0 0 0 1.5 0Z"/></svg>
+                    Watch
+                    <strong>42</strong>
+                </button>
+                
+                <button class="btn">
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M5 5.372v.878c0 .414.336.75.75.75h4.5a.75.75 0 0 0 .75-.75v-.878a2.25 2.25 0 1 1 1.5 0v.878a2.25 2.25 0 0 1-2.25 2.25h-1.5v2.128a2.251 2.251 0 1 1-1.5 0V8.5h-1.5A2.25 2.25 0 0 1 3.5 6.25v-.878a2.25 2.25 0 1 1 1.5 0ZM5 3.25a.75.75 0 1 0-1.5 0 .75.75 0 0 0 1.5 0Zm6.75.75a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5Zm-3 8.75a.75.75 0 1 0-1.5 0 .75.75 0 0 0 1.5 0Z"/></svg>
+                    Fork
+                    <strong>18</strong>
+                </button>
+                
+                <button class="btn btn-primary">
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M2 2.5A2.5 2.5 0 0 1 4.5 0h8.75a.75.75 0 0 1 .75.75v12.5a.75.75 0 0 1-.75.75h-2.5a.75.75 0 0 1 0-1.5h1.75v-2h-8a1 1 0 0 0-.714 1.7.75.75 0 1 1-1.072 1.05A2.495 2.495 0 0 1 2 11.5Zm10.5-1h-8a1 1 0 0 0-1 1v6.708A2.486 2.486 0 0 1 4.5 9h8ZM5 12.25a.25.25 0 0 1 .25-.25h3.5a.25.25 0 0 1 .25.25v3.25a.25.25 0 0 1-.4.2l-1.45-1.087a.249.249 0 0 0-.3 0L5.4 15.7a.25.25 0 0 1-.4-.2Z"/></svg>
+                    Code
+                </button>
+                
+                <button class="btn btn-primary">
+                    ⭐ Star this repo
+                </button>
+            </div>
+        </div>
+
+        <!-- Description -->
+        <p class="repo-description">
+            🚀 AI-powered deep-tech funding navigation platform — automates 98% of grant/procurement applications by parsing governmental gazettes worldwide | Next.js 16 • TypeScript • Multi-provider LLM
+        </p>
+
+        <!-- Tabs -->
+        <nav class="repo-tabs">
+            <a href="#" class="tab-item active">📄 Code</a>
+            <a href="#" class="tab-item">📊 Issues (12)</a>
+            <a href="#" class="tab-item">🔀 Pull requests (3)</a>
+            <a href="#" class="tab-item">🎯 Actions</a>
+            <a href="#" class="tab-item">🛡️ Security</a>
+            <a href="#" class="tab-item">📈 Insights</a>
+        </nav>
+
+        <!-- Main Content -->
+        <div class="content-grid">
+            
+            <!-- Left Sidebar -->
+            <aside>
+                <!-- About -->
+                <div class="sidebar-section">
+                    <h3 class="sidebar-title">About</h3>
+                    <p class="about-text">
+                        🤖 NEXUS is an AI-powered ecosystem intelligence platform for deep-tech funding navigation. 
+                        Features multi-provider LLM integration, gazette parsing, auto-fill engine, real-time collaboration, 
+                        and 98% automated grant application completion.
+                    </p>
+                    
+                    <div class="topic-tags">
+                        <a href="#" class="topic-tag">nextjs</a>
+                        <a href="#" class="topic-tag">typescript</a>
+                        <a href="#" class="topic-tag">ai</a>
+                        <a href="#" class="topic-tag">grant-writing</a>
+                        <a href="#" class="topic-tag">deep-tech</a>
+                        <a href="#" class="topic-tag">automation</a>
+                        <a href="#" class="topic-tag">llm</a>
+                        <a href="#" class="topic-tag">funding</a>
+                    </div>
+                    
+                    <hr style="border: none; border-top: 1px solid #d0d7de; margin: 16px 0;">
+                    
+                    <div class="stat-row">
+                        <svg class="stat-icon" viewBox="0 0 16 16"><path d="M8 0c4.42 0 8 3.58 8 8a8.013 8.013 0 0 1-5.45 7.59c-.4.08-.55-.17-.55-.38 0-.27.01-1.13.01-2.2 0-.75-.25-1.23-.54-1.48 1.78-.2 3.65-.88 3.65-3.95 0-.88-.31-1.59-.82-2.15.08-.2.36-1.02-.08-2.12 0 0-.67-.22-2.2.82-.64-.18-1.32-.27-2-.27-.68 0-1.36.09-2 .27-1.53-1.03-2.2-.82-2.2-.82-.44 1.1-.16 1.92-.08 2.12-.51.56-.82 1.28-.82 2.15 0 3.06 1.86 3.75 3.64 3.95-.23.2-.44.55-.51 1.07-.46.21-1.61.55-2.33-.66-.15-.24-.6-.83-1.23-.82-.67.01-.27.38.01.53.34.19.73.9.82 1.13.16.45.68 1.31 2.69.93 0 .67.01 1.3.01 1.49 0 .21-.15.45-.55.38A7.995 7.995 0 0 1 0 8c0-4.42 3.58-8 8-8Z"></path></svg>
+                        <span><a href="#" class="stat-link">https://testdemoqwenai2025-creator.github.io/The-Challenge-Future/</a></span>
+                    </div>
+                    
+                    <div class="stat-row">
+                        <svg class="stat-icon" viewBox="0 0 16 16"><path d="M1.5 3.25c0-1.097.903-2 2-2 .218 0 .43.036.629.104l6.085 2.165a.5.5 0 0 1 .286.453v5.156a.5.5 0 0 1-.286.453l-6.085 2.165A2 2 0 0 1 3.5 9.75c-1.097 0-2-.903-2-2s.903-2 2-2a2 2 0 0 1 1.129.359V3.25Zm0 1.5v3.5a.5.5 0 0 1-.5.5 1 1 0 0 0 0 2 .5.5 0 0 1 .5.5v-3.5a.5.5 0 0 1 .146-.354l6.085-2.164a.5.5 0 0 1 .269-.082h.854V3.25a.5.5 0 0 0-.5-.5h-7a.5.5 0 0 0-.5.5Z"/></svg>
+                        <span><strong>MIT License</strong></span>
+                    </div>
+                </div>
+
+                <!-- Languages -->
+                <div class="sidebar-section">
+                    <h3 class="sidebar-title">Languages</h3>
+                    <div class="language-bar">
+                        <div class="lang-ts"></div>
+                        <div class="lang-css"></div>
+                        <div class="lang-js"></div>
+                        <div class="lang-other"></div>
+                    </div>
+                    <div class="language-list">
+                        <div class="language-item">
+                            <div class="lang-dot" style="background: #3178c6;"></div>
+                            TypeScript 75%
+                        </div>
+                        <div class="language-item">
+                            <div class="lang-dot" style="background: #563d7c;"></div>
+                            CSS 10%
+                        </div>
+                        <div class="language-item">
+                            <div class="lang-dot" style="background: #f1e05a;"></div>
+                            JavaScript 10%
+                        </div>
+                        <div class="language-item">
+                            <div class="lang-dot" style="background: #ededed;"></div>
+                            Other 5%
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Stats -->
+                <div class="sidebar-section">
+                    <h3 class="sidebar-title">Repository Statistics</h3>
+                    <div class="stat-row">
+                        <svg class="stat-icon" viewBox="0 0 16 16"><path d="M8 0a8 8 0 1 1 0 16A8 8 0 0 1 8 0ZM1.5 8a6.5 6.5 0 1 0 13 0 6.5 6.5 0 0 0-13 0Zm7-3.25v2.992l2.028.812a.75.75 0 0 1-.557 1.392l-2.5-1A.751.751 0 0 1 7 8.25v-3.5a.75.75 0 0 1 1.5 0Z"/></svg>
+                        <span>Last updated: <strong>Today at 21:01 UTC</strong></span>
+                    </div>
+                    <div class="stat-row">
+                        <svg class="stat-icon" viewBox="0 0 16 16"><path d="M1 8a7 7 0 1 1 3.892 6.265l-2.584.803 1.539-2.186A6.98 6.98 0 0 1 1 8Zm7-6a6 6 0 0 0-5.778 7.71c.196.677.507 1.308.91 1.87l-.46 1.656 1.655-.46A6 6 0 1 0 8 2Z"/></svg>
+                        <span><strong>127 commits</strong></span>
+                    </div>
+                    <div class="stat-row">
+                        <svg class="stat-icon" viewBox="0 0 16 16"><path d="M2 2.5A2.5 2.5 0 0 1 4.5 0h8.75a.75.75 0 0 1 .75.75v12.5a.75.75 0 0 1-.75.75h-2.5a.75.75 0 0 1 0-1.5h1.75v-2h-8a1 1 0 0 0-.714 1.7.75.75 0 1 1-1.072 1.05A2.495 2.495 0 0 1 2 11.5Zm10.5-1h-8a1 1 0 0 0-1 1v6.708A2.486 2.486 0 0 1 4.5 9h8ZM5 12.25a.25.25 0 0 1 .25-.25h3.5a.25.25 0 0 1 .25.25v3.25a.25.25 0 0 1-.4.2l-1.45-1.087a.249.249 0 0 0-.3 0L5.4 15.7a.25.25 0 0 1-.4-.2Z"></path></svg>
+                        <span><strong>3 branches</strong>: main, develop, feature/ai-enhancements</span>
+                    </div>
+                    <div class="stat-row">
+                        <svg class="stat-icon" viewBox="0 0 16 16"><path d="M9.5 3.25a2.5 2.5 0 1 1 5 0 2.5 2.5 0 0 1-5 0ZM14 8.5a3.5 3.5 0 1 0-7 0 3.5 3.5 0 0 0 7 0Zm-9-5a2.5 2.5 0 1 1 5 0 2.5 2.5 0 0 1-5 0ZM4.5 8.5a3.5 3.5 0 1 0 7 0 3.5 3.5 0 0 0-7 0Z"/></svg>
+                        <span><strong>8 contributors</strong></span>
+                    </div>
+                    <div class="stat-row">
+                        <svg class="stat-icon" viewBox="0 0 16 16"><path d="M8 0a8 8 0 1 1 0 16A8 8 0 0 1 8 0ZM1.5 8a6.5 6.5 0 1 0 13 0 6.5 6.5 0 0 0-13 0Zm7-3.25v2.992l2.028.812a.75.75 0 0 1-.557 1.392l-2.5-1A.751.751 0 0 1 7 8.25v-3.5a.75.75 0 0 1 1.5 0Z"/></svg>
+                        <span><strong>Size:</strong> 47.8 MB</span>
+                    </div>
+                </div>
+            </aside>
+
+            <!-- Main Content Area -->
+            <main>
+                
+                <!-- Live Demo Banner -->
+                <div class="demo-banner">
+                    <div>
+                        <div class="demo-text">🚀 Live Demo Available on GitHub Pages</div>
+                        <div style="color: rgba(255,255,255,0.9); font-size: 13px; margin-top: 4px;">
+                            Automatically deployed on every push to main branch
+                        </div>
+                    </div>
+                    <a href="https://testdemoqwenai2025-creator.github.io/The-Challenge-Future/" target="_blank" class="demo-link">
+                        View Live Site →
+                    </a>
+                </div>
+
+                <!-- Files List -->
+                <div class="files-container">
+                    <div class="files-header">
+                        <span>Latest commit · <strong style="font-weight: 700;">feat: Add grant writing assistant + fix GitHub Pages deploy</strong></span>
+                        <button class="btn" style="font-size: 11px;">+ 156 files changed</button>
+                    </div>
+                    
+                    <div class="file-row">
+                        <svg class="file-icon folder" viewBox="0 0 16 16"><path d="M1.75 1A1.75 1.75 0 0 0 0 2.75C0 3.665.335 4.5 1 5h13.5c.665 0 1-.835 1-1.75A1.75 1.75 0 0 0 13.75 1H1.75ZM1.75 2.5h12a.25.25 0 0 1 .25.25c0 .414-.168.75-.375.75H1.875A.375.375 0 0 1 1.5 2.75a.25.25 0 0 1 .25-.25ZM.5 5.75V14c0 .414.336.75.75.75h13.5a.75.75 0 0 0 .75-.75V5.75a.25.25 0 0 0-.25-.25H.75a.25.25 0 0 0-.25.25ZM1.5 6.5h13v6.75a.25.25 0 0 1-.25.25H1.75a.25.25 0 0 1-.25-.25V6.5Z"/></svg>
+                        <a href="#" class="file-name">src/</a>
+                        <span class="file-message">feat: Complete grant writing assistant with multi-provider LLM support</span>
+                        <span class="file-time">2 hours ago</span>
+                    </div>
+                    
+                    <div class="file-row">
+                        <svg class="file-icon folder" viewBox="0 0 16 16"><path d="M1.75 1A1.75 1.75 0 0 0 0 2.75C0 3.665.335 4.5 1 5h13.5c.665 0 1-.835 1-1.75A1.75 1.75 0 0 0 13.75 1H1.75ZM1.75 2.5h12a.25.25 0 0 1 .25.25c0 .414-.168.75-.375.75H1.875A.375.375 0 0 1 1.5 2.75a.25.25 0 0 1 .25-.25ZM.5 5.75V14c0 .414.336.75.75.75h13.5a.75.75 0 0 0 .75-.75V5.75a.25.25 0 0 0-.25-.25H.75a.25.25 0 0 0-.25.25ZM1.5 6.5h13v6.75a.25.25 0 0 1-.25.25H1.75a.25.25 0 0 1-.25-.25V6.5Z"/></svg>
+                        <a href="#" class="file-name">public/</a>
+                        <span class="file-message">chore: Update logo.svg and favicon assets for branding</span>
+                        <span class="file-time">yesterday</span>
+                    </div>
+                    
+                    <div class="file-row">
+                        <svg class="file-icon folder" viewBox="0 0 16 16"><path d="M1.75 1A1.75 1.75 0 0 0 0 2.75C0 3.665.335 4.5 1 5h13.5c.665 0 1-.835 1-1.75A1.75 1.75 0 0 0 13.75 1H1.75ZM1.75 2.5h12a.25.25 0 0 1 .25.25c0 .414-.168.75-.375.75H1.875A.375.375 0 0 1 1.5 2.75a.25.25 0 0 1 .25-.25ZM.5 5.75V14c0 .414.336.75.75.75h13.5a.75.75 0 0 0 .75-.75V5.75a.25.25 0 0 0-.25-.25H.75a.25.25 0 0 0-.25.25ZM1.5 6.5h13v6.75a.25.25 0 0 1-.25.25H1.75a.25.25 0 0 1-.25-.25V6.5Z"/></svg>
+                        <a href="#" class="file-name">.github/workflows/</a>
+                        <span class="file-message">ci: Configure GitHub Pages CI/CD pipeline with API route handling</span>
+                        <span class="file-time">today</span>
+                    </div>
+                    
+                    <div class="file-row">
+                        <svg class="file-icon folder" viewBox="0 0 16 16"><path d="M1.75 1A1.75 1.75 0 0 0 0 2.75C0 3.665.335 4.5 1 5h13.5c.665 0 1-.835 1-1.75A1.75 1.75 0 0 0 13.75 1H1.75ZM1.75 2.5h12a.25.25 0 0 1 .25.25c0 .414-.168.75-.375.75H1.875A.375.375 0 0 1 1.5 2.75a.25.25 0 0 1 .25-.25ZM.5 5.75V14c0 .414.336.75.75.75h13.5a.75.75 0 0 0 .75-.75V5.75a.25.25 0 0 0-.25-.25H.75a.25.25 0 0 0-.25.25ZM1.5 6.5h13v6.75a.25.25 0 0 1-.25.25H1.75a.25.25 0 0 1-.25-.25V6.5Z"/></svg>
+                        <a href="#" class="file-name">prisma/</a>
+                        <span class="file-message">db: Add team collaboration schema with role-based access control</span>
+                        <span class="file-time">1 week ago</span>
+                    </div>
+                    
+                    <div class="file-row">
+                        <svg class="file-icon folder" viewBox="0 0 16 16"><path d="M1.75 1A1.75 1.75 0 0 0 0 2.75C0 3.665.335 4.5 1 5h13.5c.665 0 1-.835 1-1.75A1.75 1.75 0 0 0 13.75 1H1.75ZM1.75 2.5h12a.25.25 0 0 1 .25.25c0 .414-.168.75-.375.75H1.875A.375.375 0 0 1 1.5 2.75a.25.25 0 0 1 .25-.25ZM.5 5.75V14c0 .414.336.75.75.75h13.5a.75.75 0 0 0 .75-.75V5.75a.25.25 0 0 0-.25-.25H.75a.25.25 0 0 0-.25.25ZM1.5 6.5h13v6.75a.25.25 0 0 1-.25.25H1.75a.25.25 0 0 1-.25-.25V6.5Z"/></svg>
+                        <a href="#" class="file-name">scripts/</a>
+                        <span class="file-message">utils: Add secret generator and integration test suite</span>
+                        <span class="file-time">3 days ago</span>
+                    </div>
+                    
+                    <div class="file-row">
+                        <svg class="file-icon folder" viewBox="0 0 16 16"><path d="M1.75 1A1.75 1.75 0 0 0 0 2.75C0 3.665.335 4.5 1 5h13.5c.665 0 1-.835 1-1.75A1.75 1.75 0 0 0 13.75 1H1.75ZM1.75 2.5h12a.25.25 0 0 1 .25.25c0 .414-.168.75-.375.75H1.875A.375.375 0 0 1 1.5 2.75a.25.25 0 0 1 .25-.25ZM.5 5.75V14c0 .414.336.75.75.75h13.5a.75.75 0 0 0 .75-.75V5.75a.25.25 0 0 0-.25-.25H.75a.25.25 0 0 0-.25.25ZM1.5 6.5h13v6.75a.25.25 0 0 1-.25.25H1.75a.25.25 0 0 1-.25-.25V6.5Z"/></svg>
+                        <a href="#" class="file-name">mini-services/</a>
+                        <span class="file-message">feat: Add Socket.IO collaboration service on port 3003</span>
+                        <span class="file-time">1 week ago</span>
+                    </div>
+                    
+                    <div class="file-row">
+                        <svg class="file-icon" viewBox="0 0 16 16"><path d="M3.75 1.5a.25.25 0 0 0-.25.25v12.5c0 .138.112.25.25.25h8.5a.25.25 0 0 0 .25-.25V6.088a.252.252 0 0 0-.011-.057l-4.008-4.557A.252.252 0 0 0 8.002 1.5H3.75ZM3.75 0A1.75 1.75 0 0 0 2 1.75v12.5c0 .966.784 1.75 1.75 1.75h8.5A1.75 1.75 0 0 0 14 13.25V6.192a1.75 1.75 0 0 0-.217-.84l-4.008-4.557A1.75 1.75 0 0 0 8.002 0H3.75Z"/></svg>
+                        <a href="#" class="file-name">README.md</a>
+                        <span class="file-message">docs: Update README with new features, roadmap, and pricing model</span>
+                        <span class="file-time">today</span>
+                    </div>
+                    
+                    <div class="file-row">
+                        <svg class="file-icon" viewBox="0 0 16 16"><path d="M3.75 1.5a.25.25 0 0 0-.25.25v12.5c0 .138.112.25.25.25h8.5a.25.25 0 0 0 .25-.25V6.088a.252.252 0 0 0-.011-.057l-4.008-4.557A.252.252 0 0 0 8.002 1.5H3.75ZM3.75 0A1.75 1.75 0 0 0 2 1.75v12.5c0 .966.784 1.75 1.75 1.75h8.5A1.75 1.75 0 0 0 14 13.25V6.192a1.75 1.75 0 0 0-.217-.84l-4.008-4.557A1.75 1.75 0 0 0 8.002 0H3.75Z"/></svg>
+                        <a href="#" class="file-name">package.json</a>
+                        <span class="file-message">chore: Add Playwright RPA and multi-provider LLM dependencies</span>
+                        <span class="file-time">2 days ago</span>
+                    </div>
+                    
+                    <div class="file-row">
+                        <svg class="file-icon" viewBox="0 0 16 16"><path d="M3.75 1.5a.25.25 0 0 0-.25.25v12.5c0 .138.112.25.25.25h8.5a.25.25 0 0 0 .25-.25V6.088a.252.252 0 0 0-.011-.057l-4.008-4.557A.252.252 0 0 0 8.002 1.5H3.75ZM3.75 0A1.75 1.75 0 0 0 2 1.75v12.5c0 .966.784 1.75 1.75 1.75h8.5A1.75 1.75 0 0 0 14 13.25V6.192a1.75 1.75 0 0 0-.217-.84l-4.008-4.557A1.75 1.75 0 0 0 8.002 0H3.75Z"/></svg>
+                        <a href="#" class="file-name">deploy-github-pages.sh</a>
+                        <span class="file-message">feat: Create smart deployment script for static export</span>
+                        <span class="file-time">today</span>
+                    </div>
+                    
+                    <div class="file-row">
+                        <svg class="file-icon" viewBox="0 0 16 16"><path d="M3.75 1.5a.25.25 0 0 0-.25.25v12.5c0 .138.112.25.25.25h8.5a.25.25 0 0 0 .25-.25V6.088a.252.252 0 0 0-.011-.057l-4.008-4.557A.252.252 0 0 0 8.002 1.5H3.75ZM3.75 0A1.75 1.75 0 0 0 2 1.75v12.5c0 .966.784 1.75 1.75 1.75h8.5A1.75 1.75 0 0 0 14 13.25V6.192a1.75 1.75 0 0 0-.217-.84l-4.008-4.557A1.75 1.75 0 0 0 8.002 0H3.75Z"/></svg>
+                        <a href="#" class="file-name">next.config.ts</a>
+                        <span class="file-message">config: Enable static export mode for GitHub Pages compatibility</span>
+                        <span class="file-time">1 week ago</span>
+                    </div>
+                    
+                    <div class="file-row">
+                        <svg class="file-icon" viewBox="0 0 16 16"><path d="M3.75 1.5a.25.25 0 0 0-.25.25v12.5c0 .138.112.25.25.25h8.5a.25.25 0 0 0 .25-.25V6.088a.252.252 0 0 0-.011-.057l-4.008-4.557A.252.252 0 0 0 8.002 1.5H3.75ZM3.75 0A1.75 1.75 0 0 0 2 1.75v12.5c0 .966.784 1.75 1.75 1.75h8.5A1.75 1.75 0 0 0 14 13.25V6.192a1.75 1.75 0 0 0-.217-.84l-4.008-4.557A1.75 1.75 0 0 0 8.002 0H3.75Z"/></svg>
+                        <a href="#" class="file-name">ROADMAP.md</a>
+                        <span class="file-message">docs: Add Phase 6 development priorities - AI, UX, Revenue, Global</span>
+                        <span class="file-time">today</span>
+                    </div>
+                    
+                    <div class="file-row">
+                        <svg class="file-icon" viewBox="0 0 16 16"><path d="M3.75 1.5a.25.25 0 0 0-.25.25v12.5c0 .138.112.25.25.25h8.5a.25.25 0 0 0 .25-.25V6.088a.252.252 0 0 0-.011-.057l-4.008-4.557A.252.252 0 0 0 8.002 1.5H3.75ZM3.75 0A1.75 1.75 0 0 0 2 1.75v12.5c0 .966.784 1.75 1.75 1.75h8.5A1.75 1.75 0 0 0 14 13.25V6.192a1.75 1.75 0 0 0-.217-.84l-4.008-4.557A1.75 1.75 0 0 0 8.002 0H3.75Z"/></svg>
+                        <a href="#" class="file-name">NEXUS_ARCHITECTURE.md</a>
+                        <span class="file-message">docs: Technical architecture deep-dive with system diagrams</span>
+                        <span class="file-time">3 days ago</span>
+                    </div>
+                    
+                    <div class="file-row">
+                        <svg class="file-icon" viewBox="0 0 16 16"><path d="M3.75 1.5a.25.25 0 0 0-.25.25v12.5c0 .138.112.25.25.25h8.5a.25.25 0 0 0 .25-.25V6.088a.252.252 0 0 0-.011-.057l-4.008-4.557A.252.252 0 0 0 8.002 1.5H3.75ZM3.75 0A1.75 1.75 0 0 0 2 1.75v12.5c0 .966.784 1.75 1.75 1.75h8.5A1.75 1.75 0 0 0 14 13.25V6.192a1.75 1.75 0 0 0-.217-.84l-4.008-4.557A1.75 1.75 0 0 0 8.002 0H3.75Z"/></svg>
+                        <a href="#" class="file-name">API_SETUP_GUIDE.md</a>
+                        <span class="file-message">docs: Comprehensive API key setup instructions for all providers</span>
+                        <span class="file-time">4 days ago</span>
+                    </div>
+                    
+                    <div class="file-row">
+                        <svg class="file-icon" viewBox="0 0 16 16"><path d="M3.75 1.5a.25.25 0 0 0-.25.25v12.5c0 .138.112.25.25.25h8.5a.25.25 0 0 0 .25-.25V6.088a.252.252 0 0 0-.011-.057l-4.008-4.557A.252.252 0 0 0 8.002 1.5H3.75ZM3.75 0A1.75 1.75 0 0 0 2 1.75v12.5c0 .966.784 1.75 1.75 1.75h8.5A1.75 1.75 0 0 0 14 13.25V6.192a1.75 1.75 0 0 0-.217-.84l-4.008-4.557A1.75 1.75 0 0 0 8.002 0H3.75Z"/></svg>
+                        <a href="#" class="file-name">INTEGRATION_COMPLETE.md</a>
+                        <span class="file-message">docs: Document all completed integrations (auth, LLM, CH API, RPA, WS)</span>
+                        <span class="file-time">1 week ago</span>
+                    </div>
+                    
+                    <div class="file-row">
+                        <svg class="file-icon" viewBox="0 0 16 16"><path d="M3.75 1.5a.25.25 0 0 0-.25.25v12.5c0 .138.112.25.25.25h8.5a.25.25 0 0 0 .25-.25V6.088a.252.252 0 0 0-.011-.057l-4.008-4.557A.252.252 0 0 0 8.002 1.5H3.75ZM3.75 0A1.75 1.75 0 0 0 2 1.75v12.5c0 .966.784 1.75 1.75 1.75h8.5A1.75 1.75 0 0 0 14 13.25V6.192a1.75 1.75 0 0 0-.217-.84l-4.008-4.557A1.75 1.75 0 0 0 8.002 0H3.75Z"/></svg>
+                        <a href="#" class="file-name">FUNDING_OS_STRATEGY.md</a>
+                        <span class="file-message">business: Market opportunity analysis and revenue model documentation</span>
+                        <span class="file-time">2 weeks ago</span>
+                    </div>
+                    
+                    <div class="file-row">
+                        <svg class="file-icon" viewBox="0 0 16 16"><path d="M3.75 1.5a.25.25 0 0 0-.25.25v12.5c0 .138.112.25.25.25h8.5a.25.25 0 0 0 .25-.25V6.088a.252.252 0 0 0-.011-.057l-4.008-4.557A.252.252 0 0 0 8.002 1.5H3.75ZM3.75 0A1.75 1.75 0 0 0 2 1.75v12.5c0 .966.784 1.75 1.75 1.75h8.5A1.75 1.75 0 0 0 14 13.25V6.192a1.75 1.75 0 0 0-.217-.84l-4.008-4.557A1.75 1.75 0 0 0 8.002 0H3.75Z"/></svg>
+                        <a href="#" class="file-name">.gitignore</a>
+                        <span class="file-message">chore: Add skills directory and log files to gitignore</span>
+                        <span class="file-time">1 week ago</span>
+                    </div>
+                    
+                    <div class="file-row">
+                        <svg class="file-icon" viewBox="0 0 16 16"><path d="M3.75 1.5a.25.25 0 0 0-.25.25v12.5c0 .138.112.25.25.25h8.5a.25.25 0 0 0 .25-.25V6.088a.252.252 0 0 0-.011-.057l-4.008-4.557A.252.252 0 0 0 8.002 1.5H3.75ZM3.75 0A1.75 1.75 1.75 0 0 0 2 1.75v12.5c0 .966.784 1.75 1.75 1.75h8.5A1.75 1.75 0 0 0 14 13.25V6.192a1.75 1.75 0 0 0-.217-.84l-4.008-4.557A1.75 1.75 0 0 0 8.002 0H3.75Z"/></svg>
+                        <a href="#" class="file-name">.env.example</a>
+                        <span class="file-message">config: Add environment variable template with all required keys</span>
+                        <span class="file-time">1 week ago</span>
+                    </div>
+                </div>
+
+                <!-- README Preview -->
+                <div class="readme-preview">
+                    <div class="readme-header">
+                        <svg width="16" height="16" viewBox="0 0 16 16" fill="#57606a" style="margin-right: 8px;"><path d="M0 1.75C0 .784.784 0 1.75 0h12.5C15.216 0 16 .784 16 1.75v12.5A1.75 1.75 0 0 1 14.25 16H1.75A1.75 1.75 0 0 1 0 14.25Zm1.75-.25a.25.25 0 0 0-.25.25v12.5c0 .138.112.25.25.25h12.5a.25.25 0 0 0 .25-.25V1.75a.25.25 0 0 0-.25-.25ZM3.5 6.25a.75.75 0 0 1 .75-.75h7a.75.75 0 0 1 0 1.5h-7a.75.75 0 0 1-.75-.75Zm.75 2.25h4a.75.75 0 0 1 0 1.5h-4a.75.75 0 0 1 0-1.5Z"/></svg>
+                        README.md
+                    </div>
+                    
+                    <div class="readme-body">
+                        <h1>🚀 NEXUS | AI-Powered Deep-Tech Funding Navigation</h1>
+                        
+                        <p align="center">
+                          <strong>"Where Capital Meets Innovation"</strong><br>
+                          <em>From Gazette to Grant in 47 Minutes™ — The Operating System for Deep-Tech Funding</em>
+                        </p>
+
+                        <div class="badge-row">
+                            <span class="badge badge-blue">Next.js 16</span>
+                            <span class="badge badge-green">TypeScript</span>
+                            <span class="badge badge-purple">AI-Powered</span>
+                            <span class="badge badge-orange">Production Ready</span>
+                        </div>
+
+                        <h2>✨ Live Demo</h2>
+                        
+                        <p><strong>🌐 View Live Preview → https://testdemoqwenai2025-creator.github.io/The-Challenge-Future/</strong></p>
+                        
+                        <blockquote>
+                            <p>⚡ <strong>Automatically deployed to GitHub Pages</strong> on every push to <code>main</code> branch<br>
+                            No manual build required!</p>
+                        </blockquote>
+
+                        <h2>🎯 What is NEXUS?</h2>
+                        
+                        <p><strong>NEXUS</strong> (Networked Ecosystem X-intelligence Universal System) is an <strong>AI-powered ecosystem intelligence platform</strong> that revolutionizes how deep-tech startups navigate government funding, grants, and procurement opportunities.</p>
+
+                        <h2>The Problem We Solve 💸</h2>
+                        
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Pain Point</th>
+                                    <th>Impact</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><strong>£23B+</strong> in grants misallocated yearly</td>
+                                    <td>Complex applications scare away qualified applicants</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>40% of founder time</strong> wasted on form-filling</td>
+                                    <td>Instead of building products & raising capital</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>8-16 hours</strong> per application</td>
+                                    <td>Manual data entry across inconsistent portals</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Government portals</strong> use 50+ formats</td>
+                                    <td>PDFs, XML, HTML forms, Word templates</td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <h2>Our Solution: 98% Automation Engine 🤖</h2>
+                        
+                        <pre><code>[Gazette Notice] → [Parsed in 3min] → [Matched to User] → [98% Auto-Filled]
+       (2h)              (3min)            (1sec)             (4min)
+
+[Human Reviews 2%] → [Validated] → [Submitted] → [Awarded 🎉]
+      (8min)             (1min)        (1min)
+      
+TOTAL: ~17 minutes (vs. 8-16 hours manually)
+AUTOMATION: 98%</code></pre>
+
+                        <h2>🖥️ Prototype Features</h2>
+                        
+                        <h3>Landing Page</h3>
+                        <ul>
+                            <li><strong>Hero Section:</strong> Animated gradient with compelling value proposition</li>
+                            <li><strong>Features Grid:</strong> 6 core capabilities with icons</li>
+                            <li><strong>How It Works:</strong> 3-step visual process</li>
+                            <li><strong>Pricing Tiers:</strong> Explorer (Free), Pro (£49/mo), Team (£199/mo), Enterprise</li>
+                            <li><strong>Social Proof:</strong> Testimonials from deep-tech founders</li>
+                        </ul>
+
+                        <h3>Authentication System</h3>
+                        <ul>
+                            <li><strong>Multi-provider Auth:</strong> Google OAuth, GitHub OAuth, Email/Password</li>
+                            <li><strong>NextAuth.js v4:</strong> JWT sessions, 30-day expiry</li>
+                            <li><strong>Role-based Access:</strong> Owner, Admin, Editor, Viewer</li>
+                        </ul>
+
+                        <h3>Intelligence Dashboard (7 Widgets)</h3>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Widget</th>
+                                    <th>Function</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>🗺️ Capital Heatmap</td>
+                                    <td>Funding activity by sector/region</td>
+                                </tr>
+                                <tr>
+                                    <td>📰 Gazette Monitor Feed</td>
+                                    <td>Real-time parsed government notices</td>
+                                </tr>
+                                <tr>
+                                    <td>📈 Predictive Timeline</td>
+                                    <td>ML-predicted opportunity pipeline</td>
+                                </tr>
+                                <tr>
+                                    <td>⚡ Quick Actions Panel</td>
+                                    <td>One-click application actions</td>
+                                </tr>
+                                <tr>
+                                    <td>🎯 Gap Analysis Radar</td>
+                                    <td>Multi-axis funding readiness score</td>
+                                </tr>
+                                <tr>
+                                    <td>🕸️ Network Graph Mini</td>
+                                    <td>Entity relationship visualization</td>
+                                </tr>
+                                <tr>
+                                    <td>⭐ Watchlist Widget</td>
+                                    <td>Saved opportunities + deadline tracking</td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <h2>🤖 AI Capabilities</h2>
+                        
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Feature</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><strong>Multi-provider LLM System</strong></td>
+                                    <td>✅ Groq, Gemini, OpenAI, Claude, Qwen, Together AI</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Grant Writing Assistant</strong></td>
+                                    <td>✅ Abstract generator, impact statement writer</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>London Gazette Parser</strong></td>
+                                    <td>✅ Real-time monitoring + AI summarization</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Companies House Integration</strong></td>
+                                    <td>✅ UK company data API</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Playwright RPA Engine</strong></td>
+                                    <td>✅ Portal automation (Innovate UK, EU, UKRI)</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>WebSocket Collaboration</strong></td>
+                                    <td>✅ Real-time presence + editing</td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <h2>🛠️ Tech Stack</h2>
+                        
+                        <pre><code>Core Framework:
+  - Next.js 16 (App Router, Static Export)
+  - TypeScript 5 (Strict mode)
+  - React 19 (Concurrent features)
+
+Styling:
+  - Tailwind CSS 4 (Utility-first)
+  - shadcn/ui (50+ components)
+  - Framer Motion (Animations)
+  - Recharts / D3.js (Data visualization)
+
+Backend:
+  - NextAuth.js v4 (Authentication)
+  - Prisma ORM (SQLite dev / PostgreSQL prod)
+  - Socket.IO (Real-time collaboration)
+
+AI/ML:
+  - Groq AI (Fastest inference)
+  - Google Gemini (Multimodal)
+  - OpenAI GPT-4 (Content generation)
+  - Anthropic Claude (Analysis)
+
+Infrastructure:
+  - GitHub Pages (Static hosting)
+  - Bun (Package manager & runtime)
+  - Playwright (Browser automation)
+  - DuckDB (Analytical database)</code></pre>
+
+                        <h2>💰 Pricing Model</h2>
+                        
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Tier</th>
+                                    <th>Price</th>
+                                    <th>Auto-Fill</th>
+                                    <th>Best For</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><strong>Explorer</strong></td>
+                                    <td><strong>FREE</strong></td>
+                                    <td>❌ View only</td>
+                                    <td>Opportunity discovery, research</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Pro</strong></td>
+                                    <td><strong>£49/mo</strong></td>
+                                    <td>✅ 5 apps/mo</td>
+                                    <td>Startups, SMEs, individual founders</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Team</strong></td>
+                                    <td><strong>£199/mo</strong></td>
+                                    <td>✅ 25 apps/mo</td>
+                                    <td>Growing companies, grant teams</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Enterprise</strong></td>
+                                    <td><strong>Custom</strong></td>
+                                    <td>✅ Unlimited</td>
+                                    <td>Large orgs, universities, government</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        
+                        <p><em><strong>Success-Fee Option:</strong> Pay 2-5% of awarded amount only if you win. No win = no fee.</em></p>
+
+                        <h2>🌍 Global Coverage (Planned)</h2>
+                        
+                        <pre><code>🇬🇧 UK:     London Gazette, Companies House, Innovate UK, UKRI
+🇪🇺 EU:     OJEU/TED, Horizon Europe, CORDIS, national agencies
+🇺🇸 US:     Federal Register, Grants.gov, NSF, NIH, DOE, SBIR
+🇨🇦 Canada: Canada Gazette, ISED, NSERC, CIHR, SDTC, IRAP
+🇦🇺 Australia: AusTender, GrantConnect, ARC, NHMRC
+🇳🇿 NZ:     NZ Gazette, GETS, Callaghan Innovation, MBIE
+🇨🇭 Switzerland: SOGC/FOSC, Innosuisse, SNF
++ Future: Singapore, Japan, South Korea, Israel, UAE, Brazil</code></pre>
+
+                        <h2>📊 Key Metrics & Targets</h2>
+                        
+                        <h3>Year 1 Goals</h3>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Metric</th>
+                                    <th>Conservative</th>
+                                    <th>Optimistic</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><strong>Registered Users</strong></td>
+                                    <td>5,000</td>
+                                    <td>15,000</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Paying Customers</strong></td>
+                                    <td>500 (10%)</td>
+                                    <td>1,500 (10%)</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>ARR</strong></td>
+                                    <td>£294K</td>
+                                    <td>£1.44M</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Success Fee Revenue</strong></td>
+                                    <td>£375K</td>
+                                    <td>£1.2M</td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <h2>🚀 Quick Start</h2>
+                        
+                        <h3>Installation</h3>
+                        <pre><code># Clone the repository
+git clone https://github.com/testdemoqwenai2025-creator/The-Challenge-Future.git
+cd The-Challenge-Future
+
+# Install dependencies (Bun recommended)
+bun install
+
+# Start development server
+bun run dev
+
+# Open http://localhost:3000</code></pre>
+
+                        <h2>🤝 Contributing</h2>
+                        
+                        <p>We welcome contributions! Here's how to get started:</p>
+                        
+                        <ol>
+                            <li><strong>Fork</strong> the repository</li>
+                            <li>Create a feature branch: <code>git checkout -b feature/amazing-feature</code></li>
+                            <li>Commit your changes: <code>git commit -m 'Add amazing feature'</code></li>
+                            <li>Push to the branch: <code>git push origin feature/amazing-feature</code></li>
+                            <li>Open a Pull Request</li>
+                        </ol>
+
+                        <h2>📄 License</h2>
+                        
+                        <p>This repository is dual-licensed:</p>
+                        
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Content</th>
+                                    <th>License</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><strong>Source code</strong> (<code>src/</code>, <code>public/</code>)</td>
+                                    <td>MIT License</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Documentation</strong> (<code>*.md</code>)</td>
+                                    <td>Proprietary - Informational use only</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Architecture specs</strong></td>
+                                    <td>Confidential - Do not distribute without permission</td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <hr style="border: none; border-top: 1px solid #d0d7de; margin: 32px 0;">
+                        
+                        <p align="center">
+                            <strong>⭐ Star this repo if you find it useful!</strong><br>
+                            <em>From Gazette to Grant in 47 Minutes™<br>
+                            NEXUS: The Operating System for Deep-Tech Funding</em>
+                        </p>
+                        
+                        <p align="center">
+                            <strong>Last Updated:</strong> 19 August 2026 | <strong>Version:</strong> 1.0.0 (Preview Release)<br>
+                            <strong>Status:</strong> 🟢 Active Development - Seeking Early Adopters
+                        </p>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <p>Built by the SciMSPT Team | Target Launch: 90 days | Seed Round: £400-600K | Year 1 Revenue: £1.44M ARR</p>
+        <p style="margin-top: 8px;">⭐ Star this repo if you find it useful! | 🐛 Found a bug? <a href="#" style="color: #0969da;">Report an issue</a></p>
+        <p style="margin-top: 8px; font-size: 12px;">© 2026 NEXUS Platform. MIT License. Built with ❤️ using Next.js, TypeScript, and AI.</p>
+    </footer>
+
+</body>
+</html>
