@@ -1,198 +1,159 @@
-// Gazette Aggregator API Route
-// Unified endpoint for all gazette sources
+// API Route for Gazette Feed Integration
+// Provides server-side access to parsed gazette data (London, EU, US, etc.)
 
-import { NextRequest, NextResponse } from "next/server";
-import { gazetteAggregator, UnifiedGazetteNotice, NoticeType } from "@/lib/gazette/aggregator";
-import { db } from "@/lib/db";
+import { NextRequest, NextResponse } from 'next/server';
+import { londonGazetteParser, mockGazetteNotices } from '@/lib/gazette/london-gazette';
 
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);
-    const action = searchParams.get("action") || "latest";
-    const limit = parseInt(searchParams.get("limit") || "50");
-    const source = searchParams.get("source"); // london_gazette | ojeu_ted | federal_register
-    const type = searchParams.get("type"); // insolvency | grant | procurement | regulation
+    const source = searchParams.get('source') || 'london_gazette';
+    const limit = parseInt(searchParams.get('limit') || '50', 10);
+    const noticeType = searchParams.get('noticeType');
+    
+    // Parse filters
+    const filters = noticeType ? { 
+      noticeTypes: noticeType.split(',') as any[] 
+    } : undefined;
 
-    // Cache headers - gazette data can be cached aggressively
-    const responseHeaders = {
-      "Cache-Control": "public, s-maxage=900, stale-while-revalidate=1800",
-    };
+    // Check if we should use mock data (for development)
+    const useMock = searchParams.get('mock') === 'true' || 
+                    process.env.NODE_ENV === 'development' ||
+                    !process.env.GAZETTE_API_ENABLED;
 
-    switch (action) {
-      case "latest":
-        // Fetch latest notices with optional filters
-        const notices = await gazetteAggregator.fetchAllNotices({
-          limit,
-          sources: source ? [source as any] : undefined,
-          types: type ? [type as NoticeType] : undefined,
-        });
+    if (useMock) {
+      console.log(`📰 Using mock gazette data for source: ${source}`);
+      
+      // Simulate API delay
+      await new Promise(resolve => setTimeout(resolve, 500));
+      
+      let filteredNotices = [...mockGazetteNotices];
+      
+      // Apply type filter if provided
+      if (noticeType) {
+        const types = noticeType.split(',');
+        filteredNotices = filteredNotices.filter(n => types.includes(n.noticeType));
+      }
 
-        return NextResponse.json({
-          success: true,
-          data: {
-            items: notices,
-            count: notices.length,
-            fetchedAt: new Date().toISOString(),
-          },
-        }, { headers: responseHeaders });
+      return NextResponse.json({
+        success: true,
+        source,
+        count: filteredNotices.length,
+        notices: filteredNotices.slice(0, limit),
+        fetchedAt: new Date().toISOString(),
+        usingMockData: true
+      });
+    }
 
-      case "stats":
-        // Get summary statistics
-        const stats = await gazetteAggregator.getSummaryStats();
+    // Real gazette parsing based on source
+    switch (source) {
+      case 'london_gazette':
+        const londonNotices = await londonGazetteParser.fetchLatestNotices(limit, filters);
         
-        // Also get database counts if available
-        let dbStats = {};
-        try {
-          const dbCount = await db.gazetteNotice.count();
-          const bySource = await db.gazetteNotice.groupBy({
-            by: ["source"],
-            _count: true,
-          });
-          const byType = await db.gazetteNotice.groupBy({
-            by: ["noticeType"],
-            _count: true,
-          });
-          
-          dbStats = {
-            databaseTotal: dbCount,
-            bySource: Object.fromEntries(bySource.map(s => [s.source, s._count])),
-            byType: Object.fromEntries(byType.map(t => [t.noticeType, t._count])),
-          };
-        } catch {
-          // Database stats optional
-        }
-
         return NextResponse.json({
           success: true,
-          data: {
-            live: stats,
-            database: dbStats,
-          },
-        }, { headers: responseHeaders });
-
-      case "search":
-        // Search across all gazettes (basic implementation)
-        const query = searchParams.get("q");
-        if (!query) {
-          return NextResponse.json(
-            { error: "Search query is required" },
-            { status: 400 }
-          );
-        }
-
-        // Fetch all and filter client-side for now
-        const allNotices = await gazetteAggregator.fetchAllNotices({ limit: 200 });
-        const filtered = allNotices.filter(
-          n => 
-            n.title.toLowerCase().includes(query.toLowerCase()) ||
-            (n.content && n.content.toLowerCase().includes(query.toLowerCase()))
-        );
-
-        return NextResponse.json({
-          success: true,
-          data: {
-            items: filtered.slice(0, limit),
-            count: filtered.length,
-            query,
-          },
-        }, { headers: responseHeaders });
-
-      case "sources":
-        // Return available sources info
-        return NextResponse.json({
-          success: true,
-          data: {
-            sources: [
-              {
-                id: "london_gazette",
-                name: "London Gazette",
-                description: "Official UK public register including insolvencies, grants, honours",
-                coverage: "United Kingdom",
-                updateFrequency: "Every 15 minutes",
-              },
-              {
-                id: "ojeu_ted",
-                name: "EU OJEU/TED",
-                description: "European Union procurement and grant opportunities",
-                coverage: "European Union",
-                updateFrequency: "Every 6 hours",
-              },
-              {
-                id: "federal_register",
-                name: "US Federal Register",
-                description: "US federal regulations, grants, and official notices",
-                coverage: "United States",
-                updateFrequency: "Every 4 hours",
-              },
-            ],
-          },
+          source: 'london_gazette',
+          count: londonNotices.length,
+          notices: londonNotices,
+          fetchedAt: new Date().toISOString(),
+          usingMockData: false
         });
+
+      case 'ojeu_ted':
+        // EU Tenders Electronic Daily - would implement separate parser
+        return NextResponse.json({
+          success: false,
+          error: 'OJEU/TED parser not yet implemented',
+          message: 'EU tender integration coming in Phase 2'
+        }, { status: 501 });
+
+      case 'federal_register':
+        // US Federal Register - would implement separate parser
+        return NextResponse.json({
+          success: false,
+          error: 'Federal Register parser not yet implemented',
+          message: 'US federal register integration coming in Phase 2'
+        }, { status: 501 });
 
       default:
         return NextResponse.json(
-          { error: `Invalid action: ${action}` },
+          { 
+            error: `Unknown gazette source: ${source}`,
+            supportedSources: ['london_gazette', 'ojeu_ted', 'federal_register']
+          },
           { status: 400 }
         );
     }
+
   } catch (error) {
-    console.error("Gazette API error:", error);
+    console.error('Gazette API Error:', error);
+    
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+    
     return NextResponse.json(
-      { error: "Internal server error", details: String(error) },
+      { 
+        error: errorMessage,
+        message: 'Failed to fetch gazette notices. Please try again later.'
+      },
       { status: 500 }
     );
   }
 }
 
-// POST endpoint to save notices to database
+// POST endpoint for advanced queries or webhooks
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { noticeIds, source } = body;
+    const { action, query, filters } = body;
 
-    if (!noticeIds || !Array.isArray(noticeIds)) {
-      return NextResponse.json(
-        { error: "noticeIds array is required" },
-        { status: 400 }
-      );
-    }
+    switch (action) {
+      case 'search':
+        if (!query) {
+          return NextResponse.json(
+            { error: 'Query is required for search action' },
+            { status: 400 }
+          );
+        }
 
-    // Fetch notices and save to database
-    const notices = await gazetteAggregator.fetchAllNotices({ limit: 200 });
-    const noticesToSave = notices.filter(n => noticeIds.includes(n.id));
+        // Search would require full-text search capability
+        // For now, return filtered results based on title/content match
+        const allNotices = await londonGazetteParser.fetchLatestNotices(100);
+        const searchResults = allNotices.filter(notice =>
+          notice.title.toLowerCase().includes(query.toLowerCase()) ||
+          notice.content?.toLowerCase().includes(query.toLowerCase()) ||
+          notice.summary.toLowerCase().includes(query.toLowerCase())
+        );
 
-    const saved = [];
-    for (const notice of noticesToSave) {
-      try {
-        const savedNotice = await db.gazetteNotice.create({
-          data: {
-            source: notice.source,
-            noticeType: notice.noticeType,
-            title: notice.title,
-            content: notice.content,
-            publishedAt: notice.publishedAt,
-            url: notice.url,
-            metadata: notice.metadata as any,
-          },
+        return NextResponse.json({
+          success: true,
+          query,
+          count: searchResults.length,
+          notices: searchResults.slice(0, 20) // Limit search results
         });
-        saved.push(savedNotice);
-      } catch (error) {
-        // Skip duplicates or other errors
-        console.error(`Error saving notice ${notice.id}:`, error);
-      }
+
+      case 'subscribe':
+        // Set up webhook subscription for new notices matching criteria
+        return NextResponse.json({
+          success: true,
+          message: 'Webhook subscription feature coming soon',
+          subscribedFilters: filters
+        }, { status: 202 }); // Accepted but not yet implemented
+
+      default:
+        return NextResponse.json(
+          { 
+            error: 'Invalid action. Supported actions: search, subscribe',
+            supportedActions: ['search', 'subscribe']
+          },
+          { status: 400 }
+        );
     }
 
-    return NextResponse.json({
-      success: true,
-      data: {
-        saved: saved.length,
-        requested: noticeIds.length,
-        items: saved,
-      },
-    });
   } catch (error) {
-    console.error("Gazette save error:", error);
+    console.error('Gazette POST Error:', error);
+    
     return NextResponse.json(
-      { error: "Failed to save notices" },
+      { error: 'Failed to process request' },
       { status: 500 }
     );
   }

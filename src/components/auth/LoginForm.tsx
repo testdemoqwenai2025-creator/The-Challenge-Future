@@ -13,11 +13,34 @@ export function LoginForm() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [rememberMe, setRememberMe] = useState(false);
-  const { login, isLoading, setAuthMode } = useAuth();
+  const [error, setError] = useState<string | null>(null);
+  const { login, loginWithGoogle, loginWithGitHub, isLoading, setAuthMode } = useAuth();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    await login(email, password);
+    setError(null);
+    
+    try {
+      await login(email, password);
+    } catch (err) {
+      setError('Invalid email or password. Please try again.');
+    }
+  };
+
+  const handleGoogleLogin = async () => {
+    try {
+      await loginWithGoogle();
+    } catch (err) {
+      setError('Google login failed. Please try again.');
+    }
+  };
+
+  const handleGitHubLogin = async () => {
+    try {
+      await loginWithGitHub();
+    } catch (err) {
+      setError('GitHub login failed. Please try again.');
+    }
   };
 
   return (
@@ -29,88 +52,21 @@ export function LoginForm() {
         </p>
       </div>
 
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <div className="space-y-2">
-          <Label htmlFor="email">Email</Label>
-          <Input
-            id="email"
-            type="email"
-            placeholder="alex@company.com"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-            className="bg-secondary border-border"
-          />
+      {/* Error message */}
+      {error && (
+        <div className="rounded-lg bg-destructive/10 border border-destructive/20 p-3 text-sm text-destructive">
+          {error}
         </div>
+      )}
 
-        <div className="space-y-2">
-          <div className="flex items-center justify-between">
-            <Label htmlFor="password">Password</Label>
-            <button
-              type="button"
-              className="text-xs text-primary hover:underline"
-              onClick={() => alert('Password reset functionality would be implemented here')}
-            >
-              Forgot password?
-            </button>
-          </div>
-          <Input
-            id="password"
-            type="password"
-            placeholder="••••••••"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-            className="bg-secondary border-border"
-          />
-        </div>
-
-        <div className="flex items-center space-x-2">
-          <Checkbox
-            id="remember"
-            checked={rememberMe}
-            onCheckedChange={(checked) => setRememberMe(checked as boolean)}
-          />
-          <label
-            htmlFor="remember"
-            className="text-sm text-muted-foreground cursor-pointer"
-          >
-            Remember me
-          </label>
-        </div>
-
-        <Button
-          type="submit"
-          className="w-full bg-primary hover:bg-primary/90"
-          disabled={isLoading}
-        >
-          {isLoading ? (
-            <>
-              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-              Signing in...
-            </>
-          ) : (
-            'Sign In'
-          )}
-        </Button>
-      </form>
-
-      <div className="relative">
-        <div className="absolute inset-0 flex items-center">
-          <Separator className="w-full" />
-        </div>
-        <div className="relative flex justify-center text-xs uppercase">
-          <span className="bg-card px-2 text-muted-foreground">
-            Or continue with
-          </span>
-        </div>
-      </div>
-
+      {/* OAuth Buttons */}
       <div className="grid grid-cols-2 gap-3">
         <Button 
+          type="button"
           variant="outline" 
           className="border-border hover:bg-secondary"
-          onClick={() => alert('Google OAuth would be implemented here')}
+          onClick={handleGoogleLogin}
+          disabled={isLoading}
         >
           <svg className="mr-2 h-4 w-4" viewBox="0 0 24 24">
             <path
@@ -133,9 +89,11 @@ export function LoginForm() {
           Google
         </Button>
         <Button 
+          type="button"
           variant="outline" 
           className="border-border hover:bg-secondary"
-          onClick={() => alert('GitHub OAuth would be implemented here')}
+          onClick={handleGitHubLogin}
+          disabled={isLoading}
         >
           <svg className="mr-2 h-4 w-4" fill="currentColor" viewBox="0 0 24 24">
             <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z" />
@@ -144,21 +102,105 @@ export function LoginForm() {
         </Button>
       </div>
 
+      <div className="relative">
+        <div className="absolute inset-0 flex items-center">
+          <Separator className="w-full" />
+        </div>
+        <div className="relative flex justify-center text-xs uppercase">
+          <span className="bg-card px-2 text-muted-foreground">
+            Or continue with email
+          </span>
+        </div>
+      </div>
+
+      <form onSubmit={handleSubmit} className="space-y-4">
+        <div className="space-y-2">
+          <Label htmlFor="email">Email</Label>
+          <Input
+            id="email"
+            type="email"
+            placeholder="alex@company.com"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+            disabled={isLoading}
+            className="bg-secondary border-border"
+            autoComplete="email"
+          />
+        </div>
+
+        <div className="space-y-2">
+          <div className="flex items-center justify-between">
+            <Label htmlFor="password">Password</Label            <button
+              type="button"
+              className="text-xs text-primary hover:underline"
+              onClick={() => alert('Password reset: In production, this would send a reset email')}
+            >
+              Forgot password?
+            </button>
+          </div>
+          <Input
+            id="password"
+            type="password"
+            placeholder="••••••••"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+            disabled={isLoading}
+            className="bg-secondary border-border"
+            autoComplete="current-password"
+          />
+        </div>
+
+        <div className="flex items-center space-x-2">
+          <Checkbox
+            id="remember"
+            checked={rememberMe}
+            onCheckedChange={(checked) => setRememberMe(checked as boolean)}
+            disabled={isLoading}
+          />
+          <label
+            htmlFor="remember"
+            className="text-sm text-muted-foreground cursor-pointer"
+          >
+            Remember me for 30 days
+          </label>
+        </div>
+
+        <Button
+          type="submit"
+          className="w-full bg-primary hover:bg-primary/90"
+          disabled={isLoading}
+        >
+          {isLoading ? (
+            <>
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              Signing in...
+            </>
+          ) : (
+            'Sign In'
+          )}
+        </Button>
+      </form>
+
       <p className="text-center text-sm text-muted-foreground">
         Don't have an account?{' '}
         <button
           onClick={() => setAuthMode('signup')}
           className="text-primary hover:underline font-medium"
         >
-          Sign up
+          Sign up free
         </button>
       </p>
 
-      {/* Demo hint */}
-      <div className="rounded-lg bg-primary/10 p-3 text-xs text-muted-foreground">
-        <p className="font-medium text-primary mb-1">Demo Mode</p>
-        <p>Enter any email/password to sign in. Use <code className="bg-secondary px-1 rounded">@enterprise</code> or <code className="bg-secondary px-1 rounded">@team</code> in email for different plans.</p>
-      </div>
+      {/* Demo hint - only show in development */}
+      {process.env.NODE_ENV === 'development' && (
+        <div className="rounded-lg bg-primary/10 p-3 text-xs text-muted-foreground">
+          <p className="font-medium text-primary mb-1">🧪 Development Mode</p>
+          <p>Enter any credentials to sign in. New users are created automatically.</p>
+          <p className="mt-1">Use <code className="bg-secondary px-1 rounded">@enterprise</code> or <code className="bg-secondary px-1 rounded">@team</code> in email for different plans.</p>
+        </div>
+      )}
     </div>
   );
 }
