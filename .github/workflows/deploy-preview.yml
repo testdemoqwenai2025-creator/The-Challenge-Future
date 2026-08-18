@@ -4,13 +4,11 @@
 name: Deploy NEXUS Preview to GitHub Pages
 
 on:
+  # Trigger on push to main branch
   push:
     branches: [main]
-    paths-ignore:
-      - '**.md'
-      - 'docs/**'
-      - '.github/ISSUE_TEMPLATE/**'
-      - 'scimspt-platform/**'  # Ignore the other project
+  
+  # Also allow manual triggering
   workflow_dispatch:
 
 permissions:
@@ -68,7 +66,7 @@ jobs:
   deploy:
     environment:
       name: github-pages
-      url: ${{ github.event.repository.html_url }}
+      url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
     needs: build
     
@@ -77,17 +75,7 @@ jobs:
         id: deployment
         uses: actions/deploy-pages@v4
 
-      - name: Deployment Summary
-        if: success()
+      - name: Print URL
         run: |
-          echo "🎉 **Deployment Successful!**" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "### Live URL" >> $GITHUB_STEP_SUMMARY
-          echo "🌐 https://testdemoqwenai2025-creator.github.io/The-Challenge-Future/" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "### What's Included" >> $GITHUB_STEP_SUMMARY
-          echo "- ✅ Landing page with hero, features, pricing" >> $GITHUB_STEP_SUMMARY
-          echo "- ✅ Authentication UI (demo mode)" >> $GITHUB_STEP_SUMMARY
-          echo "- ✅ Dashboard preview (7 intelligence widgets)" >> $GITHUB_STEP_SUMMARY
-          echo "- ✅ Dark theme UI" >> $GITHUB_STEP_SUMMARY
-          echo "- ✅ Mobile responsive design" >> $GITHUB_STEP_SUMMARY
+          echo "🎉 Deployment successful!"
+          echo "URL: ${{ steps.deployment.outputs.page_url }}"
