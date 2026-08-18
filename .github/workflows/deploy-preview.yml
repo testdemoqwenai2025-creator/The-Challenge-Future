@@ -10,6 +10,7 @@ on:
       - '**.md'
       - 'docs/**'
       - '.github/ISSUE_TEMPLATE/**'
+      - 'scimspt-platform/**'  # Ignore the other project
   workflow_dispatch:
 
 permissions:
@@ -40,11 +41,24 @@ jobs:
       - name: Install dependencies
         run: bun install --frozen-lockfile
 
-      - name: Build static export
-        run: bun run build
+      - name: Make deploy script executable
+        run: chmod +x deploy-github-pages.sh
+
+      - name: Build static export (API routes excluded)
+        run: ./deploy-github-pages.sh
         env:
           DISABLE_AUTH: true
           NODE_ENV: production
+
+      - name: Verify build output
+        run: |
+          echo "Checking build output..."
+          if [ ! -f "out/index.html" ]; then
+            echo "❌ Error: index.html not found in out/"
+            exit 1
+          fi
+          echo "✅ Build output verified"
+          ls -la out/
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
@@ -62,3 +76,18 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
+
+      - name: Deployment Summary
+        if: success()
+        run: |
+          echo "🎉 **Deployment Successful!**" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### Live URL" >> $GITHUB_STEP_SUMMARY
+          echo "🌐 https://testdemoqwenai2025-creator.github.io/The-Challenge-Future/" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### What's Included" >> $GITHUB_STEP_SUMMARY
+          echo "- ✅ Landing page with hero, features, pricing" >> $GITHUB_STEP_SUMMARY
+          echo "- ✅ Authentication UI (demo mode)" >> $GITHUB_STEP_SUMMARY
+          echo "- ✅ Dashboard preview (7 intelligence widgets)" >> $GITHUB_STEP_SUMMARY
+          echo "- ✅ Dark theme UI" >> $GITHUB_STEP_SUMMARY
+          echo "- ✅ Mobile responsive design" >> $GITHUB_STEP_SUMMARY
