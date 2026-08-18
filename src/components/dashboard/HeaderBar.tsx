@@ -23,6 +23,7 @@ import {
   HelpCircle
 } from 'lucide-react';
 import { useAuth } from '@/components/auth/AuthProvider';
+import { ThemeToggle } from '@/components/theme/ThemeToggle';
 
 export function HeaderBar() {
   const { user, logout } = useAuth();
@@ -49,6 +50,9 @@ export function HeaderBar() {
 
       {/* Right Section */}
       <div className="flex items-center gap-4 ml-6">
+        {/* Theme Toggle */}
+        <ThemeToggle />
+        
         {/* Notifications */}
         <DropdownMenu>
           <DropdownMenuTrigger asChild>

@@ -1,8 +1,5 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+// NEXUS Ecosystem Intelligence Platform - Complete Database Schema
+// This schema supports all features: Auth, Auto-Fill Engine, Gazette Monitor, etc.
 
 generator client {
   provider = "prisma-client-js"
@@ -13,20 +10,276 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+// ==================== AUTH & USERS ====================
+
 model User {
-  id        String   @id @default(cuid())
-  email     String   @unique
-  name      String?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id            String    @id @default(cuid())
+  email         String    @unique
+  name          String?
+  password      String?   // Hashed password for credentials provider
+  image         String?
+  role          String    @default("founder") // founder, investor, researcher, admin
+  plan          String    @default("explorer") // explorer, pro, team, enterprise
+  organization  String?
+  emailVerified DateTime?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  
+  // Relations
+  applications Application[]
+  watchlists    WatchlistItem[]
+  alerts        Alert[]
+  searches      SearchHistory[]
+  accounts      Account[]
+  sessions      Session[]
+  
+  @@map("users")
 }
 
-model Post {
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String?
+  access_token      String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+  @@map("accounts")
+}
+
+model Session {
+  id           String      @id @default(cuid())
+  sessionToken String      @unique
+  userId       String
+  expires      DateTime
+  user         User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  @@map("sessions")
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+  @@map("verification_tokens")
+}
+
+// ==================== COMPANIES & ENTITIES ====================
+
+model Company {
+  id                  String   @id @default(cuid())
+  name                String
+  registrationNumber  String?  @unique
+  legalStructure      String?
+  incorporationDate   DateTime?
+  registeredAddress   String?
+  sector              String?
+  subsector           String?
+  sicCodes            String? // JSON array as string
+  employeeCount       Int?
+  annualRevenue       Float?
+  description         String?
+  website             String?
+  linkedinUrl         String?
+  crunchbaseUuid      String?
+  companiesHouseData  Json?   // Raw data from CH API
+  lastSyncedAt        DateTime?
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+  
+  // Relations
+  watchlists WatchlistItem[]
+  fundingRounds FundingRound[]
+  
+  @@index([registrationNumber])
+  @@index([name])
+  @@map("companies")
+}
+
+model FundingRound {
+  id              String   @id @default(cuid())
+  companyId       String
+  company         Company  @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  roundType       String?  // seed, series_a, series_b, grant, loan, etc.
+  announcedDate   DateTime?
+  raisedAmount    Float?
+  currency        String   @default("GBP")
+  investors       String?  // JSON array of investor names
+  leadInvestor    String?
+  source          String?  // crunchbase, companies_house, manual
+  sourceId        String?
+  createdAt       DateTime @default(now())
+  
+  @@index([companyId])
+  @@index([announcedDate])
+  @@map("funding_rounds")
+}
+
+// ==================== GRANTS & PROGRAMMES ====================
+
+model GrantProgramme {
+  id                  String   @id @default(cuid())
+  name                String
+  administeringBody   String?
+  totalPoolSize       Float?
+  currency            String   @default("GBP")
+  typicalMinAward     Float?
+  typicalMaxAward     Float?
+  successRate         Float?
+  openingDate         DateTime?
+  closingDate         DateTime?
+  status              String   @default("open") // open, closed, draft, upcoming, archived
+  source              String   // innovate_uk, eu_ted, grants_gov, eic, etc.
+  sourceId            String?  // Original ID from source
+  url                 String?
+  description         String?
+  eligibilityCriteria Json?    // JSON object
+  assessmentCriteria  Json?    // JSON object
+  categories          String?  // JSON array of sectors
+  regions             String?  // JSON array of eligible regions
+  lastFetchedAt       DateTime?
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+  
+  // Relations
+  applications Application[]
+  
+  @@index([status])
+  @@index([closingDate])
+  @@index([source])
+  @@map("grant_programmes")
+}
+
+// ==================== APPLICATIONS (AUTO-FILL ENGINE) ====================
+
+model Application {
+  id                String   @id @default(cuid())
+  userId            String
+  user              User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  grantProgrammeId  String?
+  grantProgramme    GrantProgramme? @relation(fields: [grantProgrammeId], references: [id], onDelete: SetNull)
+  status            String   @default("discovered") // discovered, matched, in_progress, submitted, awarded, rejected, withdrawn
+  autoFillProgress  Int      @default(0) // 0-100 percentage
+  fieldsCompleted   Int      @default(0)
+  fieldsTotal       Int      @default(0)
+  submittedAt       DateTime?
+  decisionDate      DateTime?
+  outcomeAmount     Float?
+  data              Json?    // All form field values as JSON
+  parsedTemplate    Json?    // Parsed form structure
+  reviewNotes       String?
+  submittedVia      String?  // api, rpa, manual
+  proofOfSubmission String?  // URL or reference to proof
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+  
+  @@index([userId])
+  @@index([status])
+  @@index([grantProgrammeId])
+  @@map("applications")
+}
+
+// ==================== WATCHLISTS & ALERTS ====================
+
+model WatchlistItem {
   id        String   @id @default(cuid())
-  title     String
-  content   String?
-  published Boolean  @default(false)
-  authorId  String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  companyId String
+  company   Company  @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  notes     String?
+  alertsEnabled Boolean @default(true)
+  addedAt   DateTime @default(now())
+  
+  @@unique([userId, companyId])
+  @@index([userId])
+  @@map("watchlist_items")
+}
+
+model Alert {
+  id          String   @id @default(cuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  type        String   // grant_deadline, gazette_notice, funding_round, company_update, system
+  title       String
+  message     String
+  source      String?
+  priority    String   @default("medium") // low, medium, high, urgent
+  read        Boolean  @default(false)
+  actionUrl   String?
+  metadata    Json?    // Additional context data
+  triggeredAt DateTime @default(now())
+  readAt      DateTime?
+  
+  @@index([userId])
+  @@index([read])
+  @@index([priority])
+  @@index([triggeredAt])
+  @@map("alerts")
+}
+
+// ==================== GAZETTE MONITOR ====================
+
+model GazetteNotice {
+  id          String   @id @default(cuid())
+  source      String   // london_gazette, ojeu_ted, federal_register, uk_gov
+  noticeType  String   // insolvency, honor, procurement, grant_call, regulation, court_notice
+  title       String
+  content     String?
+  publishedAt DateTime
+  url         String?
+  metadata    Json?    // Source-specific structured data
+  processedAt DateTime @default(now())
+  
+  @@index([source])
+  @@index([noticeType])
+  @@index([publishedAt])
+  @@map("gazette_notices")
+}
+
+// ==================== SEARCH HISTORY ====================
+
+model SearchHistory {
+  id          String   @id @default(cuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  query       String
+  searchType  String   // company, grant, gazette, general
+  filters     Json?    // Applied filters
+  resultsCount Int     @default(0)
+  createdAt   DateTime @default(now())
+  
+  @@index([userId])
+  @@index([createdAt])
+  @@map("search_history")
+}
+
+// ==================== KNOWLEDGE GRAPH (Entity Relationships) ====================
+
+model EntityRelation {
+  id          String   @id @default(cuid())
+  fromEntityId String
+  toEntityId   String
+  entityType   String   // company, person, grant, patent, publication
+  relationType String  // funded_by, founded_by, partnered_with, invested_in, etc.
+  weight       Float    @default(1.0)
+  metadata     Json?    // Additional context
+  since        DateTime?
+  createdAt    DateTime @default(now())
+  
+  @@index([fromEntityId])
+  @@index([toEntityId])
+  @@index([relationType])
+  @@map("entity_relations")
 }
